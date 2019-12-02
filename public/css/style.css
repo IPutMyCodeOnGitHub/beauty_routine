@@ -1,0 +1,40 @@
+body{
+    background-color: #d3d3d31a;
+    color: #262b2b;
+}
+
+a{
+    color: #262b2b;
+}
+
+a:hover{
+    color: #262b2b;
+}
+
+h1{
+    color: #434a4a;
+}
+
+button.btn{
+    background-color: #6d9ea07a;
+    border: none;
+    border-radius: 12px;
+    color: #262b2b;
+}
+
+button.btn:hover{
+    background-color: #6d9ea0bf;
+    color: #262b2b;
+    border: none;
+}
+
+a.register.nav-item.nav-link {
+    border-bottom-color: transparent;
+    background-color: transparent;
+
+}
+div.register.tab-pane.fade.pt-3.col-md-6.pl-3{
+    border: 1px solid #dee2e6;
+    border-radius: 0px 0px 10px 10px;
+    border-top: none;
+}
