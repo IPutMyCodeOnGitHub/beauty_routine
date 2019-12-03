@@ -5,24 +5,29 @@ body{
 
 a{
     color: #262b2b;
+    text-decoration: underline;
+}
+
+a.btn{
+    text-decoration: none;
 }
 
 a:hover{
-    color: #262b2b;
+    color: #f39c12;
 }
 
 h1{
     color: #434a4a;
 }
 
-button.btn{
+.btn{
     background-color: #6d9ea07a;
     border: none;
     border-radius: 12px;
     color: #262b2b;
 }
 
-button.btn:hover{
+.btn:hover{
     background-color: #6d9ea0bf;
     color: #262b2b;
     border: none;
@@ -37,4 +42,9 @@ div.register.tab-pane.fade.pt-3.col-md-6.pl-3{
     border: 1px solid #dee2e6;
     border-radius: 0px 0px 10px 10px;
     border-top: none;
+}
+
+form.login-form-wrapper{
+    border: 1px solid #dee2e6;
+    border-radius: 10px;
 }

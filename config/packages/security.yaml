@@ -3,6 +3,10 @@ security:
         App\Entity\User:
             algorithm: auto
 
+    role_hierarchy:
+        ROLE_ADMIN:      [ROLE_ADMIN, ROLE_USER, ROLE_EXPERT]
+    #        ROLE_SUPER_ADMIN: [ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH]
+
     # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
     providers:
         # used to reload user from session & other features (e.g. switch_user)
@@ -21,6 +25,7 @@ security:
                     - App\Security\LoginFormAuthenticator
             logout:
                 path: app_logout
+                target: app_login
                 # where to redirect after logout
                 # target: app_any_route
 
@@ -36,3 +41,4 @@ security:
         # - { path: ^/admin, roles: ROLE_ADMIN }
         - { path: ^/profile-user, roles: ROLE_USER }
         - { path: ^/profile-expert, roles: ROLE_EXPERT }
+        - { path: ^/admin, roles: ROLE_ADMIN }

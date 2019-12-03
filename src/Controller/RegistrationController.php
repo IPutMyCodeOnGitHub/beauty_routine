@@ -5,7 +5,9 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Form\RegistrationUserFormType;
 use App\Form\RegistrationExpertFormType;
+use App\Repository\UserRepository;
 use App\Services\UserService;
+use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,10 +16,21 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class RegistrationController extends AbstractController
 {
+
+    /**
+     * @var UserService
+     */
+    private $userService;
+
+    public function __construct(UserService $userService)
+    {
+        $this->userService = $userService;
+    }
+
     /**
      * @Route("/register", name="app_register")
      */
-    public function register(Request $request, UserPasswordEncoderInterface $passwordEncoder, UserService $userService): Response
+    public function register(Request $request, UserPasswordEncoderInterface $passwordEncoder): Response
     {
         $user = new User();
 
@@ -25,16 +38,15 @@ class RegistrationController extends AbstractController
         $userForm->handleRequest($request);
 
         if ($userForm->isSubmitted() && $userForm->isValid()) {
-            $user->addRole("ROLE_USER");
-            $userService->saveForm($userForm);
+            $this->userService->saveForm($userForm, $user, $passwordEncoder);
             return $this->redirectToRoute('app_login');
         }
 
         $expertForm = $this->createForm(RegistrationExpertFormType::class, $user);
         $expertForm->handleRequest($request);
         if ($expertForm->isSubmitted() && $expertForm->isValid()) {
-            $user->addRole("ROLE_EXPERT");
-            $userService->saveForm($expertForm);
+            $user->setRoles(["ROLE_EXPERT"]);
+            $this->userService->saveForm($expertForm, $user, $passwordEncoder);
             return $this->redirectToRoute('app_login');
         }
 

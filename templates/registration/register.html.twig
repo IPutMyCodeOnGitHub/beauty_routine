@@ -4,8 +4,15 @@
 
 {% block body %}
     <div class="container">
-        <div class="row justify-content-center">
-            <h1>Регистрация</h1>
+        <div class="row justify-content-center  pt-5">
+            <div class="row justify-content-between col-md-6">
+                <div class="col-md-auto align-self-center pl-0">
+                    <h1 class="h3 font-weight-normal align-self-center">Регистрация</h1>
+                </div>
+                <div class="col-md-auto align-self-center ">
+                    <a href="{{ path('app_login') }}">Войти</a>
+                </div>
+            </div>
         </div>
         <nav class="row justify-content-center mt-5">
             <div class="col-md-6 nav nav-tabs" id="nav-tab" role="tablist">

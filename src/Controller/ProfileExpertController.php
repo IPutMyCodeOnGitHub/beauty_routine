@@ -5,10 +5,13 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 
+/**
+ * @Route("/profile-expert", name="profile.")
+ */
 class ProfileExpertController extends AbstractController
 {
     /**
-     * @Route("/profile-expert", name="profile")
+     * @Route("/", name="expert")
      */
     public function index()
     {
