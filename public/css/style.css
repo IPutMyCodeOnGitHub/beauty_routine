@@ -48,3 +48,23 @@ form.login-form-wrapper{
     border: 1px solid #dee2e6;
     border-radius: 10px;
 }
+
+/*admin*/
+
+nav.admin-nav{
+    background-color: #6d9ea07a;
+    padding: 10px;
+    border-bottom: 4px solid #b7b3b3;
+}
+nav.admin-nav>ul>li>a.nav-link.active{
+    /*border-right: 4px solid #bb904b6b;*/
+    /*border-bottom: 4px solid #bb904b6b;*/
+    /*border-left: 1px solid #bb904b6b;*/
+    /*border-top: 1px solid #bb904b6b;*/
+    /*border-radius: 5px;*/
+
+    background: #d8c7948c;
+    border-right: 15px solid #f7cd35;
+    box-sizing: border-box;
+}
+/*admin*/

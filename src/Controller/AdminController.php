@@ -19,4 +19,26 @@ class AdminController extends AbstractController
             'controller_name' => 'AdminController',
         ]);
     }
+
+    /**
+     * @Route("/manage-user", name="users")
+     */
+    public function manageUser()
+    {
+        //ToDo: Block can be used for present a statistic in content area
+
+        return $this->render('admin/manage-users.html.twig', [
+            'controller_name' => 'AdminController',
+        ]);
+    }
+
+    /**
+     * @Route("/manage-user/experts", name="experts")
+     */
+    public function manageExperts()
+    {
+        return $this->render('admin/manage-experts.html.twig', [
+            'controller_name' => 'AdminController',
+        ]);
+    }
 }
