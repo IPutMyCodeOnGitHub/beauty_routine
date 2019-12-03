@@ -16,10 +16,6 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class RegistrationController extends AbstractController
 {
-
-    /**
-     * @var UserService
-     */
     private $userService;
 
     public function __construct(UserService $userService)
@@ -38,6 +34,8 @@ class RegistrationController extends AbstractController
         $userForm->handleRequest($request);
 
         if ($userForm->isSubmitted() && $userForm->isValid()) {
+            //ToDo: Think about: Если насильно не добавляем юзера, то роль пустая в БД
+            $user->setRoles(["ROLE_USER"]);
             $this->userService->saveForm($userForm, $user, $passwordEncoder);
             return $this->redirectToRoute('app_login');
         }
@@ -45,7 +43,7 @@ class RegistrationController extends AbstractController
         $expertForm = $this->createForm(RegistrationExpertFormType::class, $user);
         $expertForm->handleRequest($request);
         if ($expertForm->isSubmitted() && $expertForm->isValid()) {
-            $user->setRoles(["ROLE_EXPERT"]);
+//            $user->setRoles(["ROLE_EXPERT"]); //ToDo: Think about: А вот здесь роли сразу две будет
             $this->userService->saveForm($expertForm, $user, $passwordEncoder);
             return $this->redirectToRoute('app_login');
         }

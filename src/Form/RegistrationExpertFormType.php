@@ -37,7 +37,7 @@ class RegistrationExpertFormType extends AbstractType
                 ],
                 'label' => 'Согласен на обработку данных',
             ])
-            ->add('sertificate', FileType::class, [
+            ->add('certificate', FileType::class, [
                 'label' => 'Сертификат (PDF file)',
                 'mapped' => false,
                 'required' => false,

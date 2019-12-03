@@ -5,16 +5,13 @@ namespace App\Services;
 
 use App\Entity\User;
 use Doctrine\Common\Persistence\ObjectManager;
+use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class UserService
 {
-    /**
-     * @var ObjectManager
-     */
     private $manager;
 
     public function __construct(ObjectManager $manager)
@@ -22,12 +19,7 @@ class UserService
         $this->manager = $manager;
     }
 
-    public function createForm(AbstractType $type)
-    {
-
-    }
-
-    public function saveForm(Form $form, $user, UserPasswordEncoderInterface $passwordEncoder)
+    public function saveForm(Form $form, User $user, UserPasswordEncoderInterface $passwordEncoder)
     {
         $user->setPassword(
             $passwordEncoder->encodePassword(
@@ -36,34 +28,62 @@ class UserService
             )
         );
 
-        if (array_key_exists('sertificate', $form->all())) {
-            $sertificate = $form['sertificate']->getData();
-            $this->saveSertificate($sertificate);
+        if (array_key_exists('certificate', $form->all()) & $form['certificate']->getData()!==null) {
+            $certificate = $form['certificate']->getData();
+            $this->saveСertificate($certificate, $user->getId());
         }
 
         $this->manager->persist($user);
-        $this->manager->flush();
-    }
-
-    private function saveSertificate($sertificate){
-        $originalFilename = pathinfo($sertificate->getClientOriginalName(), PATHINFO_FILENAME);
-        $safeFilename = transliterator_transliterate('Any-Latin; Latin-ASCII; [^A-Za-z0-9_] remove; Lower()', $originalFilename);
-        $newFilename = $safeFilename . '-' . uniqid() . '.' . $sertificate->guessExtension();
-
-//        $filesystem = new Filesystem();
-//        dump($filesystem->exists('../../templates/profile')); die;
-
-        // Move the file to the directory where sertificate are stored
-        //Todo:move to servise
         try {
-//                $sertificate->move(
-//                    $this->getParameter('brochures_directory'),
-//                    $newFilename
-//                );
-        } catch (FileException $e) {
-
+            $this->manager->flush();
+            $this->renameDirСertificate($user->getId());
+        } catch(\Exception $e) {
+            $this->deleteDirСertificate();
         }
 
-        // Todo: сохранение файла
+    }
+    private function renameDirСertificate($userId): void
+    {
+        $filesystem = new Filesystem();
+        $certificateTestDir = getcwd() . "/certificate/test";
+        $certificateDir = getcwd() . "/certificate/$userId";
+        if (!$filesystem->exists($certificateDir) && $filesystem->exists($certificateTestDir)) {
+            $filesystem->rename($certificateTestDir, $certificateDir);
+        }
+    }
+
+    private function deleteDirСertificate()
+    {
+        $filesystem = new Filesystem();
+        $certificateTestDir = getcwd() . "/certificate/test";
+        if ($filesystem->exists($certificateTestDir)) {
+            try {
+                $filesystem->remove($certificateTestDir);
+            } catch (IOExceptionInterface $exception) {
+                throw new FileException("Файл небыл загружен. " . $exception);
+            }
+        }
+    }
+
+    private function saveСertificate($certificate, $userId){
+        $originalFilename = pathinfo($certificate->getClientOriginalName(), PATHINFO_FILENAME);
+        $safeFilename = transliterator_transliterate('Any-Latin; Latin-ASCII; [^A-Za-z0-9_] remove; Lower()', $originalFilename);
+        $newFilename = $safeFilename . '-' . uniqid() . '.' . $certificate->guessExtension();
+
+        $filesystem = new Filesystem();
+        $certificateDir = getcwd() . "/certificate/test";
+
+        if (!$filesystem->exists($certificateDir)) {
+            $filesystem->mkdir($certificateDir);
+        }
+
+        try {
+            $certificate->move(
+                    $certificateDir,
+                    $newFilename
+                );
+        } catch (FileException $e) {
+            throw new FileException("Файл небыл загружен. " . $e);
+        }
     }
 }
