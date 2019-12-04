@@ -67,4 +67,8 @@ nav.admin-nav>ul>li>a.nav-link.active{
     border-right: 15px solid #f7cd35;
     box-sizing: border-box;
 }
+
+.search-form{
+    border-bottom: 4px solid #b7b3b3;
+}
 /*admin*/

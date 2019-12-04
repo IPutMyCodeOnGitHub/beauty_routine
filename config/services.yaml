@@ -27,3 +27,7 @@ services:
     # please note that last definitions always *replace* previous ones
     App\Services\UserService:
         arguments: ['@doctrine.orm.entity_manager']
+
+    App\Services\UploaderHelper:
+        bind:
+            $uploadsPath: '%kernel.project_dir%/public'

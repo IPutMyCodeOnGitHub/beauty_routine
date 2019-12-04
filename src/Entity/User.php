@@ -2,8 +2,10 @@
 
 namespace App\Entity;
 
+use App\Services\UploaderHelper;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
@@ -125,5 +127,10 @@ class User implements UserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    public function getCertificate(): string
+    {
+        return UploaderHelper::uploadCertificateWithId($this->id);
     }
 }

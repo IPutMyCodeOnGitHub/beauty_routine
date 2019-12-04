@@ -2,7 +2,11 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
+use App\Services\UserService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -33,12 +37,24 @@ class AdminController extends AbstractController
     }
 
     /**
-     * @Route("/manage-user/experts", name="experts")
+     * @Route("/manage-user/experts", name="experts", methods={"GET"})
      */
-    public function manageExperts()
+    public function manageExperts(Request $request, UserService $userService): Response
     {
+        $entityManager = $this->getDoctrine()->getManager();
+
+        //Todo: make it with AJAX
+        $expertId = $request->query->get('id');
+        $userService->makeExpertValid($expertId, $entityManager);
+        //
+
+        $experts = $entityManager
+            ->getRepository(User::class)
+            ->findByRole('ROLE_EXPERT', 'ROLE_VALID_EXPERT');
+
         return $this->render('admin/manage-experts.html.twig', [
             'controller_name' => 'AdminController',
+            'experts' => $experts,
         ]);
     }
 }

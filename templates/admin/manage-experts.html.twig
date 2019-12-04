@@ -19,7 +19,81 @@
                 </ul>
             </div>
 
-            <div>content</div>
+            <div class="col-md-9">
+                <div class="search-form">
+                    <form action="" method="post" class="form-inline">
+                        <div class="form-group mx-sm-3 mb-2">
+                            <input type="text" class="form-control" name="findExpert" id="findExpert" placeholder="Поиск">
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="checkActiveExpert" value="" id="checkActiveExpert">
+                            <label class="form-check-label" for="checkActiveExpert">
+                                Только не подтверждённые
+                            </label>
+                        </div>
+                        <button type="submit" class="btn btn-primary mb-2">Поиск</button>
+                    </form>
+                </div>
+
+                <div class="search-result">
+                    <table  class="table">
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Id</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Certificate</th>
+                            <th scope="col">Edit</th>
+                            <th scope="col">Delete</th>
+                        </tr>
+                        {% for expert in experts %}
+                            <tr>
+                                <th scope="row">
+                                    {{ loop.index }}
+                                </th>
+                                <td>
+                                    {{ expert.id }}
+                                </td>
+                                <td>
+                                    {{ expert.name }}
+                                </td>
+                                <td>
+                                    {{ expert.email }}
+                                </td>
+                                <td>
+                                    {% if ('ROLE_EXPERT' in expert.roles) and ('ROLE_VALID_EXPERT' not in expert.roles)%}
+                                        <span class="badge badge-danger">  не подтверждён </span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <a href="{{ asset(expert.getCertificate) }}" class="btn">Сертификат</a>
+                                </td>
+                                <td>
+                                    <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseCard{{ expert.id }}" aria-expanded="false" aria-controls="collapseCard{{ expert.id }}">
+                                        Редактировать
+                                    </button>
+                                </td>
+                                <td>
+                                    <a href="" class="btn">Удалить</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="8">
+                                    <div class="collapse" id="collapseCard{{ expert.id }}">
+                                        <div class="card card-body">
+                                            <a href="?id={{ expert.id }}" class="btn">Подтвердить эксперта</a>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+
+                        {% endfor %}
+
+                    </table>
+                </div>
+            </div>
+
         </div>
     </div>
 
