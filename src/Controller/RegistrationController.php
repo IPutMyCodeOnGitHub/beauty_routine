@@ -30,21 +30,19 @@ class RegistrationController extends AbstractController
     {
         $user = new User();
 
-        $userForm = $this->createForm(RegistrationUserFormType::class, $user);
-        $userForm->handleRequest($request);
-
-        if ($userForm->isSubmitted() && $userForm->isValid()) {
-            //ToDo: Think about: Если насильно не добавляем юзера, то роль пустая в БД
-            $user->setRoles(["ROLE_USER"]);
-            $this->userService->saveForm($userForm, $user, $passwordEncoder);
-            return $this->redirectToRoute('app_login');
-        }
-
         $expertForm = $this->createForm(RegistrationExpertFormType::class, $user);
         $expertForm->handleRequest($request);
         if ($expertForm->isSubmitted() && $expertForm->isValid()) {
-//            $user->setRoles(["ROLE_EXPERT"]); //ToDo: Think about: А вот здесь роли сразу две будет
+            $user->setRoles(["ROLE_EXPERT"]);
             $this->userService->saveForm($expertForm, $user, $passwordEncoder);
+            return $this->redirectToRoute('app_login');
+        }
+
+        $userForm = $this->createForm(RegistrationUserFormType::class, $user);
+        $userForm->handleRequest($request);
+        if ($userForm->isSubmitted() && $userForm->isValid()) {
+            $user->setRoles(["ROLE_USER"]);
+            $this->userService->saveForm($userForm, $user, $passwordEncoder);
             return $this->redirectToRoute('app_login');
         }
 
