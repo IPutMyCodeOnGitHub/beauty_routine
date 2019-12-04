@@ -8,6 +8,7 @@ use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Form\Form;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class UserService
@@ -28,9 +29,11 @@ class UserService
             )
         );
 
-        if (array_key_exists('certificate', $form->all()) & $form['certificate']->getData()!==null) {
-            $certificate = $form['certificate']->getData();
-            $this->saveСertificate($certificate, $user->getId());
+        if (array_key_exists('certificate', $form->all())) {
+            if ($form['certificate']->getData() !== null) {
+                $certificate = $form['certificate']->getData();
+                $this->saveСertificate($certificate, $user->getId());
+            }
         }
 
         $this->manager->persist($user);
