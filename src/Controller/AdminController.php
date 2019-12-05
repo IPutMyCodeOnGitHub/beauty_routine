@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Services\PaginatorService;
 use App\Services\UserService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -27,7 +28,7 @@ class AdminController extends AbstractController
     /**
      * @Route("/manage-user", name="users")
      */
-    public function manageUser()
+    public function manageUser():Response
     {
         //ToDo: Block can be used for present a statistic in content area
 
@@ -39,7 +40,7 @@ class AdminController extends AbstractController
     /**
      * @Route("/manage-user/experts", name="experts", methods={"GET"})
      */
-    public function manageExperts(Request $request, UserService $userService): Response
+    public function manageExperts(Request $request, UserService $userService, PaginatorService $paginatorService): Response
     {
         $entityManager = $this->getDoctrine()->getManager();
 
@@ -48,9 +49,9 @@ class AdminController extends AbstractController
         $userService->makeExpertValid($expertId, $entityManager);
         //
 
-        $experts = $entityManager
-            ->getRepository(User::class)
-            ->findByRole('ROLE_EXPERT', 'ROLE_VALID_EXPERT');
+        $page = $request->query->getInt('page', 1);
+
+        $experts = $paginatorService->findUserByRolePaginator($entityManager, $page);
 
         return $this->render('admin/manage-experts.html.twig', [
             'controller_name' => 'AdminController',

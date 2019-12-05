@@ -34,9 +34,9 @@
                         <button type="submit" class="btn btn-primary mb-2">Поиск</button>
                     </form>
                 </div>
-
-                <div class="search-result">
-                    <table  class="table table-responsive">
+                <div class="search-result pt-3">
+                    <h4>Всего экспертов: ({{ experts.getTotalItemCount }})</h4>
+                    <table  class="table table-responsive pt-3">
                         <tr>
                             <th scope="col">#</th>
                             <th scope="col">Id</th>
@@ -91,6 +91,7 @@
                         {% endfor %}
 
                     </table>
+                    {{ knp_pagination_render(experts) }}
                 </div>
             </div>
 
