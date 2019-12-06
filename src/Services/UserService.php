@@ -33,7 +33,7 @@ class UserService
             if ($user == null) {
                 return;
             }
-            $user->setRoles(['ROLE_VALID_EXPERT']);
+            $user->setRoles([User::ROLE_EXPERT]);
             $entityManager->flush();
         }
     }

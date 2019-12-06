@@ -21,7 +21,7 @@
 
             <div class="col-md-9">
                 <div class="search-form">
-                    <form action="" method="post" class="form-inline">
+                    <form action="{{ path('admin.experts') }}" method="get" class="form-inline">
                         <div class="form-group mx-sm-3 mb-2">
                             <input type="text" class="form-control" name="findByNameExpert" id="findExpert" placeholder="Имя">
                         </div>
@@ -29,72 +29,18 @@
                             <input type="text" class="form-control" name="findByEmailExpert" id="findByEmailExpert" placeholder="E-mail">
                         </div>
                         <div class="form-check mx-sm-3 mb-2">
-                            <input class="form-check-input" type="checkbox" name="checkActiveExpert" value="" id="checkActiveExpert">
+                            <input class="form-check-input" type="checkbox" name="checkActiveExpert" id="checkActiveExpert">
                             <label class="form-check-label" for="checkActiveExpert">
-                                Только не подтверждённые
+                                Только подтверждённые
                             </label>
                         </div>
                         <button type="submit" class="btn btn-primary mb-2">Поиск</button>
                     </form>
                 </div>
                 <div class="search-result pt-3">
-                    <h4>Всего экспертов: ({{ experts.getTotalItemCount }})</h4>
-                    <table  class="table table-responsive pt-3">
-                        <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">Id</th>
-                            <th scope="col">Name</th>
-                            <th scope="col">Email</th>
-                            <th scope="col">Status</th>
-                            <th scope="col">Certificate</th>
-                            <th scope="col">Edit</th>
-                            <th scope="col">Delete</th>
-                        </tr>
-                        {% for expert in experts %}
-                            <tr>
-                                <th scope="row">
-                                    {{ loop.index }}
-                                </th>
-                                <td>
-                                    {{ expert.id }}
-                                </td>
-                                <td>
-                                    {{ expert.name }}
-                                </td>
-                                <td>
-                                    {{ expert.email }}
-                                </td>
-                                <td>
-                                    {% if 'ROLE_INVALID_EXPERT' in expert.roles%}
-                                        <span class="badge badge-danger">  не подтверждён </span>
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    <a href="{{ asset(expert.getUserCertificates.get(0).certificate) }}" class="btn">Сертификат</a>
-                                </td>
-                                <td>
-                                    <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseCard{{ expert.id }}" aria-expanded="false" aria-controls="collapseCard{{ expert.id }}">
-                                        Редактировать
-                                    </button>
-                                </td>
-                                <td>
-                                    <a href="" class="btn">Удалить</a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colspan="8">
-                                    <div class="collapse" id="collapseCard{{ expert.id }}">
-                                        <div class="card card-body">
-                                            <a href="?id={{ expert.id }}" class="btn">Подтвердить эксперта</a>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
 
-                        {% endfor %}
+                    {% include('admin/expert-table.html.twig') %}
 
-                    </table>
-                    {{ knp_pagination_render(experts) }}
                 </div>
             </div>
 

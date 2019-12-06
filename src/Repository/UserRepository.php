@@ -38,19 +38,36 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $this->_em->flush();
     }
 
-    public function getQueryBuilderFindByRole($role): QueryBuilder
+    public function getQueryBuilderSearchExpert($nameExpert, $emailExpert, $activeExpert): QueryBuilder
     {
         $query = $this->createQueryBuilder('u');
-        $query->andwhere($query->expr()->like('u.roles', ':role'))
-            ->setParameter('role', '%'.$role.'%')
-            ->orderBy('u.email', 'ASC');
+        $query->orderBy('u.email', 'ASC');
+
+        if ($nameExpert) {
+            $query->andwhere($query->expr()->like('u.name', ':name'))
+                ->setParameter('name', '%'.$nameExpert.'%');
+        }
+
+        if ($emailExpert) {
+            $query->andwhere('u.email = :email')
+                ->setParameter('email', '%'.$emailExpert.'%');
+        }
+
+        if ($activeExpert) {
+            $query->andwhere($query->expr()->like('u.roles', ':role'))
+                ->setParameter('role', '%'.User::ROLE_EXPERT.'%');
+        } else {
+            $query->orWhere($query->expr()->like('u.roles', ':role'), $query->expr()->like('u.roles', ':roleexp'))
+                ->setParameter('role', '%'.User::ROLE_INVALID_EXPERT.'%')
+                ->setParameter('roleexp', '%'.User::ROLE_EXPERT.'%');
+        }
 
         return $query;
     }
 
-    public function findUserByRolePaginator(string $role, Paginator  $paginator, int $page, int $countObj = 10)
+    public function findSearchExpertPaginator(Paginator  $paginator, ?string $nameExpert, ?string $emailExpert, ?string $activeExpert, int $page = 1,  int $countObj = 10)
     {
-        $queryBuilder = $this->getQueryBuilderFindByRole($role);
+        $queryBuilder = $this->getQueryBuilderSearchExpert($nameExpert, $emailExpert, $activeExpert);
 
         return $paginator->paginate(
             $queryBuilder,

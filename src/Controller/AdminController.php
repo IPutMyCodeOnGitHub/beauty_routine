@@ -40,26 +40,42 @@ class AdminController extends AbstractController
     }
 
     /**
+     * @Route("/manage-user/experts/validation", name="experts.validation", methods={"POST"})
+     */
+    public function ajaxExpertValidation(Request $request, UserService $userService): Response
+    {
+        if (!$request->isXmlHttpRequest()) {
+            throw new \Exception;
+        }
+        $entityManager = $this->getDoctrine()->getManager();
+
+        $expertId = $request->request->get('id');
+        $userService->makeExpertValid($expertId, $entityManager);
+
+        return new Response($expertId);
+    }
+
+    /**
      * @Route("/manage-user/experts", name="experts", methods={"GET"})
      */
-    public function manageExperts(Request $request, UserService $userService, PaginatorInterface $paginator): Response
+    public function manageExperts(Request $request, PaginatorInterface $paginator): Response
     {
         $entityManager = $this->getDoctrine()->getManager();
 
-        //Todo: make it with AJAX
-        $expertId = $request->query->get('id');
-        $userService->makeExpertValid($expertId, $entityManager);
-        //
-
+        $findByNameExpert = $request->query->get('findByNameExpert');
+        $findByEmailExpert = $request->query->get('findByEmailExpert');
+        $checkActiveExpert = $request->query->get('checkActiveExpert');
         $page = $request->query->getInt('page', 1);
-
+//dd($request->query->all(), $findByNameExpert, $findByEmailExpert, $checkActiveExpert, $page);
         $experts = $entityManager
             ->getRepository(User::class)
-            ->findUserByRolePaginator(User::ROLE_INVALID_EXPERT, $paginator, $page);
+            ->findSearchExpertPaginator($paginator, $findByNameExpert, $findByEmailExpert, $checkActiveExpert, $page);
 
         return $this->render('admin/manage-experts.html.twig', [
             'controller_name' => 'AdminController',
             'experts' => $experts,
         ]);
     }
+
+
 }

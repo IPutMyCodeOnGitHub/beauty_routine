@@ -1,5 +1,5 @@
 <div class="container">
-    <nav class="admin-nav row">
+    <nav class="admin-nav row justify-content-between">
         <ul class="nav flex-column flex-sm-row">
             <li class="nav-item">
                 <a class="nav-link active" href="#">Active</a>
@@ -10,9 +10,9 @@
             <li class="nav-item">
                 <a class="nav-link" href="{{ path('admin.users') }}">Управление пользователями</a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{{ path('app_logout') }}">logout</a>
-            </li>
         </ul>
+        <div class="nav-item">
+            <a class="nav-link" href="{{ path('app_logout') }}">logout</a>
+        </div>
     </nav>
 </div>
