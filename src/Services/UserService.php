@@ -4,6 +4,7 @@
 namespace App\Services;
 
 use App\Entity\User;
+use App\Entity\UserCertificate;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 use Symfony\Component\Filesystem\Filesystem;
@@ -46,19 +47,25 @@ class UserService
             )
         );
 
+        $newFilename = "";
         if (array_key_exists('certificate', $form->all())) {
             if ($form['certificate']->getData() !== null) {
                 $certificate = $form['certificate']->getData();
-                $uploaderHelper->uploadCertificatePDF($certificate);
+                $newFilename = $uploaderHelper->uploadCertificatePDF($certificate);
             }
         }
 
         $this->manager->persist($user);
         try {
             $this->manager->flush();
-            $uploaderHelper->renameDirСertificate($user->getId());
+            if ($newFilename && in_array('ROLE_INVALID_EXPERT', $user->getRoles())) {
+                $userCertificate = new UserCertificate();
+                $userCertificate->setCertificate($newFilename);
+                $this->manager->persist($userCertificate);
+                $this->manager->flush();
+            }
         } catch(\Exception $e) {
-            $uploaderHelper->deleteDirСertificate();
+            $uploaderHelper->deleteСertificate();
         }
 
     }

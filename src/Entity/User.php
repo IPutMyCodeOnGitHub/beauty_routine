@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Services\UploaderHelper;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -41,6 +43,16 @@ class User implements UserInterface
      * @ORM\Column(type="string")
      */
     private $password;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\UserCertificate", mappedBy="user")
+     */
+    private $userCertificates;
+
+    public function __construct()
+    {
+        $this->userCertificates = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -132,5 +144,36 @@ class User implements UserInterface
     public function getCertificate(): string
     {
         return UploaderHelper::uploadCertificateWithId($this->id);
+    }
+
+    /**
+     * @return Collection|UserCertificate[]
+     */
+    public function getUserCertificates(): Collection
+    {
+        return $this->userCertificates;
+    }
+
+    public function addUserCertificate(UserCertificate $userCertificate): self
+    {
+        if (!$this->userCertificates->contains($userCertificate)) {
+            $this->userCertificates[] = $userCertificate;
+            $userCertificate->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUserCertificate(UserCertificate $userCertificate): self
+    {
+        if ($this->userCertificates->contains($userCertificate)) {
+            $this->userCertificates->removeElement($userCertificate);
+            // set the owning side to null (unless already changed)
+            if ($userCertificate->getUser() === $this) {
+                $userCertificate->setUser(null);
+            }
+        }
+
+        return $this;
     }
 }
