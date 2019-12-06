@@ -13,7 +13,7 @@ class UploaderHelper
     const CERTIFICATE_PATH = 'certificate/';
 
     private $uploadsPath;
-    private $uploadsCertificatePath = '/certificate';
+    private $uploadsCertificatePath = '/certificate/';
 
     public function __construct(string $uploadsPath)
     {
@@ -38,14 +38,14 @@ class UploaderHelper
         return '';
     }
 
-    public function uploadCertificatePDF(UploadedFile $certificate): void
+    public function uploadCertificatePDF(UploadedFile $certificate): string
     {
         $originalFilename = pathinfo($certificate->getClientOriginalName(), PATHINFO_FILENAME);
         $safeFilename = transliterator_transliterate('Any-Latin; Latin-ASCII; [^A-Za-z0-9_] remove; Lower()', $originalFilename);
         $newFilename = $safeFilename . '-' . uniqid() . '.' . $certificate->guessExtension();
 
         $filesystem = new Filesystem();
-        $certificateDir = getcwd() . $this->uploadsCertificatePath . "/test";
+        $certificateDir = getcwd() . $this->uploadsCertificatePath;
 
         if (!$filesystem->exists($certificateDir)) {
             $filesystem->mkdir($certificateDir);
@@ -56,28 +56,19 @@ class UploaderHelper
                 $certificateDir,
                 $newFilename
             );
+            return $newFilename;
         } catch (FileException $e) {
             throw new FileException("Файл небыл загружен. " . $e);
         }
     }
 
-    public function renameDirСertificate($userId): void
+    public function deleteСertificate($certificateName): void
     {
         $filesystem = new Filesystem();
-        $certificateTestDir = getcwd() . $this->uploadsCertificatePath . "/test";
-        $certificateDir = getcwd() . $this->uploadsCertificatePath . "/$userId";
-        if (!$filesystem->exists($certificateDir) && $filesystem->exists($certificateTestDir)) {
-            $filesystem->rename($certificateTestDir, $certificateDir);
-        }
-    }
-
-    public function deleteDirСertificate(): void
-    {
-        $filesystem = new Filesystem();
-        $certificateTestDir = getcwd() . $this->uploadsCertificatePath . "/test";
-        if ($filesystem->exists($certificateTestDir)) {
+        $certificateTest = getcwd() . $this->uploadsCertificatePath . $certificateName;
+        if ($filesystem->exists($certificateTest)) {
             try {
-                $filesystem->remove($certificateTestDir);
+                $filesystem->remove($certificateTest);
             } catch (IOExceptionInterface $exception) {
                 throw new FileException("Файл небыл загружен. " . $exception);
             }

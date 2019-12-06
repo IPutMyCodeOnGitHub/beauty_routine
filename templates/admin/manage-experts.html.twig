@@ -23,7 +23,10 @@
                 <div class="search-form">
                     <form action="" method="post" class="form-inline">
                         <div class="form-group mx-sm-3 mb-2">
-                            <input type="text" class="form-control" name="findExpert" id="findExpert" placeholder="Поиск">
+                            <input type="text" class="form-control" name="findByNameExpert" id="findExpert" placeholder="Имя">
+                        </div>
+                        <div class="form-group mx-sm-3 mb-2">
+                            <input type="text" class="form-control" name="findByEmailExpert" id="findByEmailExpert" placeholder="E-mail">
                         </div>
                         <div class="form-check mx-sm-3 mb-2">
                             <input class="form-check-input" type="checkbox" name="checkActiveExpert" value="" id="checkActiveExpert">
@@ -62,12 +65,12 @@
                                     {{ expert.email }}
                                 </td>
                                 <td>
-                                    {% if ('ROLE_EXPERT' in expert.roles) and ('ROLE_VALID_EXPERT' not in expert.roles)%}
+                                    {% if 'ROLE_INVALID_EXPERT' in expert.roles%}
                                         <span class="badge badge-danger">  не подтверждён </span>
                                     {% endif %}
                                 </td>
                                 <td>
-                                    <a href="{{ asset(expert.getCertificate) }}" class="btn">Сертификат</a>
+                                    <a href="{{ asset(expert.getUserCertificates.get(0).certificate) }}" class="btn">Сертификат</a>
                                 </td>
                                 <td>
                                     <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseCard{{ expert.id }}" aria-expanded="false" aria-controls="collapseCard{{ expert.id }}">

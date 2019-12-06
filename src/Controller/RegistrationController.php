@@ -34,7 +34,7 @@ class RegistrationController extends AbstractController
         $expertForm = $this->createForm(RegistrationExpertFormType::class, $user);
         $expertForm->handleRequest($request);
         if ($expertForm->isSubmitted() && $expertForm->isValid()) {
-            $user->setRoles(["ROLE_EXPERT"]);
+            $user->setRoles([User::ROLE_INVALID_EXPERT]);
             $this->userService->saveForm($expertForm, $user, $passwordEncoder, $uploaderHelper);
             return $this->redirectToRoute('app_login');
         }
@@ -42,7 +42,7 @@ class RegistrationController extends AbstractController
         $userForm = $this->createForm(RegistrationUserFormType::class, $user);
         $userForm->handleRequest($request);
         if ($userForm->isSubmitted() && $userForm->isValid()) {
-            $user->setRoles(["ROLE_USER"]);
+            $user->setRoles([User::ROLE_USER]);
             $this->userService->saveForm($userForm, $user, $passwordEncoder, $uploaderHelper);
             return $this->redirectToRoute('app_login');
         }

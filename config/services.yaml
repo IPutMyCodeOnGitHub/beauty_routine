@@ -28,9 +28,6 @@ services:
     App\Services\UserService:
         arguments: ['@doctrine.orm.entity_manager']
 
-    App\Services\PaginatorService:
-        arguments: ['@knp_paginator']
-
     App\Services\UploaderHelper:
         bind:
             $uploadsPath: '%kernel.project_dir%/public'
