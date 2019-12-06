@@ -95,9 +95,9 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator implements P
         }
 
         $roleUrl = 'profile.user';
-        if (in_array('ROLE_ADMIN', $token->getRoleNames())) {
+        if (in_array(User::ROLE_ADMIN, $token->getRoleNames())) {
             $roleUrl = 'admin.main';
-        } elseif (in_array('ROLE_EXPERT', $token->getRoleNames())) {
+        } elseif (in_array(User::ROLE_EXPERT, $token->getRoleNames())) {
             $roleUrl = 'profile.expert';
         }
 

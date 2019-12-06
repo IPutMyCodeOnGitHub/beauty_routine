@@ -6,6 +6,7 @@ use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\QueryBuilder;
+use Knp\Component\Pager\Paginator;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -37,16 +38,24 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $this->_em->flush();
     }
 
-    public function getQueryBuilderFindByRole($role, $notRole, $firstResult = 0, $maxResult = 10): QueryBuilder
+    public function getQueryBuilderFindByRole($role): QueryBuilder
     {
         $query = $this->createQueryBuilder('u');
-        $query->andwhere($query->expr()->like('u.roles', ':role'), $query->expr()->notLike('u.roles', ':notrole'))
+        $query->andwhere($query->expr()->like('u.roles', ':role'))
             ->setParameter('role', '%'.$role.'%')
-            ->setParameter('notrole', '%'.$notRole.'%')
-            ->orderBy('u.email', 'ASC')
-            ->setFirstResult($firstResult)
-            ->setMaxResults($maxResult);
+            ->orderBy('u.email', 'ASC');
 
         return $query;
+    }
+
+    public function findUserByRolePaginator(string $role, Paginator  $paginator, int $page, int $countObj = 10)
+    {
+        $queryBuilder = $this->getQueryBuilderFindByRole($role);
+
+        return $paginator->paginate(
+            $queryBuilder,
+            $page,
+            $countObj
+        );
     }
 }

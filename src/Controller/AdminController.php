@@ -3,8 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\User;
-use App\Services\PaginatorService;
+use App\Repository\UserRepository;
+use \Knp\Component\Pager\Paginator;
 use App\Services\UserService;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -40,7 +42,7 @@ class AdminController extends AbstractController
     /**
      * @Route("/manage-user/experts", name="experts", methods={"GET"})
      */
-    public function manageExperts(Request $request, UserService $userService, PaginatorService $paginatorService): Response
+    public function manageExperts(Request $request, UserService $userService, PaginatorInterface $paginator): Response
     {
         $entityManager = $this->getDoctrine()->getManager();
 
@@ -51,7 +53,9 @@ class AdminController extends AbstractController
 
         $page = $request->query->getInt('page', 1);
 
-        $experts = $paginatorService->findUserByRolePaginator($entityManager, $page);
+        $experts = $entityManager
+            ->getRepository(User::class)
+            ->findUserByRolePaginator(User::ROLE_INVALID_EXPERT, $paginator, $page);
 
         return $this->render('admin/manage-experts.html.twig', [
             'controller_name' => 'AdminController',
