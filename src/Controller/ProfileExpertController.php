@@ -22,7 +22,6 @@ class ProfileExpertController extends AbstractController
         $user = $this->getUser();
         $userId = $user->getId();
 
-        // symfony/finder
         $filesystem = new Filesystem();
         $path = "/certificate/$userId";
         $certificateDir = getcwd() . $path;

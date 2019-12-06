@@ -36,26 +36,4 @@ class AdminController extends AbstractController
             'controller_name' => 'AdminController',
         ]);
     }
-
-    /**
-     * @Route("/manage-user/experts", name="experts", methods={"GET"})
-     */
-    public function manageExperts(Request $request, UserService $userService, PaginatorService $paginatorService): Response
-    {
-        $entityManager = $this->getDoctrine()->getManager();
-
-        //Todo: make it with AJAX
-        $expertId = $request->query->get('id');
-        $userService->makeExpertValid($expertId, $entityManager);
-        //
-
-        $page = $request->query->getInt('page', 1);
-
-        $experts = $paginatorService->findUserByRolePaginator($entityManager, $page);
-
-        return $this->render('admin/manage-experts.html.twig', [
-            'controller_name' => 'AdminController',
-            'experts' => $experts,
-        ]);
-    }
 }
