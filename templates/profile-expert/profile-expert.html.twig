@@ -32,6 +32,9 @@
 </head>
 <body>
 <div class="container">
+    <div class="col-md-auto align-self-center ">
+        <a href="{{ path('app_logout') }}">Выход</a>
+    </div>
     <div class="row justify-content-center  pt-5">
         <div class="row justify-content-between col-md-6">
             <div class="col-md-auto align-self-center pl-0">
@@ -40,6 +43,7 @@
             <div class="col-md-auto align-self-center ">
                 <a href="{{ path('profile.expert.edit') }}">Редактировать</a>
             </div>
+
         </div>
     </div>
     <div>
@@ -75,7 +79,7 @@
                     </div>
 
                     <div class="es-carousel">
-                        <ul>
+                        <ul style="display:inline;">
                             {% for path in certificatesPaths %}
                             <li>
                                 <iframe src="{{asset(path)}}" data-large="{{asset(path)}}" height="100px" width="200px"></iframe>
