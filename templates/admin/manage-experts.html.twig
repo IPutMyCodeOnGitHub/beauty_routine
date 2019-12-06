@@ -70,7 +70,7 @@
                                     {% endif %}
                                 </td>
                                 <td>
-                                    <a href="{{ asset(expert.getCertificate) }}" class="btn">Сертификат</a>
+                                    <a href="{{ asset(expert.getUserCertificates.get(0).certificate) }}" class="btn">Сертификат</a>
                                 </td>
                                 <td>
                                     <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseCard{{ expert.id }}" aria-expanded="false" aria-controls="collapseCard{{ expert.id }}">

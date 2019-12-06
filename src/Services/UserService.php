@@ -58,14 +58,15 @@ class UserService
         $this->manager->persist($user);
         try {
             $this->manager->flush();
-            if ($newFilename && in_array('ROLE_INVALID_EXPERT', $user->getRoles())) {
+            if ($newFilename!='' && in_array(User::ROLE_INVALID_EXPERT, $user->getRoles())) {
                 $userCertificate = new UserCertificate();
-                $userCertificate->setCertificate($newFilename);
+                $userCertificate->setCertificate('certificate/'. $newFilename);
+                $userCertificate->setUser($user);
                 $this->manager->persist($userCertificate);
                 $this->manager->flush();
             }
         } catch(\Exception $e) {
-            $uploaderHelper->deleteСertificate();
+            $uploaderHelper->deleteСertificate($certificate);
         }
 
     }

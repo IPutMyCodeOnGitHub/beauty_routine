@@ -146,11 +146,6 @@ class User implements UserInterface
         // $this->plainPassword = null;
     }
 
-    public function getCertificate(): string
-    {
-        return UploaderHelper::uploadCertificateWithId($this->id);
-    }
-
     /**
      * @return Collection|UserCertificate[]
      */
