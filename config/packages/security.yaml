@@ -39,5 +39,6 @@ security:
     # Note: Only the *first* access control that matches will be used
     access_control:
         - { path: ^/profile-user, roles: ROLE_USER }
-        - { path: ^/profile-expert, roles: ROLE_EXPERT }
+        - { path: ^/profile-expert, roles: ROLE_VALID_EXPERT}
+        - { path: ^/profile-expert, roles: ROLE_EXPERT}
         - { path: ^/admin, roles: ROLE_ADMIN }

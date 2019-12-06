@@ -1,20 +1,97 @@
-{% extends 'base.html.twig' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Responsive Image Gallery</title>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.3.1/flatly/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/style.css') }}" />
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/img-wrapper-style.css') }}" />
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/elastislide.css') }}" />
+ <noscript>
+        <style>
+            .es-carousel ul{
+                display:block;
+            }
+        </style>
+    </noscript>
+    <script id="img-wrapper-tmpl" type="text/x-jquery-tmpl">
+			<div class="rg-image-wrapper">
+					<div class="rg-image-nav">
+						<a href="#" class="rg-image-nav-prev">Previous Image</a>
+						<a href="#" class="rg-image-nav-next">Next Image</a>
+					</div>
+				<div class="rg-image"></div>
+				<div class="rg-loading"></div>
+				<div class="rg-caption-wrapper">
+					<div class="rg-caption" style="display:none;">
+						<p></p>
+					</div>
+				</div>
+			</div>
+		</script>
+</head>
+<body>
+<div class="container">
+    <div class="row justify-content-center  pt-5">
+        <div class="row justify-content-between col-md-6">
+            <div class="col-md-auto align-self-center pl-0">
+                <h1 class="h3 font-weight-normal align-self-center">Личный профиль</h1>
+            </div>
+            <div class="col-md-auto align-self-center ">
+                <a href="{{ path('profile.expert.edit') }}">Редактировать</a>
+            </div>
+        </div>
+    </div>
+    <div>
 
-{% block title %}Hello ProfileController!{% endblock %}
+        <div class="row justify-content-center pt-4" id="tab">
+            <img class="img avatar" src="{{ asset('/profile-expert-photo/anonim.png') }}" width="130" height="130" alt="">
+        </div>
 
-{% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+        <div class="row justify-content-center">
+            <a href=""  rel="tooltip" title="changePhoto">Изменить фото</a>
+        </div>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code><a href="{{ '/var/www/symfony/src/Controller/ProfileExpertController.php'|file_link(0) }}">src/Controller/ProfileExpertController.php</a></code></li>
-        <li>Your template at <code><a href="{{ '/var/www/symfony/templates/profile-expert/index.html.twig'|file_link(0) }}">templates/profile-expert/index.html.twig</a></code></li>
-    </ul>
+        <div class="tab-content row justify-content-center pt-3" id="tab">
+            {{ name }}
+        </div>
+        <div class="tab-content row justify-content-center" id="tab">
+            {{ email }}
+        </div>
+        <div class="tab-content row justify-content-center" id="tab">
+            {{ id }}
+        </div>
+
+    </div>
+
+    <div class="content">
+        <div id="rg-gallery" class="rg-gallery">
+            <div class="rg-thumbs">
+                <div class="es-carousel-wrapper">
+                    <div class="es-nav">
+                        <span class="es-nav-prev">Previous</span>
+                        <span class="es-nav-next">Next</span>
+                    </div>
+
+                    <div class="es-carousel">
+                        <ul>
+                            {% for path in certificatesPaths %}
+                            <li>
+                                <iframe src="{{asset(path)}}" data-large="{{asset(path)}}" height="100px" width="200px"></iframe>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-{% endblock %}
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script type="text/javascript" src="{{ asset('js/jquery.tmpl.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('js/jquery.easing.1.3.js') }}"></script>
+<script type="text/javascript" src="{{ asset('js/jquery.elastislide.js') }}"></script>
+<script type="text/javascript" src="{{ asset('js/gallery.js') }}"></script>
+</body>
+</html>
