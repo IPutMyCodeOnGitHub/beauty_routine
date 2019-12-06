@@ -38,7 +38,11 @@
                 {{ form_start(registrationExpertForm) }}
                 {{ form_row(registrationExpertForm.name) }}
                 {{ form_row(registrationExpertForm.email) }}
-                {{ form_row(registrationExpertForm.certificate) }}
+                {{ form_row(registrationExpertForm.certificate, {
+                    attr: {
+                        'placeholder': 'Выберите файл формата PDF'
+                    }
+                }) }}
                 {{ form_row(registrationExpertForm.plainPassword) }}
                 {{ form_row(registrationExpertForm.agreeTerms) }}
                 <button type="submit" class="btn btn-primary">Зарегистрироваться</button>

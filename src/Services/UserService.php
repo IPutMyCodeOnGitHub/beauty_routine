@@ -20,7 +20,24 @@ class UserService
         $this->manager = $manager;
     }
 
-    public function saveForm(Form $form, User $user, UserPasswordEncoderInterface $passwordEncoder)
+    public function makeExpertValid($expertId, $entityManager):void
+    {
+        if ($expertId) {
+            /**
+             * @var User $user
+             */
+            $user = $entityManager
+                ->getRepository(User::class)
+                ->find($expertId);
+            if ($user == null) {
+                return;
+            }
+            $user->setRoles(['ROLE_VALID_EXPERT']);
+            $entityManager->flush();
+        }
+    }
+
+    public function saveForm(Form $form, User $user, UserPasswordEncoderInterface $passwordEncoder, UploaderHelper $uploaderHelper):void
     {
         $user->setPassword(
             $passwordEncoder->encodePassword(
@@ -32,61 +49,18 @@ class UserService
         if (array_key_exists('certificate', $form->all())) {
             if ($form['certificate']->getData() !== null) {
                 $certificate = $form['certificate']->getData();
-                $this->saveСertificate($certificate, $user->getId());
+                $uploaderHelper->uploadCertificatePDF($certificate);
             }
         }
 
         $this->manager->persist($user);
         try {
             $this->manager->flush();
-            $this->renameDirСertificate($user->getId());
+            $uploaderHelper->renameDirСertificate($user->getId());
         } catch(\Exception $e) {
-            $this->deleteDirСertificate();
+            $uploaderHelper->deleteDirСertificate();
         }
 
     }
-    private function renameDirСertificate($userId): void
-    {
-        $filesystem = new Filesystem();
-        $certificateTestDir = getcwd() . "/certificate/test";
-        $certificateDir = getcwd() . "/certificate/$userId";
-        if (!$filesystem->exists($certificateDir) && $filesystem->exists($certificateTestDir)) {
-            $filesystem->rename($certificateTestDir, $certificateDir);
-        }
-    }
 
-    private function deleteDirСertificate()
-    {
-        $filesystem = new Filesystem();
-        $certificateTestDir = getcwd() . "/certificate/test";
-        if ($filesystem->exists($certificateTestDir)) {
-            try {
-                $filesystem->remove($certificateTestDir);
-            } catch (IOExceptionInterface $exception) {
-                throw new FileException("Файл небыл загружен. " . $exception);
-            }
-        }
-    }
-
-    private function saveСertificate($certificate, $userId){
-        $originalFilename = pathinfo($certificate->getClientOriginalName(), PATHINFO_FILENAME);
-        $safeFilename = transliterator_transliterate('Any-Latin; Latin-ASCII; [^A-Za-z0-9_] remove; Lower()', $originalFilename);
-        $newFilename = $safeFilename . '-' . uniqid() . '.' . $certificate->guessExtension();
-
-        $filesystem = new Filesystem();
-        $certificateDir = getcwd() . "/certificate/test";
-
-        if (!$filesystem->exists($certificateDir)) {
-            $filesystem->mkdir($certificateDir);
-        }
-
-        try {
-            $certificate->move(
-                    $certificateDir,
-                    $newFilename
-                );
-        } catch (FileException $e) {
-            throw new FileException("Файл небыл загружен. " . $e);
-        }
-    }
 }

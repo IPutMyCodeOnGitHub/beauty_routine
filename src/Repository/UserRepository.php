@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -34,5 +35,18 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $user->setPassword($newEncodedPassword);
         $this->_em->persist($user);
         $this->_em->flush();
+    }
+
+    public function getQueryBuilderFindByRole($role, $notRole, $firstResult = 0, $maxResult = 10): QueryBuilder
+    {
+        $query = $this->createQueryBuilder('u');
+        $query->andwhere($query->expr()->like('u.roles', ':role'), $query->expr()->notLike('u.roles', ':notrole'))
+            ->setParameter('role', '%'.$role.'%')
+            ->setParameter('notrole', '%'.$notRole.'%')
+            ->orderBy('u.email', 'ASC')
+            ->setFirstResult($firstResult)
+            ->setMaxResults($maxResult);
+
+        return $query;
     }
 }
