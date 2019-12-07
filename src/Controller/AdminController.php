@@ -28,13 +28,13 @@ class AdminController extends AbstractController
     }
 
     /**
-     * @Route("/manage-user", name="users")
+     * @Route("/manage-user", name="users", methods={"GET"})
      */
     public function manageUser():Response
     {
         //ToDo: Block can be used for present a statistic in content area
 
-        return $this->render('admin/manage-users.html.twig', [
+        return $this->render('admin/manage-users/manage-users.html.twig', [
             'controller_name' => 'AdminController',
         ]);
     }
@@ -56,7 +56,7 @@ class AdminController extends AbstractController
     }
 
     /**
-     * @Route("/manage-user/experts", name="experts", methods={"GET"})
+     * @Route("/manage-user/experts", name="manage.experts", methods={"GET"})
      */
     public function manageExperts(Request $request, PaginatorInterface $paginator): Response
     {
@@ -66,14 +66,72 @@ class AdminController extends AbstractController
         $findByEmailExpert = $request->query->get('findByEmailExpert');
         $checkActiveExpert = $request->query->get('checkActiveExpert');
         $page = $request->query->getInt('page', 1);
-//dd($request->query->all(), $findByNameExpert, $findByEmailExpert, $checkActiveExpert, $page);
+
+        if ($findByNameExpert || $findByEmailExpert || $checkActiveExpert) {
+            $page = 1;
+            $request->query->remove('page');
+        }
+
         $experts = $entityManager
             ->getRepository(User::class)
             ->findSearchExpertPaginator($paginator, $findByNameExpert, $findByEmailExpert, $checkActiveExpert, $page);
 
-        return $this->render('admin/manage-experts.html.twig', [
+        return $this->render('admin/manage-users/experts/manage-experts.html.twig', [
             'controller_name' => 'AdminController',
             'experts' => $experts,
+        ]);
+    }
+
+    /**
+     * @Route("/manage-user/users", name="manage.users", methods={"GET"})
+     */
+    public function manageUsers(Request $request, PaginatorInterface $paginator): Response
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+
+        $findByNameUser = $request->query->get('findByNameUser');
+        $findByEmailUser = $request->query->get('findByEmailUser');
+        $checkValidUser = $request->query->get('checkValidUser');
+        $page = $request->query->getInt('page', 1);
+
+        if ($findByNameUser || $findByEmailUser || $checkValidUser) {
+            $page = 1;
+            $request->query->remove('page');
+        }
+
+        $users = $entityManager
+            ->getRepository(User::class)
+            ->findSearchUserPaginator($paginator, $findByNameUser, $findByEmailUser, $checkValidUser, $page);
+
+        return $this->render('admin/manage-users/user/manage-users.html.twig', [
+            'controller_name' => 'AdminController',
+            'users' => $users,
+        ]);
+    }
+
+    /**
+     * @Route("/manage-user/admins", name="manage.admins", methods={"GET"})
+     */
+    public function manageAdmins(Request $request, PaginatorInterface $paginator): Response
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+
+        $findByNameAdmin = $request->query->get('findByNameAdmin');
+        $findByEmailAdmin = $request->query->get('findByEmailAdmin');
+        $page = $request->query->getInt('page', 1);
+
+        if ($findByNameAdmin || $findByEmailAdmin) {
+            $page = 1;
+            $request->query->remove('page');
+        }
+
+        $admins = $entityManager
+            ->getRepository(User::class)
+            ->findSearchAdminsPaginator($paginator, $findByNameAdmin, $findByEmailAdmin, $page);
+
+        return $this->render('admin/manage-users/admin/manage-admin.html.twig', [
+            'controller_name' => 'AdminController',
+            'admins' => $admins,
         ]);
     }
 

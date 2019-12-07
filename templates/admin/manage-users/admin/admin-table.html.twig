@@ -1,0 +1,27 @@
+<h4>Всего администраторов: ({{ admins.getTotalItemCount }})</h4>
+<table  class="table table-responsive pt-3">
+    <tr>
+        <th scope="col">#</th>
+        <th scope="col">Id</th>
+        <th scope="col">Name</th>
+        <th scope="col">Email</th>
+    </tr>
+    {% for admin in admins %}
+        <tr>
+            <th scope="row">
+                {{ loop.index }}
+            </th>
+            <td>
+                {{ admin.id }}
+            </td>
+            <td>
+                {{ admin.name }}
+            </td>
+            <td>
+                {{ admin.email }}
+            </td>
+        </tr>
+    {% endfor %}
+
+</table>
+{{ knp_pagination_render(admins) }}

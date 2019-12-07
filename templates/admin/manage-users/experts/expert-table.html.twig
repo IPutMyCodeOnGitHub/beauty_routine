@@ -30,7 +30,9 @@
                 {% endif %}
             </td>
             <td>
+                {% if  expert.getUserCertificates.get(0) %}
                 <a href="{{ asset(expert.getUserCertificates.get(0).certificate) }}" class="btn">Сертификат</a>
+                {% endif %}
             </td>
             <td>
                 <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseCard{{ expert.id }}" aria-expanded="false" aria-controls="collapseCard{{ expert.id }}">
