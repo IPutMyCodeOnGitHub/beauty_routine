@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Регистрация{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="row justify-content-center  pt-5">
+            <div class="row justify-content-between col-md-6">
+                <p>{{ message }}</p>
+                <a href="{{ path('app_login') }}">Войти</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -54,6 +54,11 @@ class User implements UserInterface
      */
     private $userCertificates;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $verifyCode;
+
     public function __construct()
     {
         $this->userCertificates = new ArrayCollection();
@@ -173,6 +178,18 @@ class User implements UserInterface
                 $userCertificate->setUser(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getVerifyCode(): ?string
+    {
+        return $this->verifyCode;
+    }
+
+    public function setVerifyCode(?string $verifyCode): self
+    {
+        $this->verifyCode = $verifyCode;
 
         return $this;
     }
