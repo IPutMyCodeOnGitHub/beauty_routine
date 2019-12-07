@@ -57,7 +57,7 @@ class RegistrationController extends AbstractController
             $this->userService->emailVerification($user);
             return $this->redirectToRoute('app_login');
         }
-
+        //TODO: to redirect users not to login, because they don't have e-mail verification yet
         return $this->render('registration/register.html.twig', [
             'registrationUserForm' => $userForm->createView(),
             'registrationExpertForm' => $expertForm->createView(),
