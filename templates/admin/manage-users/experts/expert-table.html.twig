@@ -47,7 +47,9 @@
             <td colspan="8">
                 <div class="collapse" id="collapseCard{{ expert.id }}">
                     <div class="card card-body">
-                        <button onclick="validExpert({{ expert.id }})" class="btn">Подтвердить эксперта</button>
+                        {% if 'ROLE_INVALID_EXPERT' in expert.roles%}
+                            <button onclick="validExpert({{ expert.id }})" class="btn">Подтвердить эксперта</button>
+                        {% endif %}
                     </div>
                 </div>
             </td>

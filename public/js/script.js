@@ -17,18 +17,24 @@ function validExpert(id) {
     }).done(function (result) {
         if ((result == '0') || (result != id) ) {
             $('div#collapseCard'+id).append(
-                '<label class="pl-2 pr-2">Произошла ошибка</label>');
+                '<div class="alert alert-danger" role="alert">\n' +
+                    'Произошла ошибка' +
+                '</div>');
         } else {
             $('div#collapseCard'+id).html(
                 '<div class="card card-body">' +
-                '<label class="pl-2 pr-2">Эксперт подтверждён</label>' +
+                    '<div class="alert alert-success" role="alert">' +
+                        'Эксперт подтверждён' +
+                    '</div>' +
                 '</div>');
             $('.invalid' + id).remove();
         }
         console.log('in success ' + result);
     }).fail(function (textStatus,errorThrown) {
         $('div#collapseCard'+id).append(
-            '<label class="pl-2 pr-2">Произошла ошибка</label>');
+            '<div class="alert alert-danger" role="alert">\n' +
+                'Произошла ошибка' +
+            '</div>');
         console.log(textStatus + errorThrown);
     });
 }
