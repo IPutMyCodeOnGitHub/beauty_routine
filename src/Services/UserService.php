@@ -21,21 +21,14 @@ class UserService
         $this->manager = $manager;
     }
 
-    public function makeExpertValid($expertId, $entityManager):void
+    public function makeExpertValid(User $user): int
     {
-        if ($expertId) {
-            /**
-             * @var User $user
-             */
-            $user = $entityManager
-                ->getRepository(User::class)
-                ->find($expertId);
-            if ($user == null) {
-                return;
-            }
+        if ($user != null) {
             $user->setRoles([User::ROLE_EXPERT]);
-            $entityManager->flush();
+            $this->manager->flush();
+            return $user->getId();
         }
+        return 0;
     }
 
     public function saveForm(Form $form, User $user, UserPasswordEncoderInterface $passwordEncoder, UploaderHelper $uploaderHelper):void

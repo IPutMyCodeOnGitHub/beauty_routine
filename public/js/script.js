@@ -12,12 +12,23 @@ $(document).ready(function() {
 function validExpert(id) {
     $.ajax({
         type: "POST",
-        url: '/admin/manage-user/experts/validation',
-        data: {'id': id},
+        url: '/admin/experts/' + id + '/validation',
         dataType: 'html',
-    }).done(function (html) {
-        alert('Success' + html);
+    }).done(function (result) {
+        if ((result == '0') || (result != id) ) {
+            $('div#collapseCard'+id).append(
+                '<label class="pl-2 pr-2">Произошла ошибка</label>');
+        } else {
+            $('div#collapseCard'+id).html(
+                '<div class="card card-body">' +
+                '<label class="pl-2 pr-2">Эксперт подтверждён</label>' +
+                '</div>');
+            $('.invalid' + id).remove();
+        }
+        console.log('in success ' + result);
     }).fail(function (textStatus,errorThrown) {
+        $('div#collapseCard'+id).append(
+            '<label class="pl-2 pr-2">Произошла ошибка</label>');
         console.log(textStatus + errorThrown);
     });
 }

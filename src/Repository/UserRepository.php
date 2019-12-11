@@ -38,22 +38,18 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $this->_em->flush();
     }
 
-    public function getQueryBuilderSearchExpert($nameExpert, $emailExpert, $activeExpert): QueryBuilder
+    public function getQueryBuilderSearchExpert($search, $active): QueryBuilder
     {
         $query = $this->createQueryBuilder('u');
         $query->orderBy('u.email', 'ASC');
 
-        if ($nameExpert) {
-            $query->andwhere($query->expr()->like('u.name', ':name'))
-                ->setParameter('name', '%'.$nameExpert.'%');
+        if ($search) {
+            $query->orWhere($query->expr()->like('u.name', ':search'))
+                ->orWhere($query->expr()->like('u.email', ':search'))
+                ->setParameter('search', '%'.$search.'%');
         }
 
-        if ($emailExpert) {
-            $query->andwhere($query->expr()->like('u.email',':email'))
-                ->setParameter('email', '%'.$emailExpert.'%');
-        }
-
-        if ($activeExpert) {
+        if ($active) {
             $query->andwhere($query->expr()->like('u.roles', ':role'))
                 ->setParameter('role', '%'.User::ROLE_INVALID_EXPERT.'%');
         } else {
@@ -65,25 +61,23 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         return $query;
     }
 
-    public function getQueryBuilderSearchUser($nameUser, $emailUser, $activeUser): QueryBuilder
+    public function getQueryBuilderSearchUser($search, $valid): QueryBuilder
     {
         $query = $this->createQueryBuilder('u');
         $query->andwhere($query->expr()->like('u.roles', ':role'))
             ->setParameter('role', '%'.User::ROLE_USER.'%')
             ->orderBy('u.email', 'ASC');
 
-        if ($nameUser) {
-            $query->andwhere($query->expr()->like('u.name', ':name'))
-                ->setParameter('name', '%'.$nameUser.'%');
-        }
-
-        if ($emailUser) {
-            $query->andwhere($query->expr()->like('u.email',':email'))
-                ->setParameter('email', '%'.$emailUser.'%');
+        if ($search) {
+            $query->andwhere($query->expr()->orX(
+                $query->expr()->like('u.name', ':search'),
+                $query->expr()->like('u.email',':search')
+                ))
+                ->setParameter('search', '%'.$search.'%');
         }
 
         //Todo when authorization by email ready
-        if ($activeUser) {
+        if ($valid) {
 //            $query->andWhere($query->expr()->isNull('u.valid'));
         } else {
 //            $query->andWhere($query->expr()->isNotNull('u.valid'));
@@ -92,29 +86,27 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         return $query;
     }
 
-    public function getQueryBuilderSearchAdmin($nameAdmin, $emailAdmin): QueryBuilder
+    public function getQueryBuilderSearchAdmin($search): QueryBuilder
     {
         $query = $this->createQueryBuilder('u');
         $query->andwhere($query->expr()->like('u.roles', ':role'))
             ->setParameter('role', '%'.User::ROLE_ADMIN.'%')
             ->orderBy('u.email', 'ASC');
 
-        if ($nameAdmin) {
-            $query->andwhere($query->expr()->like('u.name', ':name'))
-                ->setParameter('name', '%'.$nameAdmin.'%');
-        }
-
-        if ($emailAdmin) {
-            $query->andwhere($query->expr()->like('u.email',':email'))
-                ->setParameter('email', '%'.$emailAdmin.'%');
+        if ($search) {
+            $query->andWhere(
+                $query->expr()->orX(
+                    $query->expr()->like('u.name', ':search'),
+                    $query->expr()->like('u.email',':search')))
+                ->setParameter('search', '%'.$search.'%');
         }
 
         return $query;
     }
 
-    public function findSearchExpertPaginator(Paginator  $paginator, ?string $nameExpert, ?string $emailExpert, ?string $activeExpert, int $page = 1,  int $countObj = 10)
+    public function findSearchExpertPaginator(Paginator  $paginator, ?string $search, ?string $active, int $page = 1,  int $countObj = 10)
     {
-        $queryBuilder = $this->getQueryBuilderSearchExpert($nameExpert, $emailExpert, $activeExpert);
+        $queryBuilder = $this->getQueryBuilderSearchExpert($search, $active);
 
         return $paginator->paginate(
             $queryBuilder,
@@ -123,9 +115,9 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         );
     }
 
-    public function findSearchUserPaginator(Paginator  $paginator, ?string $nameUser, ?string $emailUser, ?string $activeUser, int $page = 1,  int $countObj = 10)
+    public function findSearchUserPaginator(Paginator  $paginator, ?string $search, ?string $valid, int $page = 1,  int $countObj = 10)
     {
-        $queryBuilder = $this->getQueryBuilderSearchUser($nameUser, $emailUser, $activeUser);
+        $queryBuilder = $this->getQueryBuilderSearchUser($search, $valid);
 
         return $paginator->paginate(
             $queryBuilder,
@@ -134,9 +126,9 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         );
     }
 
-    public function findSearchAdminsPaginator(Paginator  $paginator, ?string $nameAdmin, ?string $emailAdmin, int $page = 1,  int $countObj = 10)
+    public function findSearchAdminsPaginator(Paginator  $paginator, ?string $search, int $page = 1,  int $countObj = 10)
     {
-        $queryBuilder = $this->getQueryBuilderSearchAdmin($nameAdmin, $emailAdmin);
+        $queryBuilder = $this->getQueryBuilderSearchAdmin($search);
 
         return $paginator->paginate(
             $queryBuilder,

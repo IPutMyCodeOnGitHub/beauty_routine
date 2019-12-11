@@ -37,7 +37,6 @@ class ProfileExpertController extends AbstractController
             }
         }
         return $this->render('profile-expert/profile-expert.html.twig', [
-            'controller_name' => 'ProfileExpertController',
             'name' => $user->getName(),
             'email' => $user->getEmail(),
             'id' => 'userId = ' . $userId,
@@ -53,7 +52,6 @@ class ProfileExpertController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
         return $this->render('profile-expert/profile-expert-edit.html.twig', [
-            'controller_name' => 'ProfileExpertController',
             'name' => $user->getName(),
             'email' => $user->getEmail(),
         ]);

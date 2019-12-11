@@ -11,14 +11,10 @@
 
             <div class="col-md-9">
                 <div class="search-form">
-                    <form action="{{ path('admin.manage.admins') }}" method="get" class="form-inline">
+                    <form action="{{ path('admin.admins') }}" method="get" class="form-inline">
                         <div class="form-group mx-sm-3 mb-2">
-                            <input type="text" class="form-control" name="findByNameAdmin" id="findByNameAdmin" placeholder="Имя"
-                                    {% if (app.request.get('findByNameAdmin')) %} value="{{ app.request.get('findByNameAdmin') }}" {% endif %}>
-                        </div>
-                        <div class="form-group mx-sm-3 mb-2">
-                            <input type="text" class="form-control" name="findByEmailAdmin" id="findByEmailAdmin" placeholder="E-mail"
-                                    {% if (app.request.get('findByEmailAdmin')) %} value="{{ app.request.get('findByEmailAdmin') }}" {% endif %}>
+                            <input type="text" class="form-control" name="search" id="findByNameAdmin" placeholder="Имя или e-mail"
+                                    {% if (app.request.get('search')) %} value="{{ app.request.get('search') }}" {% endif %}>
                         </div>
                         <button type="submit" class="btn btn-primary mb-2">Поиск</button>
                     </form>

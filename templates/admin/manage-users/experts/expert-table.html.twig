@@ -26,7 +26,7 @@
             </td>
             <td>
                 {% if 'ROLE_INVALID_EXPERT' in expert.roles%}
-                    <span class="badge badge-danger">  не подтверждён </span>
+                    <span class="badge badge-danger invalid{{ expert.id }}">  не подтверждён </span>
                 {% endif %}
             </td>
             <td>
