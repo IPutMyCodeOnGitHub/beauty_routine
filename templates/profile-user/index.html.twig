@@ -1,20 +1,22 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello ProfileController!{% endblock %}
+{% block title %}Здравствуй!{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+    {% include 'profile-user/navigation.html.twig' %}
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code><a href="{{ '/var/www/symfony/src/Controller/ProfileUserController.php'|file_link(0) }}">src/Controller/ProfileUserController.php</a></code></li>
-        <li>Your template at <code><a href="{{ '/var/www/symfony/templates/profile-user/index.html.twig'|file_link(0) }}">templates/profile-user/index.html.twig</a></code></li>
-    </ul>
-</div>
+    <div class="container pt-4">
+        <div class="row">
+            <div class="content row col-md-10 justify-content-around">
+                <a href="">Все программы</a>
+                <a href="">Все программы</a>
+                <a href="">Все программы</a>
+            </div>
+            <div class="notifies col-md-2">
+                notifications
+            </div>
+        </div>
+    </div>
+
 {% endblock %}

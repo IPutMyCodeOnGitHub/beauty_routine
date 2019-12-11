@@ -72,3 +72,7 @@ nav.admin-nav>ul>li>a.nav-link.active{
     border-bottom: 4px solid #b7b3b3;
 }
 /*admin*/
+
+.notifies{
+    border-left: 1px solid #262b2b;
+}
