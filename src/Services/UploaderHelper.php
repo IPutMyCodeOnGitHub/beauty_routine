@@ -2,9 +2,9 @@
 
 namespace App\Services;
 
+use App\Entity\UserCertificate;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
@@ -13,29 +13,10 @@ class UploaderHelper
     const CERTIFICATE_PATH = 'certificate/';
 
     private $uploadsPath;
-    private $uploadsCertificatePath = '/certificate/';
 
     public function __construct(string $uploadsPath)
     {
         $this->uploadsPath = $uploadsPath;
-    }
-
-    static public function uploadCertificateWithId($expertId): string
-    {
-        $finder = new Finder();
-        $dir = UploaderHelper::CERTIFICATE_PATH . $expertId;
-        $finder->files()->in($dir)->name('*.pdf');
-
-        //Todo: 404
-        if (!$finder->hasResults()) {
-            return '';
-        }
-
-        foreach ($finder as $file) {
-            return UploaderHelper::CERTIFICATE_PATH . $expertId . '/' . $file->getFilename();
-        }
-
-        return '';
     }
 
     public function uploadCertificatePDF(UploadedFile $certificate): string
@@ -45,7 +26,7 @@ class UploaderHelper
         $newFilename = $safeFilename . '-' . uniqid() . '.' . $certificate->guessExtension();
 
         $filesystem = new Filesystem();
-        $certificateDir = getcwd() . $this->uploadsCertificatePath;
+        $certificateDir = $this->uploadsPath . UploaderHelper::CERTIFICATE_PATH;
 
         if (!$filesystem->exists($certificateDir)) {
             $filesystem->mkdir($certificateDir);
@@ -58,22 +39,21 @@ class UploaderHelper
             );
             return $newFilename;
         } catch (FileException $e) {
-            throw new FileException("Файл небыл загружен. " . $e);
+            throw new FileException("File was not uploaded." . $e);
         }
     }
 
-    public function deleteСertificate($certificateName): void
+    public function deleteСertificate(UserCertificate $certificateName): void
     {
         $filesystem = new Filesystem();
-        $certificateTest = getcwd() . $this->uploadsCertificatePath . $certificateName;
+        $certificateTest = $this->uploadsPath . $certificateName->getCertificate();
         if ($filesystem->exists($certificateTest)) {
             try {
                 $filesystem->remove($certificateTest);
             } catch (IOExceptionInterface $exception) {
-                throw new FileException("Файл небыл загружен. " . $exception);
+                throw new FileException("File was not uploaded." . $exception);
             }
         }
     }
-
 
 }

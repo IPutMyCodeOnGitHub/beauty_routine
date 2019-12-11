@@ -4,7 +4,6 @@ namespace App\Controller\Admin;
 
 use App\Entity\User;
 use App\Services\UserService;
-use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -48,7 +47,7 @@ class AdminController extends AbstractController
     /**
      * @Route("/experts", name="experts", methods={"GET"})
      */
-    public function manageExperts(Request $request, PaginatorInterface $paginator): Response
+    public function manageExperts(Request $request): Response
     {
         $entityManager = $this->getDoctrine()->getManager();
 
@@ -63,7 +62,7 @@ class AdminController extends AbstractController
 
         $experts = $entityManager
             ->getRepository(User::class)
-            ->findSearchExpertPaginator($paginator, $search, $active, $page);
+            ->findSearchExpertPaginator($search, $active, $page);
 
         return $this->render('admin/manage-users/experts/manage-experts.html.twig', [
             'experts' => $experts,
@@ -73,7 +72,7 @@ class AdminController extends AbstractController
     /**
      * @Route("/users", name="users", methods={"GET"})
      */
-    public function manageUsers(Request $request, PaginatorInterface $paginator): Response
+    public function manageUsers(Request $request): Response
     {
         $entityManager = $this->getDoctrine()->getManager();
 
@@ -88,7 +87,7 @@ class AdminController extends AbstractController
 
         $users = $entityManager
             ->getRepository(User::class)
-            ->findSearchUserPaginator($paginator, $search, $valid, $page);
+            ->findSearchUserPaginator($search, $valid, $page);
 
         return $this->render('admin/manage-users/user/manage-users.html.twig', [
             'users' => $users,
@@ -98,7 +97,7 @@ class AdminController extends AbstractController
     /**
      * @Route("/admins", name="admins", methods={"GET"})
      */
-    public function manageAdmins(Request $request, PaginatorInterface $paginator): Response
+    public function manageAdmins(Request $request): Response
     {
         $entityManager = $this->getDoctrine()->getManager();
 
@@ -112,7 +111,7 @@ class AdminController extends AbstractController
 
         $admins = $entityManager
             ->getRepository(User::class)
-            ->findSearchAdminsPaginator($paginator, $search, $page);
+            ->findSearchAdminsPaginator($search, $page);
 
         return $this->render('admin/manage-users/admin/manage-admin.html.twig', [
             'admins' => $admins,

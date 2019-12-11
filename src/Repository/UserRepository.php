@@ -11,17 +11,13 @@ use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-/**
- * @method User|null find($id, $lockMode = null, $lockVersion = null)
- * @method User|null findOneBy(array $criteria, array $orderBy = null)
- * @method User[]    findAll()
- * @method User[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
- */
 class UserRepository extends ServiceEntityRepository implements PasswordUpgraderInterface
 {
-    public function __construct(ManagerRegistry $registry)
+    private $paginator;
+    public function __construct(ManagerRegistry $registry, Paginator  $paginator)
     {
         parent::__construct($registry, User::class);
+        $this->paginator = $paginator;
     }
 
     /**
@@ -38,7 +34,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $this->_em->flush();
     }
 
-    public function getQueryBuilderSearchExpert($search, $active): QueryBuilder
+    public function getQueryBuilderSearchExpert(?string $search, ?bool $active): QueryBuilder
     {
         $query = $this->createQueryBuilder('u');
         $query->orderBy('u.email', 'ASC');
@@ -61,7 +57,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         return $query;
     }
 
-    public function getQueryBuilderSearchUser($search, $valid): QueryBuilder
+    public function getQueryBuilderSearchUser(?string $search, ?bool $valid): QueryBuilder
     {
         $query = $this->createQueryBuilder('u');
         $query->andwhere($query->expr()->like('u.roles', ':role'))
@@ -86,7 +82,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         return $query;
     }
 
-    public function getQueryBuilderSearchAdmin($search): QueryBuilder
+    public function getQueryBuilderSearchAdmin(?string $search): QueryBuilder
     {
         $query = $this->createQueryBuilder('u');
         $query->andwhere($query->expr()->like('u.roles', ':role'))
@@ -104,33 +100,33 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         return $query;
     }
 
-    public function findSearchExpertPaginator(Paginator  $paginator, ?string $search, ?string $active, int $page = 1,  int $countObj = 10)
+    public function findSearchExpertPaginator(?string $search, ?bool $active, int $page = 1,  int $countObj = 10)
     {
         $queryBuilder = $this->getQueryBuilderSearchExpert($search, $active);
 
-        return $paginator->paginate(
+        return $this->paginator->paginate(
             $queryBuilder,
             $page,
             $countObj
         );
     }
 
-    public function findSearchUserPaginator(Paginator  $paginator, ?string $search, ?string $valid, int $page = 1,  int $countObj = 10)
+    public function findSearchUserPaginator(?string $search, ?bool $valid, int $page = 1,  int $countObj = 10)
     {
         $queryBuilder = $this->getQueryBuilderSearchUser($search, $valid);
 
-        return $paginator->paginate(
+        return $this->paginator->paginate(
             $queryBuilder,
             $page,
             $countObj
         );
     }
 
-    public function findSearchAdminsPaginator(Paginator  $paginator, ?string $search, int $page = 1,  int $countObj = 10)
+    public function findSearchAdminsPaginator(?string $search, int $page = 1,  int $countObj = 10)
     {
         $queryBuilder = $this->getQueryBuilderSearchAdmin($search);
 
-        return $paginator->paginate(
+        return $this->paginator->paginate(
             $queryBuilder,
             $page,
             $countObj

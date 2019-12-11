@@ -6,10 +6,7 @@ namespace App\Services;
 use App\Entity\User;
 use App\Entity\UserCertificate;
 use Doctrine\Common\Persistence\ObjectManager;
-use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
-use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Form\Form;
-use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class UserService
@@ -41,25 +38,28 @@ class UserService
         );
 
         $newFilename = "";
-        if (array_key_exists('certificate', $form->all())) {
+        $userCertificate = null;
+        if (array_key_exists('certificate', $form->all()) && in_array(User::ROLE_INVALID_EXPERT, $user->getRoles())) {
             if ($form['certificate']->getData() !== null) {
                 $certificate = $form['certificate']->getData();
                 $newFilename = $uploaderHelper->uploadCertificatePDF($certificate);
+                $userCertificate = new UserCertificate();
+                $userCertificate->setCertificate('certificate/'. $newFilename);
             }
         }
 
         $this->manager->persist($user);
         try {
             $this->manager->flush();
-            if ($newFilename!='' && in_array(User::ROLE_INVALID_EXPERT, $user->getRoles())) {
-                $userCertificate = new UserCertificate();
-                $userCertificate->setCertificate('certificate/'. $newFilename);
+            if (($newFilename != '') && ($userCertificate != null)) {
                 $userCertificate->setUser($user);
                 $this->manager->persist($userCertificate);
                 $this->manager->flush();
             }
         } catch(\Exception $e) {
-            $uploaderHelper->deleteСertificate($certificate);
+            if ($userCertificate != null) {
+                $uploaderHelper->deleteСertificate($userCertificate);
+            }
         }
 
     }
