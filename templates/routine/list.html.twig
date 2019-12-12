@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container">
+        <div class="row flex-column flex-sm-row mt-4">
+            <div class="col-md-3">
+                {% include('routine/left-panel.html.twig') %}
+            </div>
+            <div class="col-md-9">
+                <table  class="table table-responsive pt-3">
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Id</th>
+                        <th scope="col">Тип</th>
+                        <th scope="col">Цикл</th>
+                        <th scope="col">Статус</th>
+                        <th scope="col">Редактирование</th>
+                        <th scope="col">Удаление</th>
+                    </tr>
+                    {% for routine in routines %}
+                        <tr>
+                            <th scope="col">{{loop.index}}</th>
+                            <td>{{ routine.id }}</td>
+                            <td>{{ routine.type.type }}</td>
+                            <td>{{ routine.cycle }}</td>
+                            <td>{{ routine.status }}</td>
+                            <td><a href="{{ path('routine.edit', {'id' : routine.id}) }}" class="btn btn-primary">Редактировать</a></td>
+                            <td><a href="#">Удалить</a></td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

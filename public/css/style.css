@@ -76,3 +76,8 @@ nav.admin-nav>ul>li>a.nav-link.active{
 .notifies{
     border-left: 1px solid #262b2b;
 }
+
+.order-value{
+    background: inherit;
+    border: none;
+}

@@ -52,9 +52,15 @@ class User implements UserInterface
      */
     private $userCertificates;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Routine", mappedBy="user", orphanRemoval=true)
+     */
+    private $routines;
+
     public function __construct()
     {
         $this->userCertificates = new ArrayCollection();
+        $this->routines = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -150,6 +156,37 @@ class User implements UserInterface
             // set the owning side to null (unless already changed)
             if ($userCertificate->getUser() === $this) {
                 $userCertificate->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Routine[]
+     */
+    public function getRoutines(): Collection
+    {
+        return $this->routines;
+    }
+
+    public function addRoutine(Routine $routine): self
+    {
+        if (!$this->routines->contains($routine)) {
+            $this->routines[] = $routine;
+            $routine->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRoutine(Routine $routine): self
+    {
+        if ($this->routines->contains($routine)) {
+            $this->routines->removeElement($routine);
+            // set the owning side to null (unless already changed)
+            if ($routine->getUser() === $this) {
+                $routine->setUser(null);
             }
         }
 

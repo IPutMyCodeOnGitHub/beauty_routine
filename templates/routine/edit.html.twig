@@ -1,0 +1,74 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container">
+        <div class="row flex-column flex-sm-row mt-4">
+            <div class="col-md-3">
+                {% include('routine/left-panel.html.twig') %}
+            </div>
+            <div class="col-md-9">
+                <h2 class="pt-4 pb-4">
+                    <a data-toggle="collapse" href="#routineForm" aria-expanded="true" aria-controls="routineForm">
+                        Редактирование типа программы
+                    </a>
+                </h2>
+                <div class="collapse show" id="routineForm">
+                    <div class="shadow-sm p-3 mb-5 bg-white rounded">
+                        {{ form_start(form) }}
+                        {{ form_widget(form) }}
+                        <div class="form-group">
+                            <label class="required" for="routine_form_type">Количество дней в программе: </label>
+                            <input class="order-value" type="text" name="routine_form[cycle]" value="{{ days.count }}" disabled>
+                        </div>
+                        <button type="submit" class="btn-primary btn">Сохранить</button>
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+
+
+                <h2 class="pt-4 pb-4">
+                    <a data-toggle="collapse" href="#routineDayForm" aria-expanded="true" aria-controls="routineDayForm">
+                        Добавление дней
+                    </a>
+                </h2>
+
+                <div class="collapse show" id="routineDayForm">
+                    <div class="shadow-sm p-3 mb-5 bg-white rounded">
+                        {{ form_start(formDay) }}
+                        {{ form_widget(formDay) }}
+                        {{ form_end(formDay) }}
+                    </div>
+                </div>
+
+                <h2 class="pt-4 pb-4">
+                    <a data-toggle="collapse" href="#listDayForm" aria-expanded="true" aria-controls="listDayForm">
+                        Список дней
+                    </a>
+                </h2>
+                <div class="collapse show" id="listDayForm">
+                    <div class="">
+                        <table  class="table">
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Id</th>
+                                <th scope="col">День рутины</th>
+                                <th scope="col">Редактирование</th>
+                                <th scope="col">Удаление</th>
+                            </tr>
+                            {% for day in days %}
+                                <tr>
+                                    <th scope="col">{{loop.index}}</th>
+                                    <td>{{ day.id }}</td>
+                                    <td>{{ day.getDayOrder }}</td>
+                                    <td><a href="{{ path('routine.day.edit', {id: app.request.get('id'), dayId: day.id})}}" class="btn btn-primary">Редактировать</a></td>
+                                    <td><a href="#">Удалить</a></td>
+                                </tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -7,6 +7,15 @@ $(document).ready(function() {
             .html(inputFile.files[0].name);
     });
 
+    $('body').on('click','.add-day', function (event) {
+        event.preventDefault();
+        var countDays = $('div.days').children('.day-item').length + 1;
+        console.log(countDays);
+        $('div.days').append('<div class="day-item">\n' +
+            '<input class="order-value" type="text" name="routine_day[]" value="'+ countDays +'" disabled/>\n' +
+            '</div>');
+    });
+
 });
 
 function validExpert(id) {
