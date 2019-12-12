@@ -57,7 +57,6 @@ class User implements UserInterface
      */
     private $verifyCode;
 
-
     public function __construct()
     {
         $this->userCertificates = new ArrayCollection();
@@ -172,5 +171,4 @@ class User implements UserInterface
 
         return $this;
     }
-
 }

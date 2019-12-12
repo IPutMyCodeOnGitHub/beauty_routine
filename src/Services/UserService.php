@@ -100,8 +100,10 @@ class UserService
                 $this->templating->render(
                     'email/verificationEmail.html.twig',
                     ['name' => $name,
-                        'verifyCode' => $user->getVerifyCode(),
-                        'verifyUrl' =>$verifyUrl, ]
+
+                    'verifyCode' => $user->getVerifyCode(),
+                    'verifyUrl' =>$verifyUrl, ]
+
                 ),
                 'text/html');
         $this->mailer->send($message);
