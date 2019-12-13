@@ -42,7 +42,7 @@ class UserService
         if (array_key_exists('certificate', $form->all()) && in_array(User::ROLE_INVALID_EXPERT, $user->getRoles())) {
             if ($form['certificate']->getData() !== null) {
                 $certificate = $form['certificate']->getData();
-                $newFilename = $uploaderHelper->uploadCertificatePDF($certificate);
+                $newFilename = $uploaderHelper->uploadFile($certificate, UploaderHelper::CERTIFICATE_PATH);
                 $userCertificate = new UserCertificate();
                 $userCertificate->setCertificate('certificate/'. $newFilename);
             }
@@ -54,7 +54,7 @@ class UserService
             if (($newFilename != '') && ($userCertificate != null)) {
                 $userCertificate->setUser($user);
                 $this->manager->persist($userCertificate);
-                $this->manager->flush();
+                    $this->manager->flush();
             }
         } catch(\Exception $e) {
             if ($userCertificate != null) {

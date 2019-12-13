@@ -19,3 +19,4 @@
 /.idea/
 /docker/data/mysql/
 /public/certificate/
+/public/routine/

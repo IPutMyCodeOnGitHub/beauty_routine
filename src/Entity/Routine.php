@@ -55,6 +55,11 @@ class Routine
      */
     private $subscriber;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $photo;
+
     public function __construct()
     {
         $this->routineDays = new ArrayCollection();
@@ -170,6 +175,18 @@ class Routine
         if ($this->subscriber->contains($subscriber)) {
             $this->subscriber->removeElement($subscriber);
         }
+
+        return $this;
+    }
+
+    public function getPhoto(): ?string
+    {
+        return $this->photo;
+    }
+
+    public function setPhoto(?string $photo): self
+    {
+        $this->photo = $photo;
 
         return $this;
     }

@@ -8,6 +8,7 @@ use App\Entity\RoutineType;
 use App\Entity\User;
 use App\Form\RoutineDayType;
 use App\Form\RoutineFormType;
+use App\Services\UploaderHelper;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -43,14 +44,22 @@ class RoutineController extends AbstractController
     /**
      * @Route("/expert/routine/create", name="expert.routine.create")
      */
-    public function create(Request $request): Response
+    public function create(Request $request, UploaderHelper $uploaderHelper): Response
     {
         $routine = new Routine();
         $form = $this->createForm(RoutineFormType::class, $routine);
 
         $form->handleRequest($request);
 
+        $photoName = "";
         if ($form->isSubmitted() && $form->isValid()) {
+
+            $photo = $form['photo']->getData();
+            $photoName = $uploaderHelper->uploadFile($photo, UploaderHelper::ROUTINE_PHOTO_PATH);
+            if ($photo) {
+                $routine->setPhoto(UploaderHelper::ROUTINE_PHOTO_PATH . $photoName);
+            }
+
             $entityManager = $this->getDoctrine()->getManager();
             $routine->setStatus(Routine::STATUS_DRAFT);
             $routine->setUser($this->getUser());
@@ -60,6 +69,9 @@ class RoutineController extends AbstractController
                 $entityManager->flush();
                 $this->addFlash('success', 'Routine added!');
             } catch (\Exception $e) {
+                if ($photoName != '') {
+                    $uploaderHelper->deleteFile($photoName, UploaderHelper::CERTIFICATE_PATH);
+                }
                 $this->addFlash('danger', 'Sorry, that was an error.');
             }
         }
@@ -73,7 +85,7 @@ class RoutineController extends AbstractController
     /**
      * @Route("/expert/routine/edit/{id}", name="expert.routine.edit")
      */
-    public function edit(Request $request, int $id): Response
+    public function edit(Request $request, int $id, UploaderHelper $uploaderHelper): Response
     {
         $entityManager = $this->getDoctrine()->getManager();
         /**
@@ -89,11 +101,23 @@ class RoutineController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $photo = $form['photo']->getData();
+            $photoName = $uploaderHelper->uploadFile($photo, UploaderHelper::ROUTINE_PHOTO_PATH);
+            if ($photo) {
+                if ($routine->getPhoto()){
+                    $uploaderHelper->deleteFile($routine->getPhoto(), '');
+                }
+                $routine->setPhoto(UploaderHelper::ROUTINE_PHOTO_PATH . $photoName);
+            }
+
             $entityManager->persist($routine);
             try {
                 $entityManager->flush();
                 $this->addFlash('success', 'Routine updated!');
             } catch (\Exception $e) {
+                if ($photoName != '') {
+                    $uploaderHelper->deleteFile($photoName, UploaderHelper::CERTIFICATE_PATH);
+                }
                 $this->addFlash('danger', 'Sorry, that was an error.');
             }
         }
