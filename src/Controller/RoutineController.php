@@ -8,6 +8,7 @@ use App\Form\RoutineDayType;
 use App\Form\RoutineFormType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -18,13 +19,17 @@ class RoutineController extends AbstractController
     /**
      * @Route("/", name="routine")
      */
-    public function listRoutines()
+    public function listRoutines(): Response
     {
         //ToDo: search
         /**
          * @var User $expert
          */
         $expert = $this->getUser();
+
+        if (!$expert) {
+            throw $this->createNotFoundException('The expert does not exist');
+        }
 
         $routines = $expert->getRoutines();
 
@@ -36,7 +41,7 @@ class RoutineController extends AbstractController
     /**
      * @Route("/create", name="routine.create")
      */
-    public function create(Request $request)
+    public function create(Request $request): Response
     {
         $routine = new Routine();
         $form = $this->createForm(RoutineFormType::class, $routine);
@@ -66,7 +71,7 @@ class RoutineController extends AbstractController
     /**
      * @Route("/edit/{id}", name="routine.edit")
      */
-    public function edit(Request $request, int $id)
+    public function edit(Request $request, int $id): Response
     {
         $entityManager = $this->getDoctrine()->getManager();
         /**
@@ -85,7 +90,7 @@ class RoutineController extends AbstractController
             $entityManager->persist($routine);
             try {
                 $entityManager->flush();
-                $this->addFlash('success', 'Routine added!');
+                $this->addFlash('success', 'Routine updated!');
             } catch (\Exception $e) {
                 $this->addFlash('danger', 'Sorry, that was an error.');
             }
@@ -100,7 +105,7 @@ class RoutineController extends AbstractController
             $entityManager->persist($routineDay);
             try {
                 $entityManager->flush();
-                $this->addFlash('success', 'Routine added!');
+                $this->addFlash('success', 'Day added!');
             } catch (\Exception $e) {
                 $this->addFlash('danger', 'Sorry, that was an error.');
             }
@@ -116,21 +121,50 @@ class RoutineController extends AbstractController
     /**
      * @Route("/edit/{id}/day/{dayId}", name="routine.day.edit")
      */
-    public function editDay(Request $request, int $id, int $dayId)
+    public function editDay(Request $request, int $id, int $dayId): Response
     {
         $entityManager = $this->getDoctrine()->getManager();
         $routineDay = $entityManager->getRepository(RoutineDay::class)->find($dayId);
 
         if (!$routineDay) {
-            //Todo:redirect with flash to routine.edit
-            throw $this->createNotFoundException('The routine day does not exist');
+            $this->addFlash('danger', 'Sorry, day does not exist.');
+            return $this->redirectToRoute('routine.edit', ['id' => $id, 'dayId' => $dayId]);
         }
 
         $formDay = $this->createForm(RoutineDayType::class, $routineDay);
         $formDay->handleRequest($request);
+        if ($formDay->isSubmitted() && $formDay->isValid()) {
+            $entityManager->persist($routineDay);
+            try {
+                $entityManager->flush();
+                $this->addFlash('success', 'Day updated!');
+                return $this->redirectToRoute('routine.edit', ['id' => $id, 'dayId' => $dayId]);
+            } catch (\Exception $e) {
+                $this->addFlash('danger', 'Sorry, that was an error.');
+            }
+        }
 
         return $this->render('routine/day.edit.html.twig', [
+            'form' => $formDay->createView(),
         ]);
+    }
+
+    /**
+     * @Route("/edit/{id}/day/{dayId}/delete", name="routine.day.delete")
+     */
+    public function deleteDay(Request $request, int $id, int $dayId): Response
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+        $routineDay = $entityManager
+            ->getRepository(RoutineDay::class)
+            ->find($dayId);
+        if (!$routineDay) {
+            $this->addFlash('danger', 'Sorry, day doesn\'t exists.');
+            return new Response(0);
+        }
+        $entityManager->remove($routineDay);
+        $entityManager->flush();
+        return new Response(1);
     }
 
 }

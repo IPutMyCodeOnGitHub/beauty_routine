@@ -18,6 +18,21 @@ $(document).ready(function() {
 
 });
 
+function deleteDay(path, index) {
+    $.ajax({
+        url: path,
+        dataType: 'text',
+    }).done(function (result) {
+        if (result == 1) {
+            $('td.day-' + index).html("Удалён");
+        } else {
+            $('td.day-' + index).filter( ':last' ).append("<p class='pt-2 pb-2'>Ошибка удаления</p>");
+        }
+    }).fail(function (textStatus,errorThrown) {
+        $('td.day-' + index).filter( ':last' ).append("<p class='pt-2 pb-2'>Ошибка удаления</p>");
+    });
+}
+
 function validExpert(id) {
     $.ajax({
         type: "POST",
@@ -38,12 +53,12 @@ function validExpert(id) {
                 '</div>');
             $('.invalid' + id).remove();
         }
-        console.log('in success ' + result);
+        // console.log('in success ' + result);
     }).fail(function (textStatus,errorThrown) {
         $('div#collapseCard'+id).append(
             '<div class="alert alert-danger" role="alert">\n' +
                 'Произошла ошибка' +
             '</div>');
-        console.log(textStatus + errorThrown);
+        // console.log(textStatus + errorThrown);
     });
 }
