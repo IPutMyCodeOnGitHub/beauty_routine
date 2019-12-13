@@ -39,7 +39,7 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator implements P
 
     public function supports(Request $request)
     {
-        return 'app_login' === $request->attributes->get('_route')
+        return 'app.login' === $request->attributes->get('_route')
             && $request->isMethod('POST');
     }
 
@@ -94,7 +94,7 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator implements P
             return new RedirectResponse($targetPath);
         }
 
-        $roleUrl = 'profile.user';
+        $roleUrl = 'profile';
         if (in_array(User::ROLE_ADMIN, $token->getRoleNames())) {
             $roleUrl = 'admin.stats';
         } elseif (in_array(User::ROLE_EXPERT, $token->getRoleNames())) {
@@ -107,6 +107,6 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator implements P
 
     protected function getLoginUrl()
     {
-        return $this->urlGenerator->generate('app_login');
+        return $this->urlGenerator->generate('app.login');
     }
 }

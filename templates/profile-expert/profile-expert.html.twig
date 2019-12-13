@@ -1,6 +1,5 @@
 {% extends 'base.html.twig' %}
 {% block head %}
-    <title>Responsive Image Gallery</title>
     <meta charset="UTF-8" />
  <noscript>
         <style>
@@ -34,15 +33,15 @@
 {% block body %}
 <div class="container">
     <div class="col-md-auto align-self-center ">
-        <a href="{{ path('app_logout') }}">Выход</a>
+        <a href="{{ path('app.logout') }}">Log out</a>
     </div>
     <div class="row justify-content-center  pt-5">
         <div class="row justify-content-between col-md-6">
             <div class="col-md-auto align-self-center pl-0">
-                <h1 class="h3 font-weight-normal align-self-center">Личный профиль</h1>
+                <h1 class="h3 font-weight-normal align-self-center">Private profile</h1>
             </div>
             <div class="col-md-auto align-self-center ">
-                <a href="{{ path('profile.expert.edit') }}">Редактировать</a>
+                <a href="{{ path('profile.expert.edit') }}">Edit</a>
             </div>
 
         </div>
@@ -54,7 +53,7 @@
         </div>
 
         <div class="row justify-content-center">
-            <a href=""  rel="tooltip" title="changePhoto">Изменить фото</a>
+            <a href=""  rel="tooltip" title="changePhoto">Change photo</a>
         </div>
 
 
@@ -81,11 +80,11 @@
 
                     <div class="es-carousel">
                         <ul style="display:inline;">
-                            {% for path in certificatesPaths %}
+                            {#{% for path in certificatesPaths %}
                             <li>
                                 <iframe src="{{asset(path)}}" data-large="{{asset(path)}}" height="100px" width="200px"></iframe>
                             </li>
-                            {% endfor %}
+                            {% endfor %}#}
                         </ul>
                     </div>
                 </div>

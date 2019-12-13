@@ -1,26 +1,26 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Регистрация{% endblock %}
+{% block title %}Registration{% endblock %}
 
 {% block body %}
     <div class="container">
         <div class="row justify-content-center  pt-5">
             <div class="row justify-content-between col-md-6">
                 <div class="col-md-auto align-self-center pl-0">
-                    <h1 class="h3 font-weight-normal align-self-center">Регистрация</h1>
+                    <h1 class="h3 font-weight-normal align-self-center">Registration</h1>
                 </div>
                 <div class="col-md-auto align-self-center ">
-                    <a href="{{ path('app_login') }}">Войти</a>
+                    <a href="{{ path('app.login') }}">Log in</a>
                 </div>
             </div>
         </div>
         <nav class="row justify-content-center mt-5">
             <div class="col-md-6 nav nav-tabs" id="nav-tab" role="tablist">
                 <a class="nav-item nav-link register active" id="nav-user-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">
-                    No GENDER
+                    Guest
                 </a>
                 <a class="nav-item nav-link register" id="nav-expert-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">
-                    Эксперт
+                    Expert
                 </a>
             </div>
         </nav>
@@ -31,7 +31,7 @@
                 {{ form_row(registrationUserForm.email) }}
                 {{ form_row(registrationUserForm.plainPassword) }}
                 {{ form_row(registrationUserForm.agreeTerms) }}
-                <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
+                <button type="submit" class="btn btn-primary">Register</button>
                 {{ form_end(registrationUserForm) }}
             </div>
             <div class="tab-pane register fade pt-3 pb-4 col-md-6 pl-3" id="nav-profile" role="tabpanel" aria-labelledby="nav-expert-tab">
@@ -40,12 +40,12 @@
                 {{ form_row(registrationExpertForm.email) }}
                 {{ form_row(registrationExpertForm.certificate, {
                     attr: {
-                        'placeholder': 'Выберите файл формата PDF'
+                        'placeholder': 'Choose file in PDF format'
                     }
                 }) }}
                 {{ form_row(registrationExpertForm.plainPassword) }}
                 {{ form_row(registrationExpertForm.agreeTerms) }}
-                <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
+                <button type="submit" class="btn btn-primary">Register</button>
                 {{ form_end(registrationExpertForm) }}
             </div>
         </div>

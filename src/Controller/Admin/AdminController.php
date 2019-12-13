@@ -3,7 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\User;
-use App\Services\UserService;
+use App\Services\RegisterService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -27,7 +27,7 @@ class AdminController extends AbstractController
     /**
      * @Route("/experts/{id}/validation", name="experts.validation", methods={"POST"})
      */
-    public function ajaxExpertValidation(int $id, Request $request, UserService $userService): Response
+    public function ajaxExpertValidation(int $id, Request $request, RegisterService $userService): Response
     {
         if (!$request->isXmlHttpRequest()) {
             return new Response('0');

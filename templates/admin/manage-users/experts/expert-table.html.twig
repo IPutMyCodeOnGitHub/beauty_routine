@@ -26,21 +26,21 @@
             </td>
             <td>
                 {% if 'ROLE_INVALID_EXPERT' in expert.roles%}
-                    <span class="badge badge-danger invalid{{ expert.id }}">  не подтверждён </span>
+                    <span class="badge badge-danger invalid{{ expert.id }}"> has not been verified </span>
                 {% endif %}
             </td>
             <td>
                 {% if  expert.getUserCertificates.get(0) %}
-                <a href="{{ asset(expert.getUserCertificates.get(0).certificate) }}" class="btn">Сертификат</a>
+                <a href="{{ asset(expert.getUserCertificates.get(0).certificate) }}" class="btn">Certificate</a>
                 {% endif %}
             </td>
             <td>
                 <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseCard{{ expert.id }}" aria-expanded="false" aria-controls="collapseCard{{ expert.id }}">
-                    Редактировать
+                    Edit
                 </button>
             </td>
             <td>
-                <a href="" class="btn">Удалить</a>
+                <a href="" class="btn">Delete</a>
             </td>
         </tr>
         <tr>
@@ -48,7 +48,7 @@
                 <div class="collapse" id="collapseCard{{ expert.id }}">
                     <div class="card card-body">
                         {% if 'ROLE_INVALID_EXPERT' in expert.roles%}
-                            <button onclick="validExpert({{ expert.id }})" class="btn">Подтвердить эксперта</button>
+                            <button onclick="validExpert({{ expert.id }})" class="btn">Verify expert</button>
                         {% endif %}
                     </div>
                 </div>

@@ -23,7 +23,7 @@ class RegistrationExpertFormType extends AbstractType
     {
         $builder
             ->add('name', TextType::class, [
-                'label' => 'Ваше имя:',
+                'label' => 'Your name:',
             ])
             ->add('email', EmailType::class, [
                 'label' => 'E-mail:',
@@ -35,10 +35,10 @@ class RegistrationExpertFormType extends AbstractType
                         'message' => 'You should agree to our terms.',
                     ]),
                 ],
-                'label' => 'Согласен на обработку данных',
+                'label' => 'I agree to the terms',
             ])
             ->add('certificate', FileType::class, [
-                'label' => 'Сертификат (PDF file)',
+                'label' => 'Certificate (PDF file)',
                 'mapped' => false,
                 'required' => false,
                 'constraints' => [
@@ -48,14 +48,14 @@ class RegistrationExpertFormType extends AbstractType
                             'application/pdf',
                             'application/x-pdf',
                         ],
-                        'mimeTypesMessage' => 'Пожалуйста загрузите файл в PDF формате',
+                        'mimeTypesMessage' => 'Please, upload the fail in PDF format.',
                     ])
                 ],
             ])
             ->add('plainPassword', RepeatedType::class, [
                 'type' => PasswordType::class,
-                'first_options' => ['label' => 'Пароль'],
-                'second_options' => ['label' => 'Повторите пароль', ],
+                'first_options' => ['label' => 'Password'],
+                'second_options' => ['label' => 'Repeat password', ],
                 'mapped' => false,
                 'constraints' => [
                     new NotBlank([
@@ -77,5 +77,10 @@ class RegistrationExpertFormType extends AbstractType
         $resolver->setDefaults([
             'data_class' => User::class,
         ]);
+    }
+
+    public function getName()
+    {
+        return 'ExpertFormType';
     }
 }

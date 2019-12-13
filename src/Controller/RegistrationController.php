@@ -5,36 +5,26 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Form\RegistrationUserFormType;
 use App\Form\RegistrationExpertFormType;
-use App\Repository\UserRepository;
 use App\Services\UploaderHelper;
-use App\Services\UserService;
-use Doctrine\ORM\EntityManager;
-use Swift_Mailer;
-use Swift_Message;
-use Swift_SmtpTransport;
+use App\Services\RegisterService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
-use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
-/**
- * @Route("/register")
- */
+
 class RegistrationController extends AbstractController
 {
-    private $userService;
+    private $registerService;
 
-    public function __construct(UserService $userService)
+    public function __construct(RegisterService $registerService)
     {
-        $this->userService = $userService;
+        $this->registerService = $registerService;
     }
 
     /**
-     * @Route("", name="app_register")
+     * @Route("/register", name="app.register")
      */
     public function register(Request $request, UserPasswordEncoderInterface $passwordEncoder, UploaderHelper $uploaderHelper): Response
     {
@@ -42,21 +32,22 @@ class RegistrationController extends AbstractController
 
         $expertForm = $this->createForm(RegistrationExpertFormType::class, $user);
         $expertForm->handleRequest($request);
-        if ($expertForm->isSubmitted() && $expertForm->isValid()) {
-            $user->setRoles([User::ROLE_INVALID_EXPERT]);
-            $this->userService->saveForm($expertForm, $user, $passwordEncoder, $uploaderHelper);
-            $this->userService->emailVerification($user);
-            return $this->redirectToRoute('app_login');
-        }
 
         $userForm = $this->createForm(RegistrationUserFormType::class, $user);
         $userForm->handleRequest($request);
-        if ($userForm->isSubmitted() && $userForm->isValid()) {
-            $user->setRoles([User::ROLE_USER]);
-            $this->userService->saveForm($userForm, $user, $passwordEncoder, $uploaderHelper);
-            $this->userService->emailVerification($user);
-            return $this->redirectToRoute('app_login');
+
+        $redirectRouteUser = $this->registerService->registerUser($userForm, $user, $passwordEncoder, $uploaderHelper);
+        $redirectRouteExpert = $this->registerService->registerUser($expertForm, $user, $passwordEncoder, $uploaderHelper);
+
+        if($redirectRouteUser){
+            $redirectRoute = $redirectRouteUser;
+        } else {
+            $redirectRoute = $redirectRouteExpert;
         }
+        if ($redirectRoute) {
+            return $this->redirectToRoute($redirectRoute);
+        }
+
         //TODO: to redirect users not to login, because they don't have e-mail verification yet
         return $this->render('registration/register.html.twig', [
             'registrationUserForm' => $userForm->createView(),
@@ -68,20 +59,6 @@ class RegistrationController extends AbstractController
      */
     public function userVerification(Request $request, string $verifyCode)
     {
-        $entityManager = $this->getDoctrine()
-            ->getManager();
-        $user = $entityManager->getRepository(User::class)->findOneBy(['verifyCode' => $verifyCode]);
-
-        /**@var User $user */
-        if($user){
-            $user->setVerifyCode(null);
-            $entityManager->persist($user);
-            $entityManager->flush();
-        } else{
-            throw new \Exception("Invalid verification code.");
-        }
-        return $this->render('profile-user/verificationPage.html.twig', [
-            'message' => "Вы успешно прошли регестрацию!",
-        ]);
+        $redirectRoute = $this->registerService->verifyUser($verifyCode);
     }
 }

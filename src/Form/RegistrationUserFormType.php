@@ -21,7 +21,7 @@ class RegistrationUserFormType extends AbstractType
     {
         $builder
             ->add('name', TextType::class, [
-                'label' => 'Ваше имя:',
+                'label' => 'Your name',
             ])
             ->add('email', EmailType::class, [
                 'label' => 'E-mail:',
@@ -33,12 +33,12 @@ class RegistrationUserFormType extends AbstractType
                         'message' => 'You should agree to our terms.',
                     ]),
                 ],
-                'label' => 'Согласен на обработку данных',
+                'label' => 'I agree to the terms',
             ])
             ->add('plainPassword', RepeatedType::class, [
                 'type' => PasswordType::class,
-                'first_options' => ['label' => 'Пароль'],
-                'second_options' => ['label' => 'Повторите пароль', ],
+                'first_options' => ['label' => 'Password'],
+                'second_options' => ['label' => 'Repeat password', ],
                 'mapped' => false,
                 'constraints' => [
                     new NotBlank([
@@ -59,5 +59,10 @@ class RegistrationUserFormType extends AbstractType
         $resolver->setDefaults([
             'data_class' => User::class,
         ]);
+    }
+
+    public function getName()
+    {
+        return 'UserFormType';
     }
 }
