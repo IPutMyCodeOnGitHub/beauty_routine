@@ -71,9 +71,9 @@
                                     <td>{{ day.id }}</td>
                                     <td>{{ day.getDayOrder }}</td>
                                     <td class="day-{{loop.index}}">
-                                        <a href="{{ path('routine.day.edit', {id: app.request.get('id'), dayId: day.id})}}" class="btn btn-primary">Редактировать</a></td>
+                                        <a href="{{ path('expert.routine.day.edit', {id: app.request.get('id'), dayId: day.id})}}" class="btn btn-primary">Редактировать</a></td>
                                     <td class="day-{{loop.index}}">
-                                        <button class="btn btn-primary" onclick='deleteDay("{{ path('routine.day.delete', {id: app.request.get('id'), dayId: day.id})}}", {{loop.index}})' class="delete-day">Удалить</button></td>
+                                        <button class="btn btn-primary" onclick='deleteDay("{{ path('expert.routine.day.delete', {id: app.request.get('id'), dayId: day.id})}}", {{loop.index}})' class="delete-day">Удалить</button></td>
                                 </tr>
                             {% endfor %}
                         </table>

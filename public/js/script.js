@@ -18,6 +18,21 @@ $(document).ready(function() {
 
 });
 
+function routineSub(path, id) {
+    console.log(path, id);
+    $.ajax({
+        url: path,
+        dataType: 'text',
+    }).done(function (result) {
+        if (result == 1) {
+            $('div.routine-sub-' + id).html("Вы подписаны");
+        }
+        console.log('Success');
+    }).fail(function (textStatus,errorThrown) {
+        console.log('fail');
+    });
+}
+
 function deleteDay(path, index) {
     $.ajax({
         url: path,

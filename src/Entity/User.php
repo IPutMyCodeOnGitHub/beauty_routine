@@ -57,10 +57,16 @@ class User implements UserInterface
      */
     private $routines;
 
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Routine", mappedBy="subscriber")
+     */
+    private $subs;
+
     public function __construct()
     {
         $this->userCertificates = new ArrayCollection();
         $this->routines = new ArrayCollection();
+        $this->subs = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -188,6 +194,34 @@ class User implements UserInterface
             if ($routine->getUser() === $this) {
                 $routine->setUser(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Routine[]
+     */
+    public function getSubs(): Collection
+    {
+        return $this->subs;
+    }
+
+    public function addSub(Routine $sub): self
+    {
+        if (!$this->subs->contains($sub)) {
+            $this->subs[] = $sub;
+            $sub->addSubscriber($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSub(Routine $sub): self
+    {
+        if ($this->subs->contains($sub)) {
+            $this->subs->removeElement($sub);
+            $sub->removeSubscriber($this);
         }
 
         return $this;

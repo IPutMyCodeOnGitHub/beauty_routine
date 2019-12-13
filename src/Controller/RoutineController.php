@@ -4,6 +4,8 @@ namespace App\Controller;
 
 use App\Entity\Routine;
 use App\Entity\RoutineDay;
+use App\Entity\RoutineType;
+use App\Entity\User;
 use App\Form\RoutineDayType;
 use App\Form\RoutineFormType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -12,16 +14,16 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/profile/expert/routine")
+ * @Route("/profile")
  */
 class RoutineController extends AbstractController
 {
     /**
-     * @Route("/", name="routine")
+     * @Route("/expert/routine/", name="expert.routine")
      */
     public function listRoutines(): Response
     {
-        //ToDo: search
+        //ToDo: add search
         /**
          * @var User $expert
          */
@@ -39,7 +41,7 @@ class RoutineController extends AbstractController
     }
 
     /**
-     * @Route("/create", name="routine.create")
+     * @Route("/expert/routine/create", name="expert.routine.create")
      */
     public function create(Request $request): Response
     {
@@ -69,7 +71,7 @@ class RoutineController extends AbstractController
     }
 
     /**
-     * @Route("/edit/{id}", name="routine.edit")
+     * @Route("/expert/routine/edit/{id}", name="expert.routine.edit")
      */
     public function edit(Request $request, int $id): Response
     {
@@ -119,7 +121,7 @@ class RoutineController extends AbstractController
     }
 
     /**
-     * @Route("/edit/{id}/day/{dayId}", name="routine.day.edit")
+     * @Route("/expert/routine/edit/{id}/day/{dayId}", name="expert.routine.day.edit")
      */
     public function editDay(Request $request, int $id, int $dayId): Response
     {
@@ -150,7 +152,7 @@ class RoutineController extends AbstractController
     }
 
     /**
-     * @Route("/edit/{id}/day/{dayId}/delete", name="routine.day.delete")
+     * @Route("/expert/routine/edit/{id}/day/{dayId}/delete", name="expert.routine.day.delete")
      */
     public function deleteDay(Request $request, int $id, int $dayId): Response
     {
@@ -165,6 +167,123 @@ class RoutineController extends AbstractController
         $entityManager->remove($routineDay);
         $entityManager->flush();
         return new Response(1);
+    }
+
+    /**
+     * @Route("/routine/", name="user.routine")
+     */
+    public function userListRoutine(Request $request): Response
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+
+        $expert = $request->query->get('expert');
+        $type = $request->query->get('type');
+        $page = $request->query->getInt('page', 1);
+
+        if ($expert || $type) {
+            $page = 1;
+            $request->query->remove('page');
+        }
+
+        if ($type) {
+            $type = $entityManager->getRepository(RoutineType::class)->find($type);
+        }
+
+        $routines = $entityManager
+            ->getRepository(Routine::class)
+            ->searchRoutinePaginator($expert, $type, $page, null);
+        $user = $this->getUser();
+
+        $types = $entityManager->getRepository(RoutineType::class)->findAll();
+        return $this->render('routine/user.list.html.twig', [
+            'routines' => $routines,
+            'user' => $user,
+            'types' => $types,
+        ]);
+    }
+
+    /**
+     * @Route("/routine/sub", name="user.sub.routine.show")
+     */
+    public function userSubListRoutine(Request $request): Response
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+
+        $expert = $request->query->get('expert');
+        $type = $request->query->get('type');
+        $page = $request->query->getInt('page', 1);
+
+        if ($expert || $type) {
+            $page = 1;
+            $request->query->remove('page');
+        }
+
+        if ($type) {
+            $type = $entityManager->getRepository(RoutineType::class)->find($type);
+        }
+
+        $user = $this->getUser();
+
+        $routines = $entityManager
+            ->getRepository(Routine::class)
+            ->searchRoutinePaginator($expert, $type, $page, $user);
+
+        $types = $entityManager->getRepository(RoutineType::class)->findAll();
+
+        return $this->render('routine/user.sub.list.html.twig', [
+            'routines' => $routines,
+            'types' => $types,
+        ]);
+    }
+
+    /**
+     * @Route("/routine/{id}", name="user.routine.show")
+     */
+    public function userRoutineShow(Request $request, int $id): Response
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+
+        $routine = $entityManager->getRepository(Routine::class)->find($id);
+        $user = $this->getUser();
+
+        return $this->render('routine/user.routine.show.html.twig', [
+            'routine' => $routine,
+            'user' => $user
+        ]);
+    }
+
+    /**
+     * @Route("/routine/{id}/sub", name="user.sub.routine")
+     */
+    public function userSubRoutine(Request $request, int $id): Response
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+        $routine = $entityManager->getRepository(Routine::class)->find($id);
+
+        $user = $this->getUser();
+
+        if (!$routine) {
+            return new Response(0);
+//            $this->addFlash('danger', 'Sorry, routine doesn\'t exists.');
+//            return $this->redirectToRoute('user.routine');
+        }
+        if (!$user) {
+            return new Response(0);
+//            $this->addFlash('danger', 'Sorry, user doesn\'t exists.');
+//            return $this->redirectToRoute('user.routine');
+        }
+
+        $routine->addSubscriber($user);
+        $entityManager->persist($routine);
+
+        try{
+            $entityManager->flush();
+            return new Response(1);
+//            $this->addFlash('success', 'You are subscribed.');
+        } catch(\Exception $e) {
+            return new Response(0);
+//            $this->addFlash('danger', 'Sorry, error.');
+        }
     }
 
 }

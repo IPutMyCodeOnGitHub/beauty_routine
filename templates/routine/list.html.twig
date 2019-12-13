@@ -24,7 +24,7 @@
                             <td>{{ routine.type.type }}</td>
                             <td>{{ routine.cycle }}</td>
                             <td>{{ routine.status }}</td>
-                            <td><a href="{{ path('routine.edit', {'id' : routine.id}) }}" class="btn btn-primary">Редактировать</a></td>
+                            <td><a href="{{ path('expert.routine.edit', {'id' : routine.id}) }}" class="btn btn-primary">Редактировать</a></td>
                             <td><a href="#">Удалить</a></td>
                         </tr>
                     {% endfor %}

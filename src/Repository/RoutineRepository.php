@@ -3,8 +3,13 @@
 namespace App\Repository;
 
 use App\Entity\Routine;
+use App\Entity\RoutineType;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\ORM\QueryBuilder;
+use Knp\Component\Pager\Pagination\PaginationInterface;
+use Knp\Component\Pager\Paginator;
 
 /**
  * @method Routine|null find($id, $lockMode = null, $lockVersion = null)
@@ -14,37 +19,49 @@ use Doctrine\Common\Persistence\ManagerRegistry;
  */
 class RoutineRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    private $paginator;
+
+    public function __construct(ManagerRegistry $registry, Paginator  $paginator)
     {
         parent::__construct($registry, Routine::class);
+        $this->paginator = $paginator;
     }
 
-    // /**
-    //  * @return Routine[] Returns an array of Routine objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    public function getQueryBuilderSearchRoutines(?String $expert, ?RoutineType $type, ?User $subscriber, string $status): QueryBuilder
     {
-        return $this->createQueryBuilder('r')
-            ->andWhere('r.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('r.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
+        $query = $this->createQueryBuilder('r');
+        $query->orderBy('r.id', 'ASC');
 
-    /*
-    public function findOneBySomeField($value): ?Routine
-    {
-        return $this->createQueryBuilder('r')
-            ->andWhere('r.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        if ($expert) {
+            $query->join("r.user", 'user')
+                ->andWhere($query->expr()->like('user.name', ':expert'))
+                ->setParameter('expert', '%'.$expert.'%');
+        }
+
+        if ($subscriber) {
+            $query->andWhere(':subscriber MEMBER OF r.subscriber')
+                ->setParameter('subscriber', $subscriber);
+        }
+
+        if ($type) {
+            $query->andWhere('r.type = :type')
+                ->setParameter('type', $type);
+        }
+
+        $query->andwhere('r.status = :status')
+            ->setParameter('status', $status);
+
+        return $query;
     }
-    */
+
+    public function searchRoutinePaginator(?String $expert, ?RoutineType $type, int $page = 1, ?User $subscriber, string $status = Routine::STATUS_ACTIVE, int $countObj = 10): ?PaginationInterface
+    {
+        $queryBuilder = $this->getQueryBuilderSearchRoutines($expert, $type, $subscriber, $status);
+//dd($expert, $queryBuilder->getQuery());
+        return $this->paginator->paginate(
+            $queryBuilder,
+            $page,
+            $countObj
+        );
+    }
 }

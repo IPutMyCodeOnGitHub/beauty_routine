@@ -50,9 +50,15 @@ class Routine
      */
     private $status;
 
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\User", inversedBy="ыгsubs")
+     */
+    private $subscriber;
+
     public function __construct()
     {
         $this->routineDays = new ArrayCollection();
+        $this->subscriber = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -138,6 +144,32 @@ class Routine
             throw new \InvalidArgumentException("Invalid status");
         }
         $this->status = $status;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|User[]
+     */
+    public function getSubscriber(): Collection
+    {
+        return $this->subscriber;
+    }
+
+    public function addSubscriber(User $subscriber): self
+    {
+        if (!$this->subscriber->contains($subscriber)) {
+            $this->subscriber[] = $subscriber;
+        }
+
+        return $this;
+    }
+
+    public function removeSubscriber(User $subscriber): self
+    {
+        if ($this->subscriber->contains($subscriber)) {
+            $this->subscriber->removeElement($subscriber);
+        }
 
         return $this;
     }
