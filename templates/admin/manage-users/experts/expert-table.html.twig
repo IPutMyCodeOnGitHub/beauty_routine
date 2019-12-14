@@ -25,7 +25,7 @@
                 {{ expert.email }}
             </td>
             <td>
-                {% if 'ROLE_INVALID_EXPERT' in expert.roles%}
+                {% if expert.isValid %}
                     <span class="badge badge-danger invalid{{ expert.id }}"> has not been verified </span>
                 {% endif %}
             </td>

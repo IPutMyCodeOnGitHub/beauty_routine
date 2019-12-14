@@ -44,17 +44,11 @@ class UploaderHelper
         }
     }
 
-    public function deleteСertificate(UserCertificate $certificateName): void
+    public function deleteСertificate(UserCertificate $certificate): void
     {
-        $filesystem = new Filesystem();
-        $certificateTest = $this->uploadsPath . $certificateName->getCertificate();
-        if ($filesystem->exists($certificateTest)) {
-            try {
-                $filesystem->remove($certificateTest);
-            } catch (IOExceptionInterface $exception) {
-                throw new FileException("File was not uploaded." . $exception);
-            }
-        }
+        $this->deleteFile($certificate->getCertificate(), '');
+
+        $this->manager->remove($certificate);
     }
 
     public function deleteFile(string $fileName, string $path = UploaderHelper::CERTIFICATE_PATH): void
@@ -69,6 +63,4 @@ class UploaderHelper
             }
         }
     }
-
-
 }

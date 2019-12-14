@@ -16,8 +16,6 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class RegisterService
 {
-    const EXPERT_FORM_TYPE = 'registration_expert_form';
-    const USER_FORM_TYPE = 'registration_user_form';
     const VERIFY_URL = "127.0.0.1:8080/register/verify";
 
     private $mailer,
@@ -37,9 +35,7 @@ class RegisterService
     public function makeExpertValid($expertId, $entityManager): void
     {
         if ($expertId) {
-            /**
-             * @var User $user
-             */
+            /** @var User $user */
             $user = $this->$entityManager
                 ->getRepository(User::class)
                 ->find($expertId);
@@ -51,28 +47,28 @@ class RegisterService
         }
     }
 
-    public function registerUser(Form $userForm, User $user,
-                                       UserPasswordEncoderInterface $passwordEncoder,
-                                       UploaderHelper $uploaderHelper) : ?string
+    public function registerUser(
+        Form $userForm,
+        User $user,
+        UserPasswordEncoderInterface $passwordEncoder,
+        UploaderHelper $uploaderHelper
+    ): ?User
     {
-        $redirectRoute = null;
-        if ($userForm->isSubmitted() && $userForm->isValid())
-        {
-            $formName = $userForm->getName();
-            if ($formName == self::EXPERT_FORM_TYPE){
-                $user->setRoles([User::ROLE_INVALID_EXPERT]);
-            }
-            if ($formName == self::USER_FORM_TYPE){
-                $user->setRoles([User::ROLE_USER]);
-            }
+        if ($userForm->isSubmitted() && $userForm->isValid()) {
+            $user->setRoles([User::ROLE_USER]);
             $this->saveForm($userForm, $user, $passwordEncoder, $uploaderHelper);
             $this->emailVerification($user);
-            $redirectRoute = 'app.login';
+            return $user;
         }
-        return $redirectRoute;
+        return null;
     }
 
-    public function saveForm(Form $form, User $user, UserPasswordEncoderInterface $passwordEncoder, UploaderHelper $uploaderHelper): void
+    public function saveForm(
+        Form $form,
+        User $user,
+        UserPasswordEncoderInterface $passwordEncoder,
+        UploaderHelper $uploaderHelper
+    ): void
     {
         $random = (string)uniqid();
         $user->setVerifyCode($random);
@@ -87,14 +83,14 @@ class RegisterService
         if (array_key_exists('certificate', $form->all())) {
             if ($form['certificate']->getData() !== null) {
                 $certificate = $form['certificate']->getData();
-                $newFilename = $uploaderHelper->uploadCertificatePDF($certificate);
+                $newFilename = $uploaderHelper->uploadFile($certificate);
             }
         }
 
         $this->entityManager->persist($user);
         try {
             $this->entityManager->flush();
-            if ($newFilename != '' && in_array(User::ROLE_INVALID_EXPERT, $user->getRoles())) {
+            if ($newFilename != '' && in_array(User::ROLE_USER, $user->getRoles())) {
                 $userCertificate = new UserCertificate();
                 $userCertificate->setCertificate('certificate/' . $newFilename);
                 $userCertificate->setUser($user);
@@ -106,7 +102,7 @@ class RegisterService
         }
     }
 
-    public function emailVerification(User $user) : void
+    public function emailVerification(User $user): void
     {
         $email = $user->getEmail();
         $name = $user->getName();
@@ -124,8 +120,10 @@ class RegisterService
         $this->mailer->send($message);
     }
 
-    public function verifyUser(string $verifyCode) : String {
-        $user = $this->entityManager->getRepository(User::class)->findOneBy(['verifyCode' => $verifyCode]);
+    public function verifyUser(string $verifyCode): bool
+    {
+        $user = $this->entityManager->getRepository(User::class)
+            ->findOneBy(['verifyCode' => $verifyCode]);
 
         /**@var User $user */
         if($user){
@@ -135,9 +133,6 @@ class RegisterService
         } else{
             throw new \Exception("Invalid verification code.");
         }
-
-        return $this->templating->render('profile-user/verificationPage.html.twig', [
-            'message' => "Your registration was completed successfully!",
-        ]);
+        return true;
     }
 }

@@ -45,6 +45,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
                 ->setParameter('search', '%'.$search.'%');
         }
 
+        //TODO: remove invalids, replace it with certificate's existence
         if ($active) {
             $query->andwhere($query->expr()->like('u.roles', ':role'))
                 ->setParameter('role', '%'.User::ROLE_INVALID_EXPERT.'%');

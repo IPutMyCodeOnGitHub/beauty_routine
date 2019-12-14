@@ -19,7 +19,6 @@ class User implements UserInterface
     const ROLE_ADMIN = 'ROLE_ADMIN';
     const ROLE_USER = 'ROLE_USER';
     const ROLE_EXPERT = 'ROLE_EXPERT';
-    const ROLE_INVALID_EXPERT = 'ROLE_INVALID_EXPERT';
 
     /**
      * @ORM\Id
@@ -263,4 +262,8 @@ class User implements UserInterface
         }
     }
 
+    public function isValid(): bool
+    {
+        return !(bool)$this->verifyCode;
+    }
 }

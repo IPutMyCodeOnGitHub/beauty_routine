@@ -1,28 +1,5 @@
 {% extends 'base.html.twig' %}
 {% block head %}
-    <meta charset="UTF-8" />
- <noscript>
-        <style>
-            .es-carousel ul{
-                display:block;
-            }
-        </style>
-    </noscript>
-    <script id="img-wrapper-tmpl" type="text/x-jquery-tmpl">
-			<div class="rg-image-wrapper">
-					<div class="rg-image-nav">
-						<a href="#" class="rg-image-nav-prev">Previous Image</a>
-						<a href="#" class="rg-image-nav-next">Next Image</a>
-					</div>
-				<div class="rg-image"></div>
-				<div class="rg-loading"></div>
-				<div class="rg-caption-wrapper">
-					<div class="rg-caption" style="display:none;">
-						<p></p>
-					</div>
-				</div>
-			</div>
-		</script>
 {% endblock %}
 {% block stylesheets %}
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.3.1/flatly/bootstrap.min.css">
@@ -58,14 +35,18 @@
 
 
         <div class="tab-content row justify-content-center pt-3" id="tab">
-            {{ name }}
+            {{ user.name }}
         </div>
         <div class="tab-content row justify-content-center" id="tab">
-            {{ email }}
+            {{ user.email }}
         </div>
         <div class="tab-content row justify-content-center" id="tab">
-            {{ id }}
+            {{ user.id }}
         </div>
+
+        {#{% for certificate in user.certificates %}
+
+        {% endfor %}#}
 
     </div>
 
@@ -80,11 +61,6 @@
 
                     <div class="es-carousel">
                         <ul style="display:inline;">
-                            {#{% for path in certificatesPaths %}
-                            <li>
-                                <iframe src="{{asset(path)}}" data-large="{{asset(path)}}" height="100px" width="200px"></iframe>
-                            </li>
-                            {% endfor %}#}
                         </ul>
                     </div>
                 </div>

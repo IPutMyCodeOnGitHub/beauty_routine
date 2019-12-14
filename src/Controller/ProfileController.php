@@ -13,9 +13,10 @@ class ProfileController extends AbstractController
      */
     public function showProfile()
     {
-        return $this->render('profile/index.html.twig', [
-            'controller_name' => 'ProfileController'
-            ]);
+        /** @var User $user */
+        $user = $this->getUser();
+
+        return $this->render('profile/index.html.twig');
     }
 
     /**
@@ -25,12 +26,9 @@ class ProfileController extends AbstractController
     {
         /** @var User $user */
         $user = $this->getUser();
-        $certificates = $user->getUserCertificates();
+
         return $this->render('profile-expert/profile-expert.html.twig', [
-            'name' => $user->getName(),
-            'email' => $user->getEmail(),
-            'id' => $user->getId(),
-            //'certificatesPaths' => $certificates,
+            'user' => $user,
         ]);
     }
 
@@ -41,9 +39,9 @@ class ProfileController extends AbstractController
     {
         /** @var User $user */
         $user = $this->getUser();
+
         return $this->render('profile-expert/profile-expert-edit.html.twig', [
-            'name' => $user->getName(),
-            'email' => $user->getEmail(),
+            'user' => $user,
         ]);
     }
 }

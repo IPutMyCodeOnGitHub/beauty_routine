@@ -20,11 +20,10 @@ use Symfony\Component\Routing\Annotation\Route;
 class RoutineController extends AbstractController
 {
     /**
-     * @Route("/expert/routine/", name="expert.routine")
+     * @Route("/expert/routine", name="expert.routine")
      */
     public function listRoutines(): Response
     {
-        //ToDo: add search
         /**
          * @var User $expert
          */
@@ -34,10 +33,8 @@ class RoutineController extends AbstractController
             throw $this->createNotFoundException('The expert does not exist');
         }
 
-        $routines = $expert->getRoutines();
-
         return $this->render('routine/list.html.twig', [
-            'routines' => $routines,
+            'expert' => $expert,
         ]);
     }
 
@@ -51,11 +48,11 @@ class RoutineController extends AbstractController
 
         $form->handleRequest($request);
 
-        $photoName = "";
         if ($form->isSubmitted() && $form->isValid()) {
 
             $photo = $form['photo']->getData();
             $photoName = $uploaderHelper->uploadFile($photo, UploaderHelper::ROUTINE_PHOTO_PATH);
+
             if ($photo) {
                 $routine->setPhoto(UploaderHelper::ROUTINE_PHOTO_PATH . $photoName);
             }
@@ -77,7 +74,6 @@ class RoutineController extends AbstractController
         }
 
         return $this->render('routine/create.html.twig', [
-            'title' => 'Создание программы',
             'form' => $form->createView(),
         ]);
     }
