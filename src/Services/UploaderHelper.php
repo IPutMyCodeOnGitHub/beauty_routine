@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 class UploaderHelper
 {
     const CERTIFICATE_PATH = 'certificate/';
+    const ROUTINE_PHOTO_PATH = 'routine/';
 
     private $uploadsPath;
 
@@ -19,22 +20,22 @@ class UploaderHelper
         $this->uploadsPath = $uploadsPath;
     }
 
-    public function uploadCertificatePDF(UploadedFile $certificate): string
+    public function uploadFile(UploadedFile $file, string $path = UploaderHelper::CERTIFICATE_PATH): string
     {
-        $originalFilename = pathinfo($certificate->getClientOriginalName(), PATHINFO_FILENAME);
+        $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
         $safeFilename = transliterator_transliterate('Any-Latin; Latin-ASCII; [^A-Za-z0-9_] remove; Lower()', $originalFilename);
-        $newFilename = $safeFilename . '-' . uniqid() . '.' . $certificate->guessExtension();
+        $newFilename = $safeFilename . '-' . uniqid() . '.' . $file->guessExtension();
 
         $filesystem = new Filesystem();
-        $certificateDir = $this->uploadsPath . UploaderHelper::CERTIFICATE_PATH;
+        $fileDir = $this->uploadsPath . $path;
 
-        if (!$filesystem->exists($certificateDir)) {
-            $filesystem->mkdir($certificateDir);
+        if (!$filesystem->exists($fileDir)) {
+            $filesystem->mkdir($fileDir);
         }
 
         try {
-            $certificate->move(
-                $certificateDir,
+            $file->move(
+                $fileDir,
                 $newFilename
             );
             return $newFilename;
@@ -55,5 +56,19 @@ class UploaderHelper
             }
         }
     }
+
+    public function deleteFile(string $fileName, string $path = UploaderHelper::CERTIFICATE_PATH): void
+    {
+        $filesystem = new Filesystem();
+        $fileTest = $this->uploadsPath . $path . $fileName;
+        if ($filesystem->exists($fileTest)) {
+            try {
+                $filesystem->remove($fileTest);
+            } catch (IOExceptionInterface $exception) {
+                throw new FileException("File was not uploaded." . $exception);
+            }
+        }
+    }
+
 
 }

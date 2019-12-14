@@ -1,0 +1,31 @@
+<?php
+
+namespace App\Form;
+
+use App\Entity\RoutineDay;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+
+class RoutineDayType extends AbstractType
+{
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder
+            ->add('dayOrder', null, [
+                'label' => 'День в программе'
+            ])
+            ->add('Submit', SubmitType::class, [
+                'label' => 'Сохранить',
+            ]);
+        ;
+    }
+
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        $resolver->setDefaults([
+            'data_class' => RoutineDay::class,
+        ]);
+    }
+}

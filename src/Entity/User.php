@@ -59,9 +59,21 @@ class User implements UserInterface
      */
     private $verifyCode;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Routine", mappedBy="user", orphanRemoval=true)
+     */
+    private $routines;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Routine", mappedBy="subscriber")
+     */
+    private $subs;
+
     public function __construct()
     {
         $this->userCertificates = new ArrayCollection();
+        $this->routines = new ArrayCollection();
+        $this->subs = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -182,6 +194,7 @@ class User implements UserInterface
         return $this;
     }
 
+
     public function getVerifyCode(): ?string
     {
         return $this->verifyCode;
@@ -190,7 +203,64 @@ class User implements UserInterface
     public function setVerifyCode(?string $verifyCode): self
     {
         $this->verifyCode = $verifyCode;
+        return $this;
+    }
+
+    /**
+     * @return Collection|Routine[]
+     */
+    public function getRoutines(): Collection
+    {
+        return $this->routines;
+    }
+
+    public function addRoutine(Routine $routine): self
+    {
+        if (!$this->routines->contains($routine)) {
+            $this->routines[] = $routine;
+            $routine->setUser($this);
+        }
 
         return $this;
     }
+
+    public function removeRoutine(Routine $routine): self
+    {
+        if ($this->routines->contains($routine)) {
+            $this->routines->removeElement($routine);
+            // set the owning side to null (unless already changed)
+            if ($routine->getUser() === $this) {
+                $routine->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Routine[]
+     */
+    public function getSubs(): Collection
+    {
+        return $this->subs;
+    }
+
+    public function addSub(Routine $sub): self
+    {
+        if (!$this->subs->contains($sub)) {
+            $this->subs[] = $sub;
+            $sub->addSubscriber($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSub(Routine $sub): self
+    {
+        if ($this->subs->contains($sub)) {
+            $this->subs->removeElement($sub);
+            $sub->removeSubscriber($this);
+        }
+    }
+
 }
