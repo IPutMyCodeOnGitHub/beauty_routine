@@ -15,6 +15,8 @@ class Routine
     const STATUS_BLOCKED = 'blocked';
     const STATUS_ACTIVE = 'active';
     const STATUS_DISABLED = 'disabled';
+
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
