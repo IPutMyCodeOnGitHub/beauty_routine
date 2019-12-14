@@ -39,3 +39,6 @@ services:
     App\Services\UploaderHelper:
         arguments:
             $uploadsPath: '%uploadsPath%'
+
+    App\Services\RoutineService:
+        arguments: ['@doctrine.orm.entity_manager']

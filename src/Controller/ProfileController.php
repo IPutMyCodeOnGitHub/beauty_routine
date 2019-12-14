@@ -25,12 +25,9 @@ class ProfileController extends AbstractController
     {
         /** @var User $user */
         $user = $this->getUser();
-        $certificates = $user->getUserCertificates();
+
         return $this->render('profile-expert/profile-expert.html.twig', [
-            'name' => $user->getName(),
-            'email' => $user->getEmail(),
-            'id' => $user->getId(),
-            //'certificatesPaths' => $certificates,
+            'user' => $user,
         ]);
     }
 
@@ -41,9 +38,9 @@ class ProfileController extends AbstractController
     {
         /** @var User $user */
         $user = $this->getUser();
+
         return $this->render('profile-expert/profile-expert-edit.html.twig', [
-            'name' => $user->getName(),
-            'email' => $user->getEmail(),
+            'user' => $user,
         ]);
     }
 }

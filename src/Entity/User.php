@@ -263,4 +263,8 @@ class User implements UserInterface
         }
     }
 
+    public function isValid(): bool
+    {
+        return !(bool)$this->verifyCode;
+    }
 }

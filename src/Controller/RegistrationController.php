@@ -36,19 +36,18 @@ class RegistrationController extends AbstractController
         $userForm = $this->createForm(RegistrationUserFormType::class, $user);
         $userForm->handleRequest($request);
 
-        $redirectRouteUser = $this->registerService->registerUser($userForm, $user, $passwordEncoder, $uploaderHelper);
-        $redirectRouteExpert = $this->registerService->registerUser($expertForm, $user, $passwordEncoder, $uploaderHelper);
+        $registeredUser = $this->registerService->registerUser($userForm, $user, $passwordEncoder, $uploaderHelper);
 
-        if($redirectRouteUser){
-            $redirectRoute = $redirectRouteUser;
-        } else {
-            $redirectRoute = $redirectRouteExpert;
-        }
-        if ($redirectRoute) {
-            return $this->redirectToRoute($redirectRoute);
+        if ($registeredUser) {
+            return $this->redirectToRoute('app.login');
         }
 
-        //TODO: to redirect users not to login, because they don't have e-mail verification yet
+        $registeredExpert = $this->registerService->registerUser($expertForm, $user, $passwordEncoder, $uploaderHelper);
+
+        if ($registeredExpert) {
+            return $this->redirectToRoute('app.expert.login');
+        }
+
         return $this->render('registration/register.html.twig', [
             'registrationUserForm' => $userForm->createView(),
             'registrationExpertForm' => $expertForm->createView(),
@@ -57,8 +56,10 @@ class RegistrationController extends AbstractController
     /**
      * @Route("/verify/{verifyCode}", name="verification")
      */
-    public function userVerification(Request $request, string $verifyCode)
+    public function userVerification(Request $request, string $verifyCode): Response
     {
         $redirectRoute = $this->registerService->verifyUser($verifyCode);
+
+        return $this->redirectToRoute('app.login');
     }
 }

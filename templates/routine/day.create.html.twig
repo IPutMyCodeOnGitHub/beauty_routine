@@ -8,13 +8,11 @@
                 {% include('routine/left-panel.html.twig') %}
             </div>
             <div class="col-md-9">
-                <h1 class="pb-3">Создание программы</h1>
+                <h1 class="pb-3">Создание дня</h1>
 
                 <div class="col-sm-12 pb-4">
                     {{ form_start(form) }}
-                    {{ form_row(form.type) }}
-                    {{ form_row(form.photo) }}
-                    <button type="submit" class="btn-primary btn">Сохранить</button>
+                    {{ form_widget(form) }}
                     {{ form_end(form) }}
                 </div>
 

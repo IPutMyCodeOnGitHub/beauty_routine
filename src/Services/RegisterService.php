@@ -51,25 +51,32 @@ class RegisterService
         }
     }
 
-    public function registerUser(Form $userForm, User $user,
-                                       UserPasswordEncoderInterface $passwordEncoder,
-                                       UploaderHelper $uploaderHelper) : ?string
+    public function registerUser(
+        Form $userForm,
+        User $user,
+        UserPasswordEncoderInterface $passwordEncoder,
+        UploaderHelper $uploaderHelper
+    ): ?User
     {
-        $redirectRoute = null;
         if ($userForm->isSubmitted() && $userForm->isValid())
         {
             $formName = $userForm->getName();
+
             if ($formName == self::EXPERT_FORM_TYPE){
                 $user->setRoles([User::ROLE_INVALID_EXPERT]);
             }
+
             if ($formName == self::USER_FORM_TYPE){
                 $user->setRoles([User::ROLE_USER]);
             }
+
             $this->saveForm($userForm, $user, $passwordEncoder, $uploaderHelper);
             $this->emailVerification($user);
-            $redirectRoute = 'app.login';
+
+            return $user;
         }
-        return $redirectRoute;
+
+        return null;
     }
 
     public function saveForm(Form $form, User $user, UserPasswordEncoderInterface $passwordEncoder, UploaderHelper $uploaderHelper): void
