@@ -8,7 +8,7 @@ use App\Entity\RoutineType;
 use App\Entity\User;
 use App\Form\RoutineDayType;
 use App\Form\RoutineFormType;
-use App\Services\UploaderHelper;
+use App\Services\RoutineService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -24,9 +24,6 @@ class RoutineController extends AbstractController
      */
     public function listRoutines(): Response
     {
-        /**
-         * @var User $expert
-         */
         $expert = $this->getUser();
 
         if (!$expert) {
@@ -41,35 +38,20 @@ class RoutineController extends AbstractController
     /**
      * @Route("/expert/routine/create", name="expert.routine.create")
      */
-    public function create(Request $request, UploaderHelper $uploaderHelper): Response
+    public function create(Request $request, RoutineService $routineService): Response
     {
         $routine = new Routine();
-        $form = $this->createForm(RoutineFormType::class, $routine);
 
+        $form = $this->createForm(RoutineFormType::class, $routine);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            $photo = $form['photo']->getData();
-            $photoName = $uploaderHelper->uploadFile($photo, UploaderHelper::ROUTINE_PHOTO_PATH);
-
-            if ($photo) {
-                $routine->setPhoto(UploaderHelper::ROUTINE_PHOTO_PATH . $photoName);
-            }
-
-            $entityManager = $this->getDoctrine()->getManager();
-            $routine->setStatus(Routine::STATUS_DRAFT);
-            $routine->setUser($this->getUser());
-
-            $entityManager->persist($routine);
-            try {
-                $entityManager->flush();
+            $result = $routineService->createRoutineForm($this->getUser(), $form, $routine);
+            if ($result) {
                 $this->addFlash('success', 'Routine added!');
-            } catch (\Exception $e) {
-                if ($photoName != '') {
-                    $uploaderHelper->deleteFile($photoName, UploaderHelper::CERTIFICATE_PATH);
-                }
-                $this->addFlash('danger', 'Sorry, that was an error.');
+            } else {
+                $this->addFlash('danger', 'Error. Routine was not added.');
             }
         }
 
@@ -79,9 +61,40 @@ class RoutineController extends AbstractController
     }
 
     /**
+     * @Route("/expert/routine/{id}/day/create", name="expert.day.routine.create")
+     */
+    public function createDay(int $id, Request $request, RoutineService $routineService): Response
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+
+        $routine = $entityManager->getRepository(Routine::class)->find($id);
+
+        if (!$routine) {
+            throw $this->createNotFoundException('Routine does not exist');
+        }
+
+        $routineDay = new RoutineDay();
+        $form = $this->createForm(RoutineDayType::class, $routineDay);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $result = $routineService->createDay($routineDay, $routine);
+            if ($result) {
+                $this->addFlash('success', 'Day added!');
+                return $this->redirectToRoute('expert.routine.edit', ['id' => $id]);
+            } else {
+                $this->addFlash('danger', 'Sorry, that was an error.');
+            }
+        }
+        return $this->render('routine/day.create.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
+
+    /**
      * @Route("/expert/routine/edit/{id}", name="expert.routine.edit")
      */
-    public function edit(Request $request, int $id, UploaderHelper $uploaderHelper): Response
+    public function edit(Request $request, int $id, RoutineService $routineService): Response
     {
         $entityManager = $this->getDoctrine()->getManager();
         /**
@@ -97,53 +110,24 @@ class RoutineController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $photo = $form['photo']->getData();
-            $photoName = $uploaderHelper->uploadFile($photo, UploaderHelper::ROUTINE_PHOTO_PATH);
-            if ($photo) {
-                if ($routine->getPhoto()){
-                    $uploaderHelper->deleteFile($routine->getPhoto(), '');
-                }
-                $routine->setPhoto(UploaderHelper::ROUTINE_PHOTO_PATH . $photoName);
-            }
-
-            $entityManager->persist($routine);
-            try {
-                $entityManager->flush();
+            $result = $routineService->editRoutine($form, $routine);
+            if ($result) {
                 $this->addFlash('success', 'Routine updated!');
-            } catch (\Exception $e) {
-                if ($photoName != '') {
-                    $uploaderHelper->deleteFile($photoName, UploaderHelper::CERTIFICATE_PATH);
-                }
-                $this->addFlash('danger', 'Sorry, that was an error.');
-            }
-        }
-
-        $routineDay = new RoutineDay();
-        $formDay = $this->createForm(RoutineDayType::class, $routineDay);
-        $formDay->handleRequest($request);
-
-        if ($formDay->isSubmitted() && $formDay->isValid()) {
-            $routineDay->setRoutine($routine);
-            $entityManager->persist($routineDay);
-            try {
-                $entityManager->flush();
-                $this->addFlash('success', 'Day added!');
-            } catch (\Exception $e) {
+            } else {
                 $this->addFlash('danger', 'Sorry, that was an error.');
             }
         }
 
         return $this->render('routine/edit.html.twig', [
             'form' => $form->createView(),
-            'formDay' => $formDay->createView(),
-            'days' => $routine->getRoutineDays(),
+            'routine' => $routine,
         ]);
     }
 
     /**
-     * @Route("/expert/routine/edit/{id}/day/{dayId}", name="expert.routine.day.edit")
+     * @Route("/expert/routine/{id}/day/{dayId}/edit", name="expert.routine.day.edit")
      */
-    public function editDay(Request $request, int $id, int $dayId): Response
+    public function editDay(Request $request, int $id, int $dayId, RoutineService $routineService): Response
     {
         $entityManager = $this->getDoctrine()->getManager();
         $routineDay = $entityManager->getRepository(RoutineDay::class)->find($dayId);
@@ -153,26 +137,25 @@ class RoutineController extends AbstractController
             return $this->redirectToRoute('routine.edit', ['id' => $id, 'dayId' => $dayId]);
         }
 
-        $formDay = $this->createForm(RoutineDayType::class, $routineDay);
-        $formDay->handleRequest($request);
-        if ($formDay->isSubmitted() && $formDay->isValid()) {
-            $entityManager->persist($routineDay);
-            try {
-                $entityManager->flush();
+        $form = $this->createForm(RoutineDayType::class, $routineDay);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $result =$routineService->editDay($routineDay);
+            if ($result) {
                 $this->addFlash('success', 'Day updated!');
                 return $this->redirectToRoute('routine.edit', ['id' => $id, 'dayId' => $dayId]);
-            } catch (\Exception $e) {
+            } else {
                 $this->addFlash('danger', 'Sorry, that was an error.');
             }
         }
 
         return $this->render('routine/day.edit.html.twig', [
-            'form' => $formDay->createView(),
+            'form' => $form->createView(),
         ]);
     }
 
     /**
-     * @Route("/expert/routine/edit/{id}/day/{dayId}/delete", name="expert.routine.day.delete")
+     * @Route("/expert/routine/{id}/day/{dayId}/delete", name="expert.routine.day.delete")
      */
     public function deleteDay(Request $request, int $id, int $dayId): Response
     {
