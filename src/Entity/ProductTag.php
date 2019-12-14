@@ -19,9 +19,9 @@ class ProductTag
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, unique=true)
      */
-    private $title;
+    private $tag;
 
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\Product", mappedBy="tag")
@@ -38,14 +38,14 @@ class ProductTag
         return $this->id;
     }
 
-    public function getTitle(): ?string
+    public function getTag(): ?string
     {
-        return $this->title;
+        return $this->tag;
     }
 
-    public function setTitle(string $title): self
+    public function setTag(string $tag): self
     {
-        $this->title = $title;
+        $this->tag = $tag;
 
         return $this;
     }

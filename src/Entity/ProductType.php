@@ -19,9 +19,9 @@ class ProductType
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, unique=true)
      */
-    private $title;
+    private $type;
 
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\Product", mappedBy="type")
@@ -38,14 +38,14 @@ class ProductType
         return $this->id;
     }
 
-    public function getTitle(): ?string
+    public function getType(): ?string
     {
-        return $this->title;
+        return $this->type;
     }
 
-    public function setTitle(string $title): self
+    public function setType(string $type): self
     {
-        $this->title = $title;
+        $this->type = $type;
 
         return $this;
     }
