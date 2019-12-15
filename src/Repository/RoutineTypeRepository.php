@@ -8,12 +8,6 @@ use Doctrine\Common\Persistence\ManagerRegistry;
 use Knp\Component\Pager\Pagination\PaginationInterface;
 use Knp\Component\Pager\Paginator;
 
-/**
- * @method RoutineType|null find($id, $lockMode = null, $lockVersion = null)
- * @method RoutineType|null findOneBy(array $criteria, array $orderBy = null)
- * @method RoutineType[]    findAll()
- * @method RoutineType[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
- */
 class RoutineTypeRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry, Paginator  $paginator)

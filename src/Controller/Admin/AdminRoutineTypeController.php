@@ -4,7 +4,6 @@ namespace App\Controller\Admin;
 
 use App\Entity\RoutineType;
 use App\Form\TypeOfRoutineType;
-use App\Services\RoutineTypeService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -33,7 +32,7 @@ class AdminRoutineTypeController extends AbstractController
     /**
      * @Route("/type/create", name="type.create", methods={"GET", "POST"})
      */
-    public function routineTypesCreate(Request $request, RoutineTypeService $routineTypeService): Response
+    public function routineTypesCreate(Request $request): Response
     {
         $type = new RoutineType();
 

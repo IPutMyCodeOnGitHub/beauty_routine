@@ -2,11 +2,7 @@
 
 namespace App\Controller\Admin;
 
-use App\Entity\RoutineType;
 use App\Entity\User;
-use App\Form\TypeOfRoutineType;
-use App\Services\RegisterService;
-use App\Services\RoutineTypeService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
