@@ -33,6 +33,21 @@ function routineSub(path, id) {
     });
 }
 
+function deleteRoutine(path, index) {
+    $.ajax({
+        url: path,
+        dataType: 'text',
+    }).done(function (result) {
+        if (result == 1) {
+            $('.card-footer-' + index).html("Удалено");
+        } else {
+            $('.card-footer-' + index).filter( ':last' ).append("<p class='pt-2 pb-2'>Ошибка удаления</p>");
+        }
+    }).fail(function (textStatus,errorThrown) {
+        $('.card-footer-' + index).filter( ':last' ).append("<p class='pt-2 pb-2'>Ошибка удаления</p>");
+    });
+}
+
 function deleteDay(path, index) {
     $.ajax({
         url: path,
@@ -48,10 +63,10 @@ function deleteDay(path, index) {
     });
 }
 
-function validExpert(id) {
+function validExpert(path, id) {
     $.ajax({
         type: "POST",
-        url: '/admin/experts/' + id + '/validation',
+        url: path,
         dataType: 'html',
     }).done(function (result) {
         if ((result == '0') || (result != id) ) {
