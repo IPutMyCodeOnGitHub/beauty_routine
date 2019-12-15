@@ -71,8 +71,8 @@ class RoutineController extends AbstractController
             return new Response(0);
         }
 
-//        $entityManager->remove($routine);
-//        $entityManager->flush();
+        $entityManager->remove($routine);
+        $entityManager->flush();
 
         return new Response(1);
     }
@@ -285,13 +285,9 @@ class RoutineController extends AbstractController
 
         if (!$routine) {
             return new Response(0);
-//            $this->addFlash('danger', 'Sorry, routine doesn\'t exists.');
-//            return $this->redirectToRoute('user.routine');
         }
         if (!$user) {
             return new Response(0);
-//            $this->addFlash('danger', 'Sorry, user doesn\'t exists.');
-//            return $this->redirectToRoute('user.routine');
         }
 
         $routine->addSubscriber($user);
@@ -300,10 +296,8 @@ class RoutineController extends AbstractController
         try{
             $entityManager->flush();
             return new Response(1);
-//            $this->addFlash('success', 'You are subscribed.');
         } catch(\Exception $e) {
             return new Response(0);
-//            $this->addFlash('danger', 'Sorry, error.');
         }
     }
 

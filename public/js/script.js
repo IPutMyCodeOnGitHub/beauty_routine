@@ -63,10 +63,10 @@ function deleteDay(path, index) {
     });
 }
 
-function validExpert(id) {
+function validExpert(path, id) {
     $.ajax({
         type: "POST",
-        url: '/admin/experts/' + id + '/validation',
+        url: path,
         dataType: 'html',
     }).done(function (result) {
         if ((result == '0') || (result != id) ) {
