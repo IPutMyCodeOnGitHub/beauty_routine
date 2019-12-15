@@ -35,6 +35,31 @@ class AdminExpertController extends AbstractController
     }
 
     /**
+     * @Route("/experts/{id}/delete", name="experts.delete", methods={"POST"})
+     */
+    public function ajaxExpertDelete(int $id, Request $request, RegisterService $userService): Response
+    {
+        if (!$request->isXmlHttpRequest()) {
+            return new Response('0');
+        }
+
+        $entityManager = $this->getDoctrine()->getManager();
+
+        $user = $entityManager
+            ->getRepository(User::class)
+            ->find($id);
+
+        if (!$user) {
+            return new Response(0);
+        }
+
+        $entityManager->remove($user);
+        $entityManager->flush();
+
+        return new Response(1);
+    }
+
+    /**
      * @Route("/experts", name="experts", methods={"GET"})
      */
     public function manageExperts(Request $request): Response

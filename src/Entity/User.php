@@ -266,4 +266,9 @@ class User implements UserInterface
     {
         return !(bool)$this->verifyCode;
     }
+
+    public function isApproved(): bool
+    {
+        return (bool)in_array(User::ROLE_EXPERT, $this->getRoles()) ? true: false;
+    }
 }

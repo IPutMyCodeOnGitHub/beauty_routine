@@ -38,4 +38,29 @@ class AdminUserController extends AbstractController
             'users' => $users,
         ]);
     }
+
+    /**
+     * @Route("/users/{id}/delete", name="users.delete", methods={"POST"})
+     */
+    public function ajaxUserDelete(int $id, Request $request, RegisterService $userService): Response
+    {
+        if (!$request->isXmlHttpRequest()) {
+            return new Response('0');
+        }
+
+        $entityManager = $this->getDoctrine()->getManager();
+
+        $user = $entityManager
+            ->getRepository(User::class)
+            ->find($id);
+
+        if (!$user) {
+            return new Response(0);
+        }
+
+        $entityManager->remove($user);
+        $entityManager->flush();
+
+        return new Response(1);
+    }
 }
