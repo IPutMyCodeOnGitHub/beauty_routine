@@ -54,7 +54,13 @@ class RoutineRepository extends ServiceEntityRepository
         return $query;
     }
 
-    public function searchRoutinePaginator(?String $expert, ?RoutineType $type, int $page = 1, ?User $subscriber, string $status = Routine::STATUS_ACTIVE, int $countObj = 10): ?PaginationInterface
+    public function searchRoutinePaginator(
+        ?String $expert,
+        ?RoutineType $type,
+        int $page = 1,
+        ?User $subscriber,
+        string $status = Routine::STATUS_ACTIVE,
+        int $countObj = 10): ?PaginationInterface
     {
         $queryBuilder = $this->getQueryBuilderSearchRoutines($expert, $type, $subscriber, $status);
 //dd($expert, $queryBuilder->getQuery());

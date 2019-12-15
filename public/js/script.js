@@ -33,7 +33,7 @@ function routineSub(path, id) {
     });
 }
 
-function deleteUser(path, id) {
+function deleteFromTable(path, id) {
     $.ajax({
         type: "POST",
         url: path,

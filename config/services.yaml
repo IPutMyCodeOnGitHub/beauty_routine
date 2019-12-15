@@ -31,6 +31,10 @@ services:
         arguments:
             $paginator: '@knp_paginator'
 
+    App\Repository\RoutineTypeRepository:
+        arguments:
+            $paginator: '@knp_paginator'
+
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
     App\Services\RegisterService:
@@ -41,4 +45,7 @@ services:
             $uploadsPath: '%uploadsPath%'
 
     App\Services\RoutineService:
+        arguments: ['@doctrine.orm.entity_manager']
+
+    App\Services\RoutineTypeService:
         arguments: ['@doctrine.orm.entity_manager']

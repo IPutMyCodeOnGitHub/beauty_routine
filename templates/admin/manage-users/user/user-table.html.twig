@@ -34,7 +34,7 @@
                 </button>
             </td>
             <td class="exist-{{ user.id }}">
-                <button onclick="deleteUser('{{ path('admin.users.delete', {id: user.id}) }}', {{ user.id }})" class="btn">Delete</button>
+                <button onclick="deleteFromTable('{{ path('admin.users.delete', {id: user.id}) }}', {{ user.id }})" class="btn">Delete</button>
             </td>
         </tr>
         <tr>
