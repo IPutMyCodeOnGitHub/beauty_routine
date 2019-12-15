@@ -60,6 +60,24 @@ class RoutineController extends AbstractController
     }
 
     /**
+     * @Route("/expert/routine/{id}/delete", name="expert.routine.delete")
+     */
+    public function delete(int $id, Request $request, RoutineService $routineService): Response
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+        $routine = $entityManager->getRepository(Routine::class)->find($id);
+
+        if (!$routine) {
+            return new Response(0);
+        }
+
+//        $entityManager->remove($routine);
+//        $entityManager->flush();
+
+        return new Response(1);
+    }
+
+    /**
      * @Route("/expert/routine/{id}/day/create", name="expert.day.routine.create")
      */
     public function createDay(int $id, Request $request, RoutineService $routineService): Response
@@ -92,7 +110,7 @@ class RoutineController extends AbstractController
     }
 
     /**
-     * @Route("/expert/routine/edit/{id}", name="expert.routine.edit")
+     * @Route("/expert/routine/{id}/edit", name="expert.routine.edit")
      */
     public function edit(Request $request, int $id, RoutineService $routineService): Response
     {
