@@ -5,16 +5,14 @@
     <div class="container">
         <div class="row flex-column flex-sm-row mt-4">
             <div class="col-md-3">
-                {% include('routine/left-panel.html.twig') %}
+                {% include('product/left-panel.html.twig') %}
             </div>
             <div class="col-md-9">
-                <h1 class="pb-3">Program creating</h1>
+                <h1 class="pb-3">Product tag creating</h1>
 
                 <div class="col-sm-12 pb-4">
                     {{ form_start(form) }}
-                    {{ form_row(form.type) }}
-                    {{ form_row(form.photo) }}
-                    <button type="submit" class="btn-primary btn">Save</button>
+                    {{ form_row(form.tag) }}
                     {{ form_end(form) }}
                 </div>
 

@@ -22,13 +22,13 @@ class RoutineFormType extends AbstractType
         $builder
             ->add('type', EntityType::class, [
                 'class' => RoutineType::class,
-                'label' => 'Тип программы',
+                'label' => 'Type of program',
                 'choice_label' => function(RoutineType $routineType) {
                     return $routineType->getType();
                 }
             ])
             ->add('photo', FileType::class, [
-                'label' => 'Фото программы',
+                'label' => 'Photo of program',
                 'mapped' => false,
                 'required' => false,
                 'constraints' => [

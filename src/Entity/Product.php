@@ -48,6 +48,11 @@ class Product
      */
     private $tag;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $photo;
+
     public function __construct()
     {
         $this->type = new ArrayCollection();
@@ -155,6 +160,18 @@ class Product
         if ($this->tag->contains($tag)) {
             $this->tag->removeElement($tag);
         }
+
+        return $this;
+    }
+
+    public function getPhoto(): ?string
+    {
+        return $this->photo;
+    }
+
+    public function setPhoto(?string $photo): self
+    {
+        $this->photo = $photo;
 
         return $this;
     }
