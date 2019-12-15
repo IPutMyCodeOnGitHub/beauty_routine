@@ -1,0 +1,82 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block body %}
+    {% include 'admin/navigation.html.twig' %}
+    <div class="container">
+        <div class="row flex-column flex-sm-row mt-4">
+            <div class="col-md-12">
+                <h1 class="pb-4">All routines</h1>
+
+                {% include('flashes.html.twig') %}
+
+                <div class="search-panel pb-5">
+                    <form action="{{ path('admin.routine') }}" method="get" class="form-inline">
+                        <div class="form-group mx-sm-3 mb-2">
+                            <input type="text" class="form-control" name="expert" id="findExpert" placeholder="Expert\'s name"
+                                    {% if (app.request.get('expert')) %} value="{{ app.request.get('expert') }}" {% endif %}>
+                        </div>
+                        <div class="form-group mx-sm-3 mb-2">
+                            <label for="type" class="pr-3">Type of care</label>
+                            <select class="form-control" id="type" name="type" >
+                                <option {% if not (app.request.get('expert')) %} selected {% endif %}>
+                                    Любой
+                                </option>
+                                {% for type in types %}
+                                    <option value="{{ type.id }}" {% if type.id == app.request.get('type') %} selected {% endif %}>{{ type.type }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary mb-2">Поиск</button>
+                    </form>
+                </div>
+
+                <h4>Count of routines: ({{ routines.getTotalItemCount }})</h4>
+
+                <table  class="table table-responsive pt-3">
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Id</th>
+                        <th scope="col">Creator</th>
+                        <th scope="col">Type</th>
+                        <th scope="col">Photo</th>
+                        <th scope="col">Subscribers</th>
+                        <th scope="col">Edit</th>
+                        <th scope="col">Delete</th>
+                    </tr>
+                    {% for routine in routines %}
+                        <tr>
+                            <th scope="row">
+                                {{ loop.index }}
+                            </th>
+                            <td>
+                                {{ routine.id }}
+                            </td>
+                            <td>
+                                {{ routine.user.name }}
+                            </td>
+                            <td>
+                                {{ routine.type.type }}
+                            </td>
+                            <td>
+                                {% if routine.photo %}
+                                    <img src="{{ asset(routine.photo)}}" class="card-img-top" alt="...">
+                                {% endif %}
+                            </td>
+                            <td>
+                                {{ routine.getSubscriber.count }}
+                            </td>
+                            <td class="exist-{{ routine.id }}">
+{#                                <a href="#" class="btn btn-primary">Edit</a>#}
+                            </td>
+                            <td class="exist-{{ routine.id }}">
+{#                                <button onclick="deleteFromTable('{{ path('admin.type.delete', {id: type.id}) }}', {{ type.id }})" class="btn">Delete</button>#}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </table>
+                {{ knp_pagination_render(routines) }}
+
+            </div>
+        </div>
+    </div>
+{% endblock %}

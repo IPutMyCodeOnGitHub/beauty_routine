@@ -33,18 +33,20 @@ function routineSub(path, id) {
     });
 }
 
-function deleteRoutine(path, index) {
+function deleteFromTable(path, id) {
     $.ajax({
+        type: "POST",
         url: path,
         dataType: 'text',
     }).done(function (result) {
         if (result == 1) {
-            $('.card-footer-' + index).html("Удалено");
+            $('td.exist-' + id).html("");
+            $('td.exist-' + id).filter( ':last' ).html("Удалён");
         } else {
-            $('.card-footer-' + index).filter( ':last' ).append("<p class='pt-2 pb-2'>Ошибка удаления</p>");
+            $('td.exist-' + id).filter( ':last' ).append("<p class='pt-2 pb-2'>Ошибка удаления</p>");
         }
     }).fail(function (textStatus,errorThrown) {
-        $('.card-footer-' + index).filter( ':last' ).append("<p class='pt-2 pb-2'>Ошибка удаления</p>");
+        $('td.exist-' + id).filter( ':last' ).append("<p class='pt-2 pb-2'>Ошибка удаления</p>");
     });
 }
 

@@ -1,0 +1,26 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block body %}
+    {% include 'admin/navigation.html.twig' %}
+
+    <div class="container">
+        <div class="row flex-column flex-sm-row mt-4">
+            <div class="col-md-3">
+                {% include('admin/routine.type/left-panel.html.twig') %}
+            </div>
+
+            <div class="col-md-9">
+                <h1>Create new type of product</h1>
+
+                {% include('flashes.html.twig') %}
+
+                {{ form_start(form) }}
+                {{ form_widget(form) }}
+                {{ form_end(form) }}
+
+            </div>
+
+        </div>
+    </div>
+
+{% endblock %}
