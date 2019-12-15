@@ -33,6 +33,23 @@ function routineSub(path, id) {
     });
 }
 
+function deleteFromTable(path, id) {
+    $.ajax({
+        type: "POST",
+        url: path,
+        dataType: 'text',
+    }).done(function (result) {
+        if (result == 1) {
+            $('td.exist-' + id).html("");
+            $('td.exist-' + id).filter( ':last' ).html("Удалён");
+        } else {
+            $('td.exist-' + id).filter( ':last' ).append("<p class='pt-2 pb-2'>Ошибка удаления</p>");
+        }
+    }).fail(function (textStatus,errorThrown) {
+        $('td.exist-' + id).filter( ':last' ).append("<p class='pt-2 pb-2'>Ошибка удаления</p>");
+    });
+}
+
 function deleteDay(path, index) {
     $.ajax({
         url: path,
@@ -48,10 +65,10 @@ function deleteDay(path, index) {
     });
 }
 
-function validExpert(id) {
+function validExpert(path, id) {
     $.ajax({
         type: "POST",
-        url: '/admin/experts/' + id + '/validation',
+        url: path,
         dataType: 'html',
     }).done(function (result) {
         if ((result == '0') || (result != id) ) {

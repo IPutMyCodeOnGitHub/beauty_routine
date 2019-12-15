@@ -24,14 +24,7 @@
         <div class="tab-content row justify-content-center pt-4" id="tab">
             <a class="nav-link active" href="{{ path('expert.routine.create') }}">Create program</a>
         </div>
-       {# <div class="tab-content row justify-content-center pt-4" id="tab">
-            {{ user.routine }}
-        </div>
-        #}
-        {#{% for certificate in user.certificates %}
-
-        {% endfor %}#}
+        {% for certificate in user.getUserCertificates %}
+        {% endfor %}
     </div>
-
-
 {% endblock %}
