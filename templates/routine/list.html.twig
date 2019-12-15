@@ -16,12 +16,12 @@
                             {% endif %}
                             <div class="card-body">
                                 <h5 class="card-title">{{ routine.user.name }}</h5>
-                                <p class="card-text">Количество дней программы: {{ routine.getRoutineDays.count }}</p>
-                                <p class="card-text">Тип: {{ routine.type.type }}</p>
+                                <p class="card-text">Number of days in program: {{ routine.getRoutineDays.count }}</p>
+                                <p class="card-text">Type: {{ routine.type.type }}</p>
                             </div>
                             <div class="card-footer">
-                                <a href="{{ path('expert.routine.edit', {'id' : routine.id}) }}" class="btn btn-primary mb-3">Редактировать</a>
-                                <a href="#" class="btn btn-warning">Удалить</a>
+                                <a href="{{ path('expert.routine.edit', {'id' : routine.id}) }}" class="btn btn-primary mb-3">Edit</a>
+                                <a href="#" class="btn btn-warning">Delete</a>
                             </div>
                         </div>
                     </div>

@@ -9,7 +9,7 @@
             <div class="col-md-9">
                 <h2 class="pt-4 pb-4">
                     <a data-toggle="collapse" href="#routineForm" aria-expanded="true" aria-controls="routineForm">
-                        Редактирование типа программы
+                        Program type editing
                     </a>
                 </h2>
                 <div class="collapse show" id="routineForm">
@@ -17,10 +17,10 @@
                         {{ form_start(form) }}
                         {{ form_widget(form) }}
                         <div class="form-group">
-                            <label class="required" for="routine_form_type">Количество дней в программе: </label>
+                            <label class="required" for="routine_form_type">Day number in the program: </label>
                             <input class="order-value" type="text" name="routine_form[cycle]" value="{{ routine.getRoutineDays.count }}" disabled>
                         </div>
-                        <button type="submit" class="btn-primary btn">Сохранить</button>
+                        <button type="submit" class="btn-primary btn">Save</button>
                         {{ form_end(form) }}
                     </div>
                 </div>
@@ -36,11 +36,11 @@
                     </div>
                 {% endfor %}
 
-                <a href="{{ path('expert.day.routine.create', {id : routine.id}) }}" class="btn btn-primary">Добавление дней</a>
+                <a href="{{ path('expert.day.routine.create', {id : routine.id}) }}" class="btn btn-primary">Day adding</a>
 
                 <h2 class="pt-4 pb-4">
                     <a data-toggle="collapse" href="#listDayForm" aria-expanded="true" aria-controls="listDayForm">
-                        Список дней
+                        List of days
                     </a>
                 </h2>
                 <div class="collapse show" id="listDayForm">
@@ -49,9 +49,9 @@
                             <tr>
                                 <th scope="col">#</th>
                                 <th scope="col">Id</th>
-                                <th scope="col">День рутины</th>
-                                <th scope="col">Редактирование</th>
-                                <th scope="col">Удаление</th>
+                                <th scope="col">Day of routine</th>
+                                <th scope="col">Edit</th>
+                                <th scope="col">Delete</th>
                             </tr>
                             {% for day in routine.getRoutineDays %}
                                 <tr>
@@ -59,9 +59,9 @@
                                     <td>{{ day.id }}</td>
                                     <td>{{ day.getDayOrder }}</td>
                                     <td class="day-{{loop.index}}">
-                                        <a href="{{ path('expert.routine.day.edit', {id: routine.id, dayId: day.id})}}" class="btn btn-primary">Редактировать</a></td>
+                                        <a href="{{ path('expert.routine.day.edit', {id: routine.id, dayId: day.id})}}" class="btn btn-primary">Edit</a></td>
                                     <td class="day-{{loop.index}}">
-                                        <button class="btn btn-primary" onclick='deleteDay("{{ path('expert.routine.day.delete', {id: routine.id, dayId: day.id})}}", {{loop.index}})' class="delete-day">Удалить</button></td>
+                                        <button class="btn btn-primary" onclick='deleteDay("{{ path('expert.routine.day.delete', {id: routine.id, dayId: day.id})}}", {{loop.index}})' class="delete-day">Delete</button></td>
                                 </tr>
                             {% endfor %}
                         </table>

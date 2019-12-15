@@ -7,7 +7,7 @@
             {% include('routine/user.left-panel.html.twig') %}
         </div>
         <div class="col-md-9">
-            <h1 class="pb-4">Все программы</h1>
+            <h1 class="pb-4">All programs</h1>
             {% for message in app.flashes('success') %}
                 <div class="alert alert-success" role="alert">
                     {{ message }}
@@ -22,22 +22,22 @@
             <div class="search-panel pb-5">
                 <form action="{{ path('user.routine') }}" method="get" class="form-inline">
                     <div class="form-group mx-sm-3 mb-2">
-                        <input type="text" class="form-control" name="expert" id="findExpert" placeholder="Имя эксперта"
+                        <input type="text" class="form-control" name="expert" id="findExpert" placeholder="Name of expert"
                                 {% if (app.request.get('expert')) %} value="{{ app.request.get('expert') }}" {% endif %}>
                     </div>
                     <div class="form-group mx-sm-3 mb-2">
-                        <label for="type" class="pr-3">Тип ухода</label>
+                        <label for="type" class="pr-3">Type of care</label>
                         <select class="form-control" id="type" name="type" >
-                            <option {% if not (app.request.get('expert')) %} selected {% endif %}>Любой</option>
+                            <option {% if not (app.request.get('expert')) %} selected {% endif %}>Any</option>
                             {% for type in types %}
                                 <option value="{{ type.id }}" {% if type.id == app.request.get('type') %} selected {% endif %}>{{ type.type }}</option>
                             {% endfor %}
                         </select>
                     </div>
-                    <button type="submit" class="btn btn-primary mb-2">Поиск</button>
+                    <button type="submit" class="btn btn-primary mb-2">Search</button>
                 </form>
             </div>
-            <h4 class="pb-4">Количество программ: {{ routines.getTotalItemCount }}</h4>
+            <h4 class="pb-4">Number of programs: {{ routines.getTotalItemCount }}</h4>
             <div class="card-deck">
                 {% for routine in routines %}
                 <div class="col-sm-4 mb-3">
@@ -47,16 +47,16 @@
                         {% endif %}
                         <div class="card-body">
                             <h5 class="card-title">{{ routine.user.name }}</h5>
-                            <p class="card-text">Количество дней программы: {{ routine.getRoutineDays.count }}</p>
-                            <p class="card-text">Тип: {{ routine.type.type }}</p>
+                            <p class="card-text">Number of days in program: {{ routine.getRoutineDays.count }}</p>
+                            <p class="card-text">Type: {{ routine.type.type }}</p>
                         </div>
                         <div class="card-footer">
-                            <a href="{{ path('user.routine.show', {id: routine.id}) }}" class="btn btn-primary mb-2">Смотреть</a>
+                            <a href="{{ path('user.routine.show', {id: routine.id}) }}" class="btn btn-primary mb-2">Show</a>
                             <div class="routine-sub-{{ routine.id }}">
                                 {% if user not in routine.getSubscriber %}
-                                    <button onclick="routineSub('{{ path('user.sub.routine', {id: routine.id}) }}', {{ routine.id }})" class="btn btn-primary mb-2">Подписаться</button>
+                                    <button onclick="routineSub('{{ path('user.sub.routine', {id: routine.id}) }}', {{ routine.id }})" class="btn btn-primary mb-2">Subscribe</button>
                                 {% else %}
-                                    Вы подписаны
+                                    You are subscribed
                                 {% endif %}
                             </div>
                         </div>

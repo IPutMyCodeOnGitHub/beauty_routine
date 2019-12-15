@@ -14,10 +14,10 @@ class RoutineDayType extends AbstractType
     {
         $builder
             ->add('dayOrder', null, [
-                'label' => 'День в программе'
+                'label' => 'Day in program'
             ])
             ->add('Submit', SubmitType::class, [
-                'label' => 'Сохранить',
+                'label' => 'Save',
             ]);
         ;
     }

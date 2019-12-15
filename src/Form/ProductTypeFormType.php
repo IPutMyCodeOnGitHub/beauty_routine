@@ -19,8 +19,7 @@ class ProductTypeFormType extends AbstractType
             ])
             ->add('Submit', SubmitType::class, [
                 'label' => 'Save',
-            ])
-        ;
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver)

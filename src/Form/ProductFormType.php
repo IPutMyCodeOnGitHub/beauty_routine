@@ -32,9 +32,10 @@ class ProductFormType extends AbstractType
             ])
             ->add('price', MoneyType::class, [
                 'label' => 'Price',
+                'currency' => 'RUB',
             ])
             ->add('type', EntityType::class, [
-                'class' => RoutineType::class,
+                'class' => ProductType::class,
                 'label' => 'Type of product',
                 'choice_label' => function(ProductType $productType) {
                     return $productType->getType();

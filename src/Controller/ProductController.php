@@ -23,7 +23,7 @@ class ProductController extends AbstractController
     }
 
     /**
-     * @Route("/product", name="product")
+     * @Route("/product", name="expert.product")
      */
     public function listProducts(): Response
     {
@@ -37,7 +37,7 @@ class ProductController extends AbstractController
     }
 
     /**
-     * @Route("/product/create", name="product.create")
+     * @Route("/product/create", name="expert.product.create")
      */
     public function createProduct(Request $request): Response
     {
