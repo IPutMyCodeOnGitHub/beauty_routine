@@ -1,12 +1,13 @@
 <div class="container">
     <nav class="admin-nav row justify-content-between">
-        <ul class="nav flex-column flex-sm-row">
+        <a class="navbar-brand" href="{{ path('profile') }}">Homy</a>
+        <ul class="nav flex-column flex-sm-row mr-auto">
             <li class="nav-item">
                 <a class="nav-link" href="{{ path('user.sub.routine.show') }}">My programs</a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="">My recommendations</a>
-            </li>
+{#            <li class="nav-item">#}
+{#                <a class="nav-link" href="">My recommendations</a>#}
+{#            </li>#}
             <li class="nav-item">
                 <a class="nav-link" href="{{ path('user.routine') }}">Search of care programs</a>
             </li>

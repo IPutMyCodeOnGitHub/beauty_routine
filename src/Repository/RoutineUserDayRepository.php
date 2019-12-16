@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\RoutineUserDay;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 
@@ -19,32 +20,18 @@ class RoutineUserDayRepository extends ServiceEntityRepository
         parent::__construct($registry, RoutineUserDay::class);
     }
 
-    // /**
-    //  * @return RoutineUserDay[] Returns an array of RoutineUserDay objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    public function getDayById(User $user, int $id, int $routineId): RoutineUserDay
     {
-        return $this->createQueryBuilder('r')
-            ->andWhere('r.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('r.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
+        $query = $this->createQueryBuilder('rd');
+        $query->andWhere('rd.id = :id')
+            ->setParameter('id', $id)
+            ->join('rd.routineSelection', 'rs')
+            ->andWhere('rs.user = :user')
+            ->setParameter('user', $user)
+            ->andWhere('rs.id = :routineId')
+            ->setParameter('routineId', $routineId)
         ;
-    }
-    */
 
-    /*
-    public function findOneBySomeField($value): ?RoutineUserDay
-    {
-        return $this->createQueryBuilder('r')
-            ->andWhere('r.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        return $query->getQuery()->getOneOrNullResult();
     }
-    */
 }

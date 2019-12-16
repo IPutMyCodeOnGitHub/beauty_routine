@@ -53,8 +53,12 @@
                                     <p class="card-text">Number of days in routine: {{ routine.getParentRoutine.getRoutineDays.count }}</p>
                                     <p class="card-text">Expert: {{ routine.getParentRoutine.user.name }}</p>
                                     <p class="card-text">Type: {{ routine.getParentRoutine.type.type }}</p>
-                                    <p class="card-text">Last completed date: {{ routine.lastCompletedDate }}</p>
-                                    <p class="card-text">Days completed: {{ routine.daysCompleted }}</p>
+                                    {% if routine.lastCompletedDate %}
+                                        <p class="card-text">Last completed date: {{ routine.lastCompletedDate }}</p>
+                                    {% endif %}
+                                    {% if routine.daysCompleted %}
+                                        <p class="card-text">Days completed: {{ routine.daysCompleted }}</p>
+                                    {% endif %}
                                 </div>
                                 <div class="card-footer routine-sub-{{ routine.id }}">
                                     <a href="{{ path('user.sub.routine.show.one', {id: routine.id}) }}" class="btn btn-primary mb-2">Show</a>

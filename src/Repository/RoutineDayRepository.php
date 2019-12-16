@@ -3,48 +3,14 @@
 namespace App\Repository;
 
 use App\Entity\RoutineDay;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 
-/**
- * @method RoutineDay|null find($id, $lockMode = null, $lockVersion = null)
- * @method RoutineDay|null findOneBy(array $criteria, array $orderBy = null)
- * @method RoutineDay[]    findAll()
- * @method RoutineDay[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
- */
 class RoutineDayRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, RoutineDay::class);
     }
-
-    // /**
-    //  * @return RoutineDay[] Returns an array of RoutineDay objects
-    //  */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('r')
-            ->andWhere('r.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('r.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?RoutineDay
-    {
-        return $this->createQueryBuilder('r')
-            ->andWhere('r.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }

@@ -74,6 +74,14 @@ class RoutineSelectionRepository extends ServiceEntityRepository
         );
     }
 
+    public function userRoutineSelection(?String $expert,
+                                         ?RoutineType $type,
+                                         ?User $subscriber): array
+    {
+        $queryBuilder = $this->getQueryBuilderSearchRoutinesSelection($expert, $type, $subscriber);
+        return $queryBuilder->getQuery()->getResult();
+    }
+
     public function getUserRoutine(User $user, int $id): ?RoutineSelection
     {
         $query = $this->createQueryBuilder('rs')

@@ -16,12 +16,18 @@
                                 <div class="card-body">
                                     <h5 class="card-title">Day order: {{ day.routineDay.dayOrder }}</h5>
                                     {% if day.getIsCompleted %}
-                                        <p class="card-text">Day completed: {{ day.dateCompleted }}</p>
+                                        <p class="card-text">Date completed: {{ day.dateCompleted|date("d/m/Y") }}</p>
                                     {% endif %}
                                     <p class="card-text"></p>
                                 </div>
-                                <div class="card-footer">
-                                    <a href="#" class="btn btn-primary">Complete</a>
+
+                                <div class="card-footer card-footer-{{ day.id }}">
+                                    {% if day.getIsCompleted%}
+                                        <span class="badge badge-secondary">Completed</span>
+                                    {% elseif (routine.daysCompleted + 1) == loop.index %}
+                                        <button onclick="completeDay('{{ path('user.routine.day.complete', {id: routine.id, dayId: day.id}) }}', {{ day.id }})" class="btn btn-primary btn-{{ day.id }}">Complete</button>
+                                    {% endif %}
+
                                     <a href="#" class="btn btn-primary">Edit</a>
                                 </div>
                             </div>

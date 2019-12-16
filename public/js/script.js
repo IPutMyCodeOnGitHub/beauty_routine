@@ -18,6 +18,22 @@ $(document).ready(function() {
 
 });
 
+function completeDay(path, id) {
+    console.log(path, id);
+    $.ajax({
+        url: path,
+        dataType: 'text',
+    }).done(function (result) {
+        if (result == 1) {
+            $('.btn-' + id).remove();
+            $('.card-footer-' + id).append('<span class="badge badge-secondary">Completed</span>');
+        }
+        console.log('Success');
+    }).fail(function (textStatus,errorThrown) {
+        console.log('fail',textStatus.responseText,errorThrown);
+    });
+}
+
 function unsubRoutine(path, id) {
     console.log(path, id);
     $.ajax({

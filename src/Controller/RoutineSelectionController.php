@@ -114,12 +114,12 @@ class RoutineSelectionController extends AbstractController
             $entityManager->flush();
             return new Response(1);
         } catch(\Exception $e) {
-            return new Response($e);
+            return new Response(0);
         }
     }
 
     /**
-     * @Route("/routine/{id}/unsub", name="user.unsub.routine")
+     * @Route("/routine/sub/{id}/unsub", name="user.unsub.routine")
      */
     public function userUnsubRoutine(Request $request, int $id): Response
     {
