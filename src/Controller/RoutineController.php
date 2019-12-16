@@ -47,6 +47,7 @@ class RoutineController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
             $result = $routineService->createRoutineForm($this->getUser(), $form, $routine);
             if ($result) {
                 $this->addFlash('success', 'Routine added!');
@@ -104,7 +105,6 @@ class RoutineController extends AbstractController
                 $this->addFlash('danger', 'Sorry, that was an error.');
             }
         }
-
         return $this->render('routine/day.create.html.twig', [
             'form' => $form->createView(),
         ]);

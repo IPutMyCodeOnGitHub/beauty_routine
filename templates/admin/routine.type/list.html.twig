@@ -1,0 +1,53 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block body %}
+    {% include 'admin/navigation.html.twig' %}
+
+    <div class="container">
+        <div class="row flex-column flex-sm-row mt-4">
+            <div class="col-md-3">
+                {% include('admin/routine.type/left-panel.html.twig') %}
+            </div>
+
+            <div class="col-md-9">
+                <h1>List of routine types</h1>
+
+                {% include('flashes.html.twig') %}
+
+                <h4>Count types: ({{ types.getTotalItemCount }})</h4>
+
+                <table  class="table table-responsive pt-3">
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Id</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Edit</th>
+                        <th scope="col">Delete</th>
+                    </tr>
+                    {% for type in types %}
+                        <tr>
+                            <th scope="row">
+                                {{ loop.index }}
+                            </th>
+                            <td>
+                                {{ type.id }}
+                            </td>
+                            <td>
+                                {{ type.type }}
+                            </td>
+                            <td class="exist-{{ type.id }}">
+                                <a href="{{ path('admin.type.edit', {id : type.id}) }}" class="btn btn-primary">Edit</a>
+                            </td>
+                            <td class="exist-{{ type.id }}">
+                                <button onclick="deleteFromTable('{{ path('admin.type.delete', {id: type.id}) }}', {{ type.id }})" class="btn">Delete</button>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </table>
+                {{ knp_pagination_render(types) }}
+            </div>
+
+        </div>
+    </div>
+
+{% endblock %}

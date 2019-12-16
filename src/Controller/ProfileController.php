@@ -13,9 +13,10 @@ class ProfileController extends AbstractController
      */
     public function showProfile()
     {
-        return $this->render('profile/index.html.twig', [
-            'controller_name' => 'ProfileController'
-            ]);
+        /** @var User $user */
+        $user = $this->getUser();
+
+        return $this->render('profile/index.html.twig');
     }
 
     /**

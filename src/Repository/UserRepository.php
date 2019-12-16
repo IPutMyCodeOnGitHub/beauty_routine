@@ -34,10 +34,10 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $this->_em->flush();
     }
 
-    public function getQueryBuilderSearchExpert(?string $search, ?bool $active): QueryBuilder
+    public function getQueryBuilderSearchExpert(?string $search, ?bool $unaproved): QueryBuilder
     {
-        $query = $this->createQueryBuilder('u');
-        $query->orderBy('u.email', 'ASC');
+        $query = $this->createQueryBuilder('u')
+            ->orderBy('u.email', 'ASC');
 
         if ($search) {
             $query->orWhere($query->expr()->like('u.name', ':search'))
@@ -45,13 +45,18 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
                 ->setParameter('search', '%'.$search.'%');
         }
 
-        if ($active) {
+        if ($unaproved) {
             $query->andwhere($query->expr()->like('u.roles', ':role'))
-                ->setParameter('role', '%'.User::ROLE_INVALID_EXPERT.'%');
+                ->setParameter('role', '%'.User::ROLE_USER.'%')
+                ->join('App\Entity\UserCertificate', 'cert')
+                ->andWhere('cert MEMBER OF u.userCertificates');
         } else {
-            $query->andWhere($query->expr()->orX($query->expr()->like('u.roles', ':role'), $query->expr()->like('u.roles', ':roleexp')))
-                ->setParameter('role', '%'.User::ROLE_INVALID_EXPERT.'%')
-                ->setParameter('roleexp', '%'.User::ROLE_EXPERT.'%');
+            $query
+                ->andWhere($query->expr()->like('u.roles', ':role'))
+                ->setParameter('role', '%'.User::ROLE_EXPERT.'%')
+                ->join('App\Entity\UserCertificate', 'cert')
+                ->orWhere('cert MEMBER OF u.userCertificates')
+                ;
         }
 
         return $query;
@@ -62,6 +67,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $query = $this->createQueryBuilder('u');
         $query->andwhere($query->expr()->like('u.roles', ':role'))
             ->setParameter('role', '%'.User::ROLE_USER.'%')
+            ->andWhere('u.userCertificates IS EMPTY')
             ->orderBy('u.email', 'ASC');
 
         if ($search) {
@@ -71,12 +77,9 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
                 ))
                 ->setParameter('search', '%'.$search.'%');
         }
-
-        //Todo when authorization by email ready
+        
         if ($valid) {
-//            $query->andWhere($query->expr()->isNull('u.valid'));
-        } else {
-//            $query->andWhere($query->expr()->isNotNull('u.valid'));
+            $query->andWhere($query->expr()->isNotNull('u.verifyCode'));
         }
 
         return $query;

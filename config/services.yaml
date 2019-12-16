@@ -31,7 +31,11 @@ services:
         arguments:
             $paginator: '@knp_paginator'
 
+<<<<<<< HEAD
     App\Repository\RoutineSelectionRepository:
+=======
+    App\Repository\RoutineTypeRepository:
+>>>>>>> f4216b4cea9a30fa0a306f7acd3255bf6d12f27a
         arguments:
             $paginator: '@knp_paginator'
 
@@ -45,4 +49,7 @@ services:
             $uploadsPath: '%uploadsPath%'
 
     App\Services\RoutineService:
+        arguments: ['@doctrine.orm.entity_manager']
+
+    App\Services\RoutineTypeService:
         arguments: ['@doctrine.orm.entity_manager']

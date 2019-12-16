@@ -1,4 +1,4 @@
-<h4>Всего экспертов: ({{ experts.getTotalItemCount }})</h4>
+<h4>Full experts number: ({{ experts.getTotalItemCount }})</h4>
 <table  class="table table-responsive pt-3">
     <tr>
         <th scope="col">#</th>
@@ -25,37 +25,42 @@
                 {{ expert.email }}
             </td>
             <td>
-                {% if expert.isValid %}
+                {% if not expert.isValid %}
                     <span class="badge badge-danger invalid{{ expert.id }}"> has not been verified </span>
                 {% endif %}
+                <br/>
+                {% if not expert.isApproved %}
+                    <span class="badge badge-danger invalid{{ expert.id }}"> has not been approved </span>
+                {% endif %}
             </td>
-            <td>
+            <td class="exist-{{ expert.id }}">
                 {% if  expert.getUserCertificates.get(0) %}
                 <a href="{{ asset(expert.getUserCertificates.get(0).certificate) }}" class="btn">Certificate</a>
                 {% endif %}
             </td>
-            <td>
+            <td class="exist-{{ expert.id }}">
                 <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseCard{{ expert.id }}" aria-expanded="false" aria-controls="collapseCard{{ expert.id }}">
                     Edit
                 </button>
             </td>
-            <td>
-                <a href="" class="btn">Delete</a>
+            <td class="exist-{{ expert.id }}">
+                <button onclick="deleteFromTable('{{ path('admin.experts.delete', {id: expert.id}) }}', {{ expert.id }})" class="btn btn-primary">Delete</button>
             </td>
         </tr>
         <tr>
             <td colspan="8">
                 <div class="collapse" id="collapseCard{{ expert.id }}">
                     <div class="card card-body">
-                        {% if 'ROLE_INVALID_EXPERT' in expert.roles%}
-                            <button onclick="validExpert('{{ path('admin.experts.validation', {id : {{ expert.id }}}) }}', {{ expert.id }})" class="btn">Verify expert</button>
+{#                        {% if not expert.isValid %}#}
+{#                            <button onclick="validExpert({{ expert.id }})" class="btn">Verify expert</button>#}
+{#                        {% endif %}#}
+                        {%if not expert.isApproved %}
+                            <button onclick="validExpert({{ expert.id }})" class="btn">Approve expert</button>
                         {% endif %}
                     </div>
                 </div>
             </td>
         </tr>
-
     {% endfor %}
-
 </table>
 {{ knp_pagination_render(experts) }}

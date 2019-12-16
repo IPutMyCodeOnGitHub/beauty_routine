@@ -11,16 +11,17 @@
             </div>
             <div class="col-md-9">
 
-                <h4 class="pb-4">Количество дней: {{ routine.getRoutineDays.count }}</h4>
+                <h4 class="pb-4">Number of days: {{ routine.getRoutineDays.count }}</h4>
+
                 {% if user not in routine.getSubscriber %}
-                    <a href="#" class="btn btn-primary mb-4">Подписаться</a>
+                    <a href="#" class="btn btn-primary mb-4">Subscribe</a>
                 {% endif %}
                 <div class="card-deck">
                     {% for day in routine.getRoutineDays %}
                         <div class="col-sm-4 mb-3">
                             <div class="card">
                                 <div class="card-body">
-                                    <h5 class="card-title">День номер: {{ day.dayOrder }}</h5>
+                                    <h5 class="card-title">Number of day: {{ day.dayOrder }}</h5>
                                     <p class="card-text"></p>
                                 </div>
                                 <div class="card-footer">

@@ -26,26 +26,27 @@ class RegistrationController extends AbstractController
     /**
      * @Route("/register", name="app.register")
      */
-    public function register(Request $request, UserPasswordEncoderInterface $passwordEncoder, UploaderHelper $uploaderHelper): Response
+    public function register(
+        Request $request,
+        UserPasswordEncoderInterface $passwordEncoder,
+        UploaderHelper $uploaderHelper
+    ): Response
     {
         $user = new User();
 
-        $expertForm = $this->createForm(RegistrationExpertFormType::class, $user);
-        $expertForm->handleRequest($request);
-
         $userForm = $this->createForm(RegistrationUserFormType::class, $user);
         $userForm->handleRequest($request);
-
         $registeredUser = $this->registerService->registerUser($userForm, $user, $passwordEncoder, $uploaderHelper);
 
-        if ($registeredUser) {
-            return $this->redirectToRoute('app.login');
-        }
-
+        $expertForm = $this->createForm(RegistrationExpertFormType::class, $user);
+        $expertForm->handleRequest($request);
         $registeredExpert = $this->registerService->registerUser($expertForm, $user, $passwordEncoder, $uploaderHelper);
 
-        if ($registeredExpert) {
-            return $this->redirectToRoute('app.expert.login');
+        if ($registeredExpert  || $registeredUser) {
+            return $this->render('registration/verificationPage.html.twig', [
+                'message' => 'You have a letter in your e-mail! 
+                Please, use a reference from the letter to verify your profile.'
+            ]);
         }
 
         return $this->render('registration/register.html.twig', [
@@ -53,13 +54,21 @@ class RegistrationController extends AbstractController
             'registrationExpertForm' => $expertForm->createView(),
         ]);
     }
+
     /**
      * @Route("/verify/{verifyCode}", name="verification")
      */
     public function userVerification(Request $request, string $verifyCode): Response
     {
-        $redirectRoute = $this->registerService->verifyUser($verifyCode);
-
-        return $this->redirectToRoute('app.login');
+        try {
+            $this->registerService->verifyUser($verifyCode);
+        } catch (\Exception $e) {
+            return $this->render('registration/verificationPage.html.twig', [
+                    'message' => 'The reference has been already used. Please, log in your profile.'
+                ]);
+        }
+        return $this->render('registration/verificationPage.html.twig', [
+            'message' => "Your registration was completed successfully!",
+        ]);
     }
 }

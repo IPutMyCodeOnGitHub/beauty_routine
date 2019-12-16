@@ -4,6 +4,8 @@ namespace App\Form;
 
 use App\Entity\ProductTag;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -12,9 +14,12 @@ class ProductTagFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('title')
-            ->add('products')
-        ;
+            ->add('tag', TextType::class, [
+                'label' => 'Product tag',
+            ])
+            ->add('Submit', SubmitType::class, [
+                'label' => 'Save',
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver)
