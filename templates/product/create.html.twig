@@ -3,6 +3,7 @@
 
 {% block body %}
     <div class="container">
+        {% include 'profile-expert/navigation.html.twig' %}
         <div class="row flex-column flex-sm-row mt-4">
             <div class="col-md-3">
                 {% include('product/left-panel.html.twig') %}
@@ -17,7 +18,7 @@
                     {{ form_row(form.type) }}
                     <a>If there is no necessary product type, please, <a style="display: inline;"
                                                                         href="{{ path('expert.product.type.create') }}">add one</a>
-                    {{ form_row(form.tag) }}
+                    {{ form_row(form.tags) }}
                         <a>If there is no necessary product tag, please, <a style="display: inline;" href="{{ path('expert.product.tag.create') }}">add one</a>
                     {{ form_row(form.price) }}
                     {{ form_row(form.country) }}

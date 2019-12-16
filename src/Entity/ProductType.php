@@ -24,7 +24,7 @@ class ProductType
     private $type;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Product", mappedBy="type")
+     * @ORM\OneToMany(targetEntity="App\Entity\Product", mappedBy="type")
      */
     private $products;
 
@@ -76,5 +76,10 @@ class ProductType
         }
 
         return $this;
+    }
+
+    public function __toString()
+    {
+        return $this->getType();
     }
 }

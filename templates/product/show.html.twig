@@ -11,24 +11,25 @@
             </div>
             <div class="col-md-9">
                 <div class="card-deck">
-                    {% for product in products %}
                         <div class="col-sm-4 mb-3">
-                            <div class="card">
+
                                 {% if product.photo %}
                                     <img src="{{ asset(product.photo)}}" class="card-img-top" alt="...">
                                 {% endif %}
                                 <div class="card-body">
                                     <a href="{{ path('expert.product.show', {'id' : product.id}) }}" ><h5 class="card-title">{{ product.name }}</h5></a>
                                     <p class="card-text">{{ product.brand }}</p>
-                                   {#<p class="card-text">Type: {{ product.tag.tag }}</p>#}
+                                    <p class="card-text">Tags</p>
+                                    {% for tag in product.tags %}
+                                    <p class="card-text">{{ tag }}</p>
+                                    {% endfor %}
                                 </div>
                                 <div class="card-footer card-footer-{{ product.id }}">
                                     <a href="{{ path('expert.product.edit', {'id' : product.id}) }}" class="btn btn-primary mb-3">Edit</a>
                                     <a href="{{ path('expert.product.delete', {'id' : product.id}) }}" class="btn btn-primary mb-3">Delete</a>
                                 </div>
-                            </div>
+
                         </div>
-                    {% endfor %}
                 </div>
             </div>
         </div>

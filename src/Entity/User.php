@@ -68,11 +68,17 @@ class User implements UserInterface
      */
     private $subs;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Product", mappedBy="expert")
+     */
+    private $products;
+
     public function __construct()
     {
         $this->userCertificates = new ArrayCollection();
         $this->routines = new ArrayCollection();
         $this->subs = new ArrayCollection();
+        $this->products = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -270,5 +276,36 @@ class User implements UserInterface
     public function isApproved(): bool
     {
         return (bool)in_array(User::ROLE_EXPERT, $this->getRoles()) ? true: false;
+    }
+
+    /**
+     * @return Collection|Product[]
+     */
+    public function getProducts(): Collection
+    {
+        return $this->products;
+    }
+
+    public function addProduct(Product $product): self
+    {
+        if (!$this->products->contains($product)) {
+            $this->products[] = $product;
+            $product->setExpert($this);
+        }
+
+        return $this;
+    }
+
+    public function removeProduct(Product $product): self
+    {
+        if ($this->products->contains($product)) {
+            $this->products->removeElement($product);
+            // set the owning side to null (unless already changed)
+            if ($product->getExpert() === $this) {
+                $product->setExpert(null);
+            }
+        }
+
+        return $this;
     }
 }

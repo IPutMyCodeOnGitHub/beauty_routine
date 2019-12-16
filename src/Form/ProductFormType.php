@@ -6,8 +6,12 @@ use App\Entity\Product;
 use App\Entity\ProductTag;
 use App\Entity\ProductType;
 use App\Entity\RoutineType;
+use App\Repository\ProductTagRepository;
+use App\Repository\ProductTypeRepository;
+use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -36,17 +40,19 @@ class ProductFormType extends AbstractType
             ])
             ->add('type', EntityType::class, [
                 'class' => ProductType::class,
-                'label' => 'Type of product',
+                'label' => 'Types',
                 'choice_label' => function(ProductType $productType) {
                     return $productType->getType();
                 }
             ])
-            ->add('tag', EntityType::class, [
+            ->add('tags', EntityType::class, [
                 'class' => ProductTag::class,
                 'label' => 'Tags',
                 'choice_label' => function(ProductTag $productTag) {
                     return $productTag->getTag();
-                }
+                },
+                'expanded' => true,
+                'multiple' => true,
             ])
             ->add('photo', FileType::class, [
                 'label' => 'Photo',
@@ -61,6 +67,9 @@ class ProductFormType extends AbstractType
                         'mimeTypesMessage' => 'Please, upload a valid image',
                     ])
                 ],
+            ])
+            ->add('description', TextType::class, [
+                'label' => 'Description',
             ])
             ->add('Submit', SubmitType::class, [
                 'label' => 'Save',

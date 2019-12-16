@@ -77,4 +77,9 @@ class ProductTag
 
         return $this;
     }
+
+    public function __toString()
+    {
+        return $this->getTag();
+    }
 }
