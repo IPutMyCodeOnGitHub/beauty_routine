@@ -303,7 +303,7 @@ class User implements UserInterface
 
         return $this;
     }
-    
+
     public function isApproved(): bool
     {
         return (bool)in_array(User::ROLE_EXPERT, $this->getRoles()) ? true: false;
