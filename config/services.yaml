@@ -34,7 +34,7 @@ services:
     App\Repository\RoutineSelectionRepository:
       arguments:
         $paginator: '@knp_paginator'
-        
+
     App\Repository\RoutineTypeRepository:
         arguments:
             $paginator: '@knp_paginator'
