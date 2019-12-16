@@ -2,13 +2,18 @@
 
 {% block body %}
 <div class="container">
+
+    {% include('profile/navigation.html.twig') %}
+
     <div class="row flex-column flex-sm-row mt-4">
+
         <div class="col-md-3">
             {% include('routine/user.left-panel.html.twig') %}
         </div>
         <div class="col-md-9">
             <h1 class="pb-4">All programs</h1>
             {% include('flashes.html.twig') %}
+
             <div class="search-panel pb-5">
                 <form action="{{ path('user.routine') }}" method="get" class="form-inline">
                     <div class="form-group mx-sm-3 mb-2">

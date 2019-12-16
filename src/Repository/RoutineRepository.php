@@ -63,7 +63,7 @@ class RoutineRepository extends ServiceEntityRepository
         int $countObj = 10): ?PaginationInterface
     {
         $queryBuilder = $this->getQueryBuilderSearchRoutines($expert, $type, $subscriber, $status);
-//dd($expert, $queryBuilder->getQuery());
+
         return $this->paginator->paginate(
             $queryBuilder,
             $page,

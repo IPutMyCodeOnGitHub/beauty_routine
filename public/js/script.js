@@ -18,18 +18,69 @@ $(document).ready(function() {
 
 });
 
-function routineSub(path, id) {
+function completeDay(path, id) {
     console.log(path, id);
     $.ajax({
         url: path,
         dataType: 'text',
     }).done(function (result) {
         if (result == 1) {
-            $('div.routine-sub-' + id).html("Вы подписаны");
+            $('.btn-' + id).remove();
+            $('.card-footer-' + id).append('<span class="badge badge-secondary">Completed</span>');
+        }
+        console.log('Success');
+    }).fail(function (textStatus,errorThrown) {
+        console.log('fail',textStatus.responseText,errorThrown);
+    });
+}
+
+function unsubRoutine(path, id) {
+    console.log(path, id);
+    $.ajax({
+        url: path,
+        dataType: 'text',
+    }).done(function (result) {
+        if (result == 1) {
+            $('div.routine-sub-' + id).html("You unsubscribe");
         }
         console.log('Success');
     }).fail(function (textStatus,errorThrown) {
         console.log('fail');
+    });
+}
+
+function routineSub(path, id) {
+    $('div.routine-sub-' + id).append('<div class="spinner-border' + id +'" role="status">\n' +
+    '  <span class="sr-only">Loading...</span>\n' +
+    '</div>');
+    console.log(path, id);
+    $.ajax({
+        url: path,
+        dataType: 'text',
+    }).done(function (result) {
+        if (result == 1) {
+            $('div.routine-sub-' + id).html("You subscribe");
+        }
+        console.log('Success', result);
+    }).fail(function (textStatus,errorThrown) {
+        console.log('fail');
+        $('div.spinner-border' + id).remove();
+    });
+}
+
+function deleteRoutine(path, index) {
+    $.ajax({
+        type: "POST",
+        url: path,
+        dataType: 'text',
+    }).done(function (result) {
+        if (result == 1) {
+            $('.card-footer-' + index).html("Deleted");
+        } else {
+            $('.card-footer-' + index).filter( ':last' ).append("<p class='pt-2 pb-2'>Error</p>");
+        }
+    }).fail(function (textStatus,errorThrown) {
+        $('.card-footer-' + index).filter( ':last' ).append("<p class='pt-2 pb-2'>Error</p>");
     });
 }
 
@@ -56,12 +107,12 @@ function deleteDay(path, index) {
         dataType: 'text',
     }).done(function (result) {
         if (result == 1) {
-            $('td.day-' + index).html("Удалён");
+            $('td.day-' + index).html("Deleted");
         } else {
-            $('td.day-' + index).filter( ':last' ).append("<p class='pt-2 pb-2'>Ошибка удаления</p>");
+            $('td.day-' + index).filter( ':last' ).append("<p class='pt-2 pb-2'>Error</p>");
         }
     }).fail(function (textStatus,errorThrown) {
-        $('td.day-' + index).filter( ':last' ).append("<p class='pt-2 pb-2'>Ошибка удаления</p>");
+        $('td.day-' + index).filter( ':last' ).append("<p class='pt-2 pb-2'>Error</p>");
     });
 }
 

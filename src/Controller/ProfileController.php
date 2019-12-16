@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Entity\RoutineSelection;
+use App\Entity\RoutineType;
 use App\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -16,7 +18,14 @@ class ProfileController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        return $this->render('profile/index.html.twig');
+        $entityManager = $this->getDoctrine()->getManager();
+        $routineSelections = $entityManager->getRepository(RoutineSelection::class)
+            ->userRoutineSelection(null, null, $user);
+
+        return $this->render('profile/index.html.twig', [
+            'user' => $user,
+            'routines' => $routineSelections
+        ]);
     }
 
     /**

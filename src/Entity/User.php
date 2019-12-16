@@ -2,12 +2,10 @@
 
 namespace App\Entity;
 
-use App\Services\UploaderHelper;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
@@ -73,12 +71,18 @@ class User implements UserInterface
      */
     private $products;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\RoutineSelection", mappedBy="user", orphanRemoval=true)
+     */
+    private $routineSelections;
+
     public function __construct()
     {
         $this->userCertificates = new ArrayCollection();
         $this->routines = new ArrayCollection();
         $this->subs = new ArrayCollection();
         $this->products = new ArrayCollection();
+        $this->routineSelections = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -266,11 +270,43 @@ class User implements UserInterface
             $this->subs->removeElement($sub);
             $sub->removeSubscriber($this);
         }
+        return $this;
     }
 
     public function isValid(): bool
     {
         return !(bool)$this->verifyCode;
+    }
+
+    /**
+     * @return Collection|RoutineSelection[]
+     */
+    public function getRoutineSelections(): Collection
+    {
+        return $this->routineSelections;
+    }
+
+    public function addRoutineSelection(RoutineSelection $routineSelection): self
+    {
+        if (!$this->routineSelections->contains($routineSelection)) {
+            $this->routineSelections[] = $routineSelection;
+            $routineSelection->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRoutineSelection(RoutineSelection $routineSelection): self
+    {
+        if ($this->routineSelections->contains($routineSelection)) {
+            $this->routineSelections->removeElement($routineSelection);
+            // set the owning side to null (unless already changed)
+            if ($routineSelection->getUser() === $this) {
+                $routineSelection->setUser(null);
+            }
+        }
+
+        return $this;
     }
 
     public function isApproved(): bool
@@ -305,7 +341,6 @@ class User implements UserInterface
                 $product->setExpert(null);
             }
         }
-
         return $this;
     }
 }

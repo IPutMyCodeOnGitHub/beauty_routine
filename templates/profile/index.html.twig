@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Здравствуй!{% endblock %}
+{% block title %}Hi there!{% endblock %}
 
 {% block body %}
 
@@ -9,9 +9,32 @@
     <div class="container pt-4">
         <div class="row">
             <div class="content row col-md-10 justify-content-around">
-                <a href="">All programs</a>
-                <a href="">All programs</a>
-                <a href="">All programs</a>
+
+                <h1>You have {{ routines|length }} active routines</h1>
+
+                <div class="card-deck">
+                    {% for routine in routines %}
+                        {% if  routine.routineUserDays|length > 0%}
+                            <div class="col-sm-4 mb-3">
+                                <div class="card">
+                                    {% if routine.parentRoutine.photo %}
+                                        <img src="{{ asset(routine.parentRoutine.photo)}}" class="card-img-top" alt="...">
+                                    {% endif %}
+                                </div>
+                                {% set day =  routine.routineUserDays[routine.daysCompleted + 1]%}
+                                <div class="card-body">
+                                    <p class="card-text">
+                                        Day order: {{ day.routineDay.dayOrder }}
+                                    </p>
+                                    <p class="card-text">
+                                        <button onclick="completeDay('{{ path('user.routine.day.complete', {id: routine.id, dayId: day.id}) }}', {{ day.id }})" class="btn btn-primary btn-{{ day.id }}">Complete</button>
+                                    </p>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+
             </div>
             <div class="notifies col-md-2">
                 notifications
