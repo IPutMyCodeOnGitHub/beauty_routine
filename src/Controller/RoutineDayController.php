@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Entity\Product;
+use App\Entity\ProductType;
 use App\Entity\Routine;
 use App\Entity\RoutineDay;
 use App\Entity\RoutineSelection;
@@ -104,8 +106,42 @@ class RoutineDayController extends AbstractController
     /**
      * @Route("/expert/routine/{id}/day/{dayId}/addproduct", name="expert.routine.day.add.product")
      */
-    public function addProductInDay(int $id, int $dayId): Response
+    public function addProductInDay(int $id, int $dayId, Request $request): Response
     {
-        return new Response(0);
+        $entityManager = $this->getDoctrine()->getManager();
+        $routineDay = $entityManager->getRepository(RoutineDay::class)->find($dayId);
+
+        $type = $request->query->get('type');
+        $name = $request->query->get('name');
+        $page = $request->query->get('page');
+
+        if ($type || $name) {
+
+        }
+
+        $types = $entityManager->getRepository(ProductType::class)->findAll();
+
+        $products = $entityManager->getRepository(Product::class)->findAll();
+        return $this->render('routine/product.add.html.twig', [
+            'types' => $types,
+            'products' => $products,
+            'day' => $routineDay,
+        ]);
     }
+    /**
+     * @Route("/expert/routine/{id}/day/{dayId}/addproduct/{prodId}", name="expert.routine.day.add.concrete.product")
+     */
+    public function addThisProductInDay(int $id, int $dayId, int $prodId, Request $request): Response
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+        $product = $entityManager->getRepository(Product::class)->find($prodId);
+
+        $day = $entityManager->getRepository(RoutineDay::class)->find($dayId);
+
+        $day->addProduct($product);
+        $entityManager->persist($day);
+        $entityManager->flush();
+        return $this->redirectToRoute('expert.routine.day.add.product', ['id' => $id, 'dayId' => $dayId]);
+    }
+
 }
