@@ -20,24 +20,25 @@
                         {{ form_start(form) }}
                         {{ form_widget(form) }}
                         <div class="form-group">
-                            <label class="required" for="routine_form_type">Day number in the program: </label>
+                            <label class="required" for="routine_form_type">Number of days in program: </label>
                             <input class="order-value" type="text" name="routine_form[cycle]" value="{{ routine.getRoutineDays.count }}" disabled>
                         </div>
                         <button type="submit" class="btn-primary btn">Save</button>
                         {{ form_end(form) }}
+
+                        <div class="status-block mt-3 mb-3">
+                            {%  if routine.status == 'disabled' %}
+                                <button class="btn btn-act" onclick="activateRoutine('{{ path('expert.routine.activate', {id: routine.id}) }}', {{ routine.id }})">Activate</button>
+                            {% endif %}
+                            {%  if routine.status == 'active' %}
+                                <button class="btn btn-deact" onclick="deactivateRoutine('{{ path('expert.routine.deactivate', {id: routine.id}) }}', {{ routine.id }})">Disable</button>
+                            {% endif %}
+                        </div>
+
                     </div>
                 </div>
 
-                {% for message in app.flashes('success') %}
-                    <div class="alert alert-success" role="alert">
-                        {{ message }}
-                    </div>
-                {% endfor %}
-                {% for message in app.flashes('error') %}
-                    <div class="alert alert-danger" role="alert">
-                        {{ message }}
-                    </div>
-                {% endfor %}
+                {% include('flashes.html.twig') %}
 
                 <a href="{{ path('expert.day.routine.create', {id : routine.id}) }}" class="btn btn-primary">Day adding</a>
 

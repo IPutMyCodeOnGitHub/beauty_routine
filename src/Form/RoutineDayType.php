@@ -13,8 +13,11 @@ class RoutineDayType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('dayOrder', null, [
-                'label' => 'Day in program'
+//            ->add('dayOrder', null, [
+//                'label' => 'Day in program'
+//            ])
+            ->add('recommends', null, [
+                'label' => 'Recommendations'
             ])
             ->add('Submit', SubmitType::class, [
                 'label' => 'Save',

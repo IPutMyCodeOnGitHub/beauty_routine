@@ -3,19 +3,13 @@
 namespace App\Controller;
 
 use App\Entity\Routine;
-use App\Entity\RoutineDay;
 use App\Entity\RoutineSelection;
 use App\Entity\RoutineType;
 use App\Entity\RoutineUserDay;
-use App\Entity\User;
-use App\Form\RoutineDayType;
-use App\Form\RoutineFormType;
-use App\Services\RoutineService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Validator\Constraints\Date;
 
 /**
  * @Route("/profile")

@@ -34,9 +34,20 @@ class RoutineDay
      */
     private $routineUserDays;
 
+    /**
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $recommends;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Product", inversedBy="routineDays")
+     */
+    private $products;
+
     public function __construct()
     {
         $this->routineUserDays = new ArrayCollection();
+        $this->products = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -94,6 +105,44 @@ class RoutineDay
             if ($routineUserDay->getRoutineDay() === $this) {
                 $routineUserDay->setRoutineDay(null);
             }
+        }
+
+        return $this;
+    }
+
+    public function getRecommends(): ?string
+    {
+        return $this->recommends;
+    }
+
+    public function setRecommends(?string $recommends): self
+    {
+        $this->recommends = $recommends;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Product[]
+     */
+    public function getProducts(): Collection
+    {
+        return $this->products;
+    }
+
+    public function addProduct(Product $product): self
+    {
+        if (!$this->products->contains($product)) {
+            $this->products[] = $product;
+        }
+
+        return $this;
+    }
+
+    public function removeProduct(Product $product): self
+    {
+        if ($this->products->contains($product)) {
+            $this->products->removeElement($product);
         }
 
         return $this;

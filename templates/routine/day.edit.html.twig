@@ -12,9 +12,65 @@
     <div class="col-md-9">
         <h2 class="pt-4 pb-4">Care day editing</h2>
 
+        <p>Its {{ day.dayOrder }} day of routine</p>
+
         {{ form_start(form) }}
         {{ form_widget(form) }}
         {{ form_end(form) }}
+
+        <div class="mb-4">
+            <a href="{{ path('expert.routine.day.add.product', {id: day.routine.id, dayId: day.id}) }}" class="btn">Add products</a>
+        </div>
+
+        {% include('flashes.html.twig') %}
+
+        <h2 class="pt-4 pb-4">List of products</h2>
+
+        <div>
+            <table  class="table">
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Id</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Brand</th>
+                    <th scope="col">Country</th>
+                    <th scope="col">Type</th>
+                    <th scope="col">Tag</th>
+                    <th scope="col">Photo</th>
+                    <th scope="col">Edit</th>
+                    <th scope="col">Delete</th>
+                </tr>
+
+                {% for product in day.getProducts %}
+                    <tr>
+                        <th scope="col">{{loop.index}}</th>
+                        <td>{{ product.id }}</td>
+                        <td>{{ product.name }}</td>
+                        <td>{{ product.brand }}</td>
+                        <td>{{ product.country }}</td>
+                        <td>
+{#                            {{ product.type }}#}
+                        </td>
+                        <td>
+                            {% for tag in product.getTag %}
+                                {{ tag.tag }} ,
+                            {% endfor %}
+                        </td>
+                        <td>
+                            {% if product.photo %}
+                                <img src="product.photo" alt="">
+                            {% endif %}
+                        </td>
+
+                        <td class="day-{{loop.index}}">
+                            <a href="#" class="btn btn-primary">Edit</a></td>
+                        <td class="day-{{loop.index}}">
+                            <button class="btn btn-primary" onclick='' class="delete-day">Delete</button></td>
+                    </tr>
+                {% endfor %}
+
+            </table>
+        </div>
     </div>
 </div>
 {% endblock %}

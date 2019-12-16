@@ -11,7 +11,34 @@
             </div>
             <div class="col-md-9">
                 <div class="card-deck">
-                    {% for routine in expert.getRoutines %}
+
+                    <div class="search-panel pb-5 container">
+                        <form action="{{ path('expert.routine') }}" method="get" class="form-inline">
+                            <div class="form-group mx-sm-3 mb-2">
+                                <label for="type" class="pr-3">Status</label>
+                                <select class="form-control" id="status" name="status" >
+                                    <option {% if not (app.request.get('status')) %} selected {% endif %}>Any</option>
+                                    <option {% if (app.request.get('status') == "active") %} selected {% endif %} value="active">active</option>
+                                    <option {% if (app.request.get('status') == "disabled") %} selected {% endif %} value="disabled">disabled</option>
+                                    <option {% if (app.request.get('status') == "draft") %} selected {% endif %} value="draft">draft</option>
+                                    <option {% if (app.request.get('status') == "blocked") %} selected {% endif %} value="blocked">blocked</option>
+                                </select>
+                            </div>
+                            <div class="form-group mx-sm-3 mb-2">
+                                <label for="type" class="pr-3">Type of care</label>
+                                <select class="form-control" id="type" name="type" >
+                                    <option {% if not (app.request.get('type')) %} selected {% endif %}>Any</option>
+                                    {% for type in types %}
+                                        <option value="{{ type.id }}" {% if type.id == app.request.get('type') %} selected {% endif %}>{{ type.type }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary mb-2">Search</button>
+                        </form>
+                    </div>
+
+                    {% for routine in routines %}
+
                     <div class="col-sm-4 mb-3">
                         <div class="card">
                             {% if routine.photo %}
@@ -21,13 +48,15 @@
                                 <h5 class="card-title">{{ routine.user.name }}</h5>
                                 <p class="card-text">Number of days in program: {{ routine.getRoutineDays.count }}</p>
                                 <p class="card-text">Type: {{ routine.type.type }}</p>
+                                <p class="card-text">Status: <span class="badge badge-secondary">{{ routine.status }}</span></p>
                             </div>
                             <div class="card-footer card-footer-{{ routine.id }}">
                                 <a href="{{ path('expert.routine.edit', {'id' : routine.id}) }}" class="btn btn-primary mb-3">Edit</a>
-                                <button onclick="deleteRoutine('{{ path('expert.routine.delete', {id: routine.id}) }}', {{ routine.id }})" class="btn btn-warning">Delete</button>
+                                <button onclick="deleteRoutine('{{ path('expert.routine.delete', {id: routine.id}) }}', {{ routine.id }})" class="btn btn-warning mb-3">Delete</button>
                             </div>
                         </div>
                     </div>
+
                     {% endfor %}
                 </div>
             </div>

@@ -46,8 +46,16 @@ class RoutineService
 
     public function createDay(RoutineDay $routineDay, Routine $routine): ?RoutineDay
     {
+        $order = count($routine->getRoutineDays()) + 1;
+        $routineDay->setDayOrder($order);
         $routineDay->setRoutine($routine);
         $this->em->persist($routineDay);
+
+        if ($routine->getStatus() == Routine::STATUS_DRAFT) {
+            $routine->setStatus(Routine::STATUS_DISABLED);
+            $this->em->persist($routine);
+        }
+
         try {
             $this->em->flush();
             return $routineDay;

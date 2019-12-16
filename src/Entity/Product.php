@@ -53,10 +53,22 @@ class Product
      */
     private $photo;
 
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\RoutineDay", mappedBy="products")
+     */
+    private $routineDays;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\RoutineUserDay", mappedBy="products")
+     */
+    private $routineUserDays;
+
     public function __construct()
     {
         $this->type = new ArrayCollection();
         $this->tag = new ArrayCollection();
+        $this->routineDays = new ArrayCollection();
+        $this->routineUserDays = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -172,6 +184,62 @@ class Product
     public function setPhoto(?string $photo): self
     {
         $this->photo = $photo;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|RoutineDay[]
+     */
+    public function getRoutineDays(): Collection
+    {
+        return $this->routineDays;
+    }
+
+    public function addRoutineDay(RoutineDay $routineDay): self
+    {
+        if (!$this->routineDays->contains($routineDay)) {
+            $this->routineDays[] = $routineDay;
+            $routineDay->addProduct($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRoutineDay(RoutineDay $routineDay): self
+    {
+        if ($this->routineDays->contains($routineDay)) {
+            $this->routineDays->removeElement($routineDay);
+            $routineDay->removeProduct($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|RoutineUserDay[]
+     */
+    public function getRoutineUserDays(): Collection
+    {
+        return $this->routineUserDays;
+    }
+
+    public function addRoutineUserDay(RoutineUserDay $routineUserDay): self
+    {
+        if (!$this->routineUserDays->contains($routineUserDay)) {
+            $this->routineUserDays[] = $routineUserDay;
+            $routineUserDay->addProduct($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRoutineUserDay(RoutineUserDay $routineUserDay): self
+    {
+        if ($this->routineUserDays->contains($routineUserDay)) {
+            $this->routineUserDays->removeElement($routineUserDay);
+            $routineUserDay->removeProduct($this);
+        }
 
         return $this;
     }

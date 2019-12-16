@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -42,6 +44,16 @@ class RoutineUserDay
      * @ORM\Column(type="boolean", nullable=true)
      */
     private $is_changed;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Product", inversedBy="routineUserDays")
+     */
+    private $products;
+
+    public function __construct()
+    {
+        $this->products = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -104,6 +116,32 @@ class RoutineUserDay
     public function setIsChanged(?bool $is_changed): self
     {
         $this->is_changed = $is_changed;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Product[]
+     */
+    public function getProducts(): Collection
+    {
+        return $this->products;
+    }
+
+    public function addProduct(Product $product): self
+    {
+        if (!$this->products->contains($product)) {
+            $this->products[] = $product;
+        }
+
+        return $this;
+    }
+
+    public function removeProduct(Product $product): self
+    {
+        if ($this->products->contains($product)) {
+            $this->products->removeElement($product);
+        }
 
         return $this;
     }
