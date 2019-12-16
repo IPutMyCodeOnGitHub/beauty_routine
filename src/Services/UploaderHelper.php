@@ -21,8 +21,11 @@ class UploaderHelper
         $this->uploadsPath = $uploadsPath;
     }
 
-    public function uploadFile(UploadedFile $file, string $path = UploaderHelper::CERTIFICATE_PATH): string
+    public function uploadFile(?UploadedFile $file, string $path = UploaderHelper::CERTIFICATE_PATH): ?string
     {
+        if (!$file){
+            return null;
+        }
         $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
         $safeFilename = transliterator_transliterate('Any-Latin; Latin-ASCII; [^A-Za-z0-9_] remove; Lower()', $originalFilename);
         $newFilename = $safeFilename . '-' . uniqid() . '.' . $file->guessExtension();

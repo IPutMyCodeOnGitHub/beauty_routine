@@ -76,7 +76,6 @@ class Product
 
     public function __construct()
     {
-        $this->type = new ArrayCollection();
         $this->routineDays = new ArrayCollection();
         $this->routineUserDays = new ArrayCollection();
         $this->tags = new ArrayCollection();
