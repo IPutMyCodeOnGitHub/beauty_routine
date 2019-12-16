@@ -2,12 +2,12 @@
 
 {% block body %}
 <div class="container">
+
+    {% include('profile/navigation.html.twig') %}
+
     <div class="row flex-column flex-sm-row mt-4">
-        <div class="col-md-3">
-            {% include('routine/user.left-panel.html.twig') %}
-        </div>
-        <div class="col-md-9">
-            <h1 class="pb-4">Все программы</h1>
+        <div class="col-md-12">
+            <h1 class="pb-4">All routines</h1>
             {% for message in app.flashes('success') %}
                 <div class="alert alert-success" role="alert">
                     {{ message }}
@@ -34,10 +34,10 @@
                             {% endfor %}
                         </select>
                     </div>
-                    <button type="submit" class="btn btn-primary mb-2">Поиск</button>
+                    <button type="submit" class="btn btn-primary mb-2">Search</button>
                 </form>
             </div>
-            <h4 class="pb-4">Количество программ: {{ routines.getTotalItemCount }}</h4>
+            <h4 class="pb-4">Number of routines: {{ routines.getTotalItemCount }}</h4>
             <div class="card-deck">
                 {% for routine in routines %}
                 <div class="col-sm-4 mb-3">
@@ -51,12 +51,12 @@
                             <p class="card-text">Тип: {{ routine.type.type }}</p>
                         </div>
                         <div class="card-footer">
-                            <a href="{{ path('user.routine.show', {id: routine.id}) }}" class="btn btn-primary mb-2">Смотреть</a>
+                            <a href="{{ path('user.routine.show', {id: routine.id}) }}" class="btn btn-primary mb-2">I only look</a>
                             <div class="routine-sub-{{ routine.id }}">
                                 {% if user not in routine.getSubscriber %}
-                                    <button onclick="routineSub('{{ path('user.sub.routine', {id: routine.id}) }}', {{ routine.id }})" class="btn btn-primary mb-2">Подписаться</button>
+                                    <button onclick="routineSub('{{ path('user.sub.routine', {id: routine.id}) }}', {{ routine.id }})" class="btn btn-primary mb-2">Subscribe</button>
                                 {% else %}
-                                    Вы подписаны
+                                    You are subscribed
                                 {% endif %}
                             </div>
                         </div>

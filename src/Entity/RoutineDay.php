@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -26,6 +28,16 @@ class RoutineDay
      * @ORM\Column(type="integer")
      */
     private $dayOrder;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\RoutineUserDay", mappedBy="routineDay")
+     */
+    private $routineUserDays;
+
+    public function __construct()
+    {
+        $this->routineUserDays = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -52,6 +64,37 @@ class RoutineDay
     public function setDayOrder(int $dayOrder): self
     {
         $this->dayOrder = $dayOrder;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|RoutineUserDay[]
+     */
+    public function getRoutineUserDays(): Collection
+    {
+        return $this->routineUserDays;
+    }
+
+    public function addRoutineUserDay(RoutineUserDay $routineUserDay): self
+    {
+        if (!$this->routineUserDays->contains($routineUserDay)) {
+            $this->routineUserDays[] = $routineUserDay;
+            $routineUserDay->setRoutineDay($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRoutineUserDay(RoutineUserDay $routineUserDay): self
+    {
+        if ($this->routineUserDays->contains($routineUserDay)) {
+            $this->routineUserDays->removeElement($routineUserDay);
+            // set the owning side to null (unless already changed)
+            if ($routineUserDay->getRoutineDay() === $this) {
+                $routineUserDay->setRoutineDay(null);
+            }
+        }
 
         return $this;
     }

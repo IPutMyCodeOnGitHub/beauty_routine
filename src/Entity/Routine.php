@@ -62,10 +62,16 @@ class Routine
      */
     private $photo;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\RoutineSelection", mappedBy="parentRoutine", orphanRemoval=true)
+     */
+    private $routineSelections;
+
     public function __construct()
     {
         $this->routineDays = new ArrayCollection();
         $this->subscriber = new ArrayCollection();
+        $this->routineSelections = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -189,6 +195,37 @@ class Routine
     public function setPhoto(?string $photo): self
     {
         $this->photo = $photo;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|RoutineSelection[]
+     */
+    public function getRoutineSelections(): Collection
+    {
+        return $this->routineSelections;
+    }
+
+    public function addRoutineSelection(RoutineSelection $routineSelection): self
+    {
+        if (!$this->routineSelections->contains($routineSelection)) {
+            $this->routineSelections[] = $routineSelection;
+            $routineSelection->setParentRoutine($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRoutineSelection(RoutineSelection $routineSelection): self
+    {
+        if ($this->routineSelections->contains($routineSelection)) {
+            $this->routineSelections->removeElement($routineSelection);
+            // set the owning side to null (unless already changed)
+            if ($routineSelection->getParentRoutine() === $this) {
+                $routineSelection->setParentRoutine(null);
+            }
+        }
 
         return $this;
     }

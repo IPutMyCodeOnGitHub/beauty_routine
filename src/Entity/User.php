@@ -69,11 +69,17 @@ class User implements UserInterface
      */
     private $subs;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\RoutineSelection", mappedBy="user", orphanRemoval=true)
+     */
+    private $routineSelections;
+
     public function __construct()
     {
         $this->userCertificates = new ArrayCollection();
         $this->routines = new ArrayCollection();
         $this->subs = new ArrayCollection();
+        $this->routineSelections = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -266,5 +272,36 @@ class User implements UserInterface
     public function isValid(): bool
     {
         return !(bool)$this->verifyCode;
+    }
+
+    /**
+     * @return Collection|RoutineSelection[]
+     */
+    public function getRoutineSelections(): Collection
+    {
+        return $this->routineSelections;
+    }
+
+    public function addRoutineSelection(RoutineSelection $routineSelection): self
+    {
+        if (!$this->routineSelections->contains($routineSelection)) {
+            $this->routineSelections[] = $routineSelection;
+            $routineSelection->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRoutineSelection(RoutineSelection $routineSelection): self
+    {
+        if ($this->routineSelections->contains($routineSelection)) {
+            $this->routineSelections->removeElement($routineSelection);
+            // set the owning side to null (unless already changed)
+            if ($routineSelection->getUser() === $this) {
+                $routineSelection->setUser(null);
+            }
+        }
+
+        return $this;
     }
 }

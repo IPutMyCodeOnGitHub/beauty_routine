@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Routine;
 use App\Entity\RoutineDay;
+use App\Entity\RoutineSelection;
 use App\Entity\RoutineType;
 use App\Entity\User;
 use App\Form\RoutineDayType;
@@ -224,41 +225,7 @@ class RoutineController extends AbstractController
     }
 
     /**
-     * @Route("/routine/sub", name="user.sub.routine.show")
-     */
-    public function userSubListRoutine(Request $request): Response
-    {
-        $entityManager = $this->getDoctrine()->getManager();
-
-        $expert = $request->query->get('expert');
-        $type = $request->query->get('type');
-        $page = $request->query->getInt('page', 1);
-
-        if ($expert || $type) {
-            $page = 1;
-            $request->query->remove('page');
-        }
-
-        if ($type) {
-            $type = $entityManager->getRepository(RoutineType::class)->find($type);
-        }
-
-        $user = $this->getUser();
-
-        $routines = $entityManager
-            ->getRepository(Routine::class)
-            ->searchRoutinePaginator($expert, $type, $page, $user);
-
-        $types = $entityManager->getRepository(RoutineType::class)->findAll();
-
-        return $this->render('routine/user.sub.list.html.twig', [
-            'routines' => $routines,
-            'types' => $types,
-        ]);
-    }
-
-    /**
-     * @Route("/routine/{id}", name="user.routine.show")
+     * @Route("/routine/show/{id}", name="user.routine.show")
      */
     public function userRoutineShow(Request $request, int $id): Response
     {
@@ -272,33 +239,4 @@ class RoutineController extends AbstractController
             'user' => $user
         ]);
     }
-
-    /**
-     * @Route("/routine/{id}/sub", name="user.sub.routine")
-     */
-    public function userSubRoutine(Request $request, int $id): Response
-    {
-        $entityManager = $this->getDoctrine()->getManager();
-        $routine = $entityManager->getRepository(Routine::class)->find($id);
-
-        $user = $this->getUser();
-
-        if (!$routine) {
-            return new Response(0);
-        }
-        if (!$user) {
-            return new Response(0);
-        }
-
-        $routine->addSubscriber($user);
-        $entityManager->persist($routine);
-
-        try{
-            $entityManager->flush();
-            return new Response(1);
-        } catch(\Exception $e) {
-            return new Response(0);
-        }
-    }
-
 }

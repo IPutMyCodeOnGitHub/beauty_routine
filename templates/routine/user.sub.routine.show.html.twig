@@ -1,29 +1,28 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-
     {% include('profile/navigation.html.twig') %}
 
     <div class="container">
         <div class="row flex-column flex-sm-row mt-4">
-            <div class="col-md-3">
-                {% include('routine/user.left-panel.html.twig') %}
-            </div>
-            <div class="col-md-9">
+            <div class="col-md-12">
 
-                <h4 class="pb-4">Количество дней: {{ routine.getRoutineDays.count }}</h4>
-                {% if user not in routine.getSubscriber %}
-                    <a href="#" class="btn btn-primary mb-4">Подписаться</a>
-                {% endif %}
+                <h4 class="pb-4">Number of days: {{ routine.getRoutineUserDays.count }}</h4>
+
                 <div class="card-deck">
-                    {% for day in routine.getRoutineDays %}
+                    {% for day in routine.getRoutineUserDays %}
                         <div class="col-sm-4 mb-3">
                             <div class="card">
                                 <div class="card-body">
-                                    <h5 class="card-title">День номер: {{ day.dayOrder }}</h5>
+                                    <h5 class="card-title">Day order: {{ day.routineDay.dayOrder }}</h5>
+                                    {% if day.getIsCompleted %}
+                                        <p class="card-text">Day completed: {{ day.dateCompleted }}</p>
+                                    {% endif %}
                                     <p class="card-text"></p>
                                 </div>
                                 <div class="card-footer">
+                                    <a href="#" class="btn btn-primary">Complete</a>
+                                    <a href="#" class="btn btn-primary">Edit</a>
                                 </div>
                             </div>
                         </div>
