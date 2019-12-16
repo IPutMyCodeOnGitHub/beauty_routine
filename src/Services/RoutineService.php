@@ -81,7 +81,7 @@ class RoutineService
             return $routine;
         } catch (\Exception $e) {
             if (isset($photoName)) {
-                $this->uploaderHelper->deleteFile($photoName, UploaderHelper::CERTIFICATE_PATH);
+                $this->uploaderHelper->deleteFile($photoName, UploaderHelper::ROUTINE_PHOTO_PATH);
             }
             return null;
         }

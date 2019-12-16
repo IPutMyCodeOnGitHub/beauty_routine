@@ -12,8 +12,8 @@ use Doctrine\ORM\Mapping as ORM;
 class Product
 {
     /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
+     * @ORM\Id
+     * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
     private $id;
@@ -39,14 +39,14 @@ class Product
     private $price;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\ProductType", inversedBy="tag")
+     * @ORM\ManyToOne(targetEntity="App\Entity\ProductType", inversedBy="type")
      */
     private $type;
 
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\ProductTag", inversedBy="products")
      */
-    private $tag;
+    private $tags;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -59,6 +59,17 @@ class Product
     private $routineDays;
 
     /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="products")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $expert;
+
+    /**
+     * @ORM\Column(type="string", length=512, nullable=true)
+     */
+    private $description;
+
+    /**
      * @ORM\ManyToMany(targetEntity="App\Entity\RoutineUserDay", mappedBy="products")
      */
     private $routineUserDays;
@@ -66,9 +77,9 @@ class Product
     public function __construct()
     {
         $this->type = new ArrayCollection();
-        $this->tag = new ArrayCollection();
         $this->routineDays = new ArrayCollection();
         $this->routineUserDays = new ArrayCollection();
+        $this->tags = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -124,28 +135,14 @@ class Product
         return $this;
     }
 
-    /**
-     * @return Collection|ProductType[]
-     */
-    public function getType(): Collection
+    public function getType(): ?ProductType
     {
         return $this->type;
     }
 
-    public function addType(ProductType $type): self
+    public function setType(ProductType $type): self
     {
-        if (!$this->type->contains($type)) {
-            $this->type[] = $type;
-        }
-
-        return $this;
-    }
-
-    public function removeType(ProductType $type): self
-    {
-        if ($this->type->contains($type)) {
-            $this->type->removeElement($type);
-        }
+        $this->type = $type;
 
         return $this;
     }
@@ -153,15 +150,15 @@ class Product
     /**
      * @return Collection|ProductTag[]
      */
-    public function getTag(): Collection
+    public function getTags(): Collection
     {
-        return $this->tag;
+        return $this->tags;
     }
 
     public function addTag(ProductTag $tag): self
     {
-        if (!$this->tag->contains($tag)) {
-            $this->tag[] = $tag;
+        if (!$this->tags->contains($tag)) {
+            $this->tags[] = $tag;
         }
 
         return $this;
@@ -169,8 +166,8 @@ class Product
 
     public function removeTag(ProductTag $tag): self
     {
-        if ($this->tag->contains($tag)) {
-            $this->tag->removeElement($tag);
+        if ($this->tags->contains($tag)) {
+            $this->tags->removeElement($tag);
         }
 
         return $this;
@@ -202,7 +199,17 @@ class Product
             $this->routineDays[] = $routineDay;
             $routineDay->addProduct($this);
         }
+        return $this;
+    }
 
+    public function getExpert(): ?User
+    {
+        return $this->expert;
+    }
+
+    public function setExpert(?User $expert): self
+    {
+        $this->expert = $expert;
         return $this;
     }
 
@@ -241,6 +248,17 @@ class Product
             $routineUserDay->removeProduct($this);
         }
 
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): self
+    {
+        $this->description = $description;
         return $this;
     }
 }

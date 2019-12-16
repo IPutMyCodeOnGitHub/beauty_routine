@@ -2,12 +2,10 @@
 
 namespace App\Entity;
 
-use App\Services\UploaderHelper;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
@@ -69,6 +67,11 @@ class User implements UserInterface
     private $subs;
 
     /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Product", mappedBy="expert")
+     */
+    private $products;
+
+    /**
      * @ORM\OneToMany(targetEntity="App\Entity\RoutineSelection", mappedBy="user", orphanRemoval=true)
      */
     private $routineSelections;
@@ -78,6 +81,7 @@ class User implements UserInterface
         $this->userCertificates = new ArrayCollection();
         $this->routines = new ArrayCollection();
         $this->subs = new ArrayCollection();
+        $this->products = new ArrayCollection();
         $this->routineSelections = new ArrayCollection();
     }
 
@@ -266,6 +270,7 @@ class User implements UserInterface
             $this->subs->removeElement($sub);
             $sub->removeSubscriber($this);
         }
+        return $this;
     }
 
     public function isValid(): bool
@@ -307,5 +312,35 @@ class User implements UserInterface
     public function isApproved(): bool
     {
         return (bool)in_array(User::ROLE_EXPERT, $this->getRoles()) ? true: false;
+    }
+
+    /**
+     * @return Collection|Product[]
+     */
+    public function getProducts(): Collection
+    {
+        return $this->products;
+    }
+
+    public function addProduct(Product $product): self
+    {
+        if (!$this->products->contains($product)) {
+            $this->products[] = $product;
+            $product->setExpert($this);
+        }
+
+        return $this;
+    }
+
+    public function removeProduct(Product $product): self
+    {
+        if ($this->products->contains($product)) {
+            $this->products->removeElement($product);
+            // set the owning side to null (unless already changed)
+            if ($product->getExpert() === $this) {
+                $product->setExpert(null);
+            }
+        }
+        return $this;
     }
 }

@@ -27,12 +27,9 @@ class ProductController extends AbstractController
      */
     public function listProducts(): Response
     {
-        $expert = $this->getUser();
-        if (!$expert) {
-            throw $this->createNotFoundException('The expert does not exist');
-        }
+        $products = $this->productService->getAllProducts();
         return $this->render('product/list.html.twig', [
-            'expert' => $expert,
+            'products' => $products,
         ]);
     }
 
@@ -46,8 +43,9 @@ class ProductController extends AbstractController
         $form = $this->createForm(ProductFormType::class, $product);
         $form->handleRequest($request);
 
+        $expert = $this->getUser();
         if ($form->isSubmitted() && $form->isValid()) {
-            $result = $this->productService->createProductForm($form, $product);
+            $result = $this->productService->createProductForm($form, $product, $expert);
             if ($result) {
                 $this->addFlash('success', 'Product added!');
             } else {
@@ -57,6 +55,49 @@ class ProductController extends AbstractController
 
         return $this->render('product/create.html.twig', [
             'form' => $form->createView(),
+        ]);
+    }
+
+    /**
+     * @Route("/product/{id}/edit", name="expert.product.edit")
+     */
+    public function edit(Request $request, int $id): Response
+    {
+        $product = $this->productService->findProductById($id);
+
+        $form = $this->createForm(ProductFormType::class, $product);
+        $form->handleRequest($request);
+
+        $result = $this->productService->editProduct($form, $product, $request);
+
+        return $this->render('product/edit.html.twig', [
+            'form' => $form->createView(),
+            'product' => $result,
+        ]);
+    }
+
+    /**
+     * @Route("/product/{id}/show", name="expert.product.show")
+     */
+    public function showProduct(Request $request, int $id): Response
+    {
+        $product = $this->productService->findProductById($id);
+
+        return $this->render('product/show.html.twig', [
+            'product' => $product,
+        ]);
+    }
+
+    /**
+     * @Route("/expert/product/{id}/delete", name="expert.product.delete")
+     */
+    public function delete(int $id, Request $request): Response
+    {
+        $response = $this->productService->deleteProductById($id);
+
+        $products = $this->productService->getAllProducts();
+        return $this->render('product/list.html.twig', [
+            'products' => $products,
         ]);
     }
 }
