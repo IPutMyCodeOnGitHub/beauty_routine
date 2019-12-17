@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Routine;
 
 use App\Entity\Routine;
 use App\Entity\RoutineSelection;

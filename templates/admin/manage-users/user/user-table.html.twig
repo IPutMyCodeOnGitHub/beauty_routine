@@ -1,5 +1,5 @@
 <h4>Total users number: ({{ users.getTotalItemCount }})</h4>
-<table  class="table table-responsive pt-3">
+<table  class="table table-responsive-sm pt-3">
     <tr>
         <th scope="col">#</th>
         <th scope="col">Id</th>
@@ -24,17 +24,17 @@
                 {{ user.email }}
             </td>
             <td>
-{#                {% if not user.valid %}#}
-{#                    <span class="badge badge-danger">  не подтверждён </span>#}
-{#                {% endif %}#}
+                {% if not user.isValid %}
+                    <span class="badge badge-danger">  не подтверждён </span>
+                {% endif %}
             </td>
             <td class="exist-{{ user.id }}">
-                <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseCard{{ user.id }}" aria-expanded="false" aria-controls="collapseCard{{ user.id }}">
-                    Edit
-                </button>
+{#                <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseCard{{ user.id }}" aria-expanded="false" aria-controls="collapseCard{{ user.id }}">#}
+{#                    Edit#}
+{#                </button>#}
             </td>
             <td class="exist-{{ user.id }}">
-                <button onclick="deleteFromTable('{{ path('admin.users.delete', {id: user.id}) }}', {{ user.id }})" class="btn">Delete</button>
+{#                <button onclick="deleteFromTable('{{ path('admin.users.delete', {id: user.id}) }}', {{ user.id }})" class="btn">Delete</button>#}
             </td>
         </tr>
         <tr>

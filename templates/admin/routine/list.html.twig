@@ -32,7 +32,7 @@
 
                 <h4>Count of routines: ({{ routines.getTotalItemCount }})</h4>
 
-                <table  class="table table-responsive pt-3">
+                <table  class="table table-responsive-sm pt-3">
                     <tr>
                         <th scope="col">#</th>
                         <th scope="col">Id</th>
@@ -59,7 +59,7 @@
                             </td>
                             <td>
                                 {% if routine.photo %}
-                                    <img src="{{ asset(routine.photo)}}" class="card-img-top" alt="...">
+                                    <img src="{{ asset(routine.photo)}}" class="img-table card-img-top" alt="...">
                                 {% endif %}
                             </td>
                             <td>

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Routine;
 
 use App\Entity\Product;
 use App\Entity\ProductType;

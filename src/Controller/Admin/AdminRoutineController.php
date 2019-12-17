@@ -36,7 +36,7 @@ class AdminRoutineController extends AbstractController
 
         $routines = $entityManager
             ->getRepository(Routine::class)
-            ->searchRoutinePaginator($expert, $type, $page, null);
+            ->searchRoutinePaginator($expert, $type, $page, null, null);
 
         $types = $entityManager
             ->getRepository(RoutineType::class)

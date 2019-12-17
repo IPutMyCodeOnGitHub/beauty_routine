@@ -20,6 +20,11 @@ h1{
     color: #434a4a;
 }
 
+.img-table{
+    height: 100px;
+    width: auto;
+}
+
 .btn{
     background-color: #6d9ea07a;
     border: none;
