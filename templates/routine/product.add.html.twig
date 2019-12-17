@@ -12,22 +12,26 @@
         <div class="col-md-9">
 
             <div class="search-panel pb-5 container">
-{#                <form action="{{ path('expert.routine.day.add.product') }}" method="get" class="form-inline">#}
-{#                    <div class="form-group mx-sm-3 mb-2">#}
-{#                        <label for="type" class="pr-3">Type</label>#}
-{#                        <select class="form-control" id="status" name="status" >#}
-{#                            <option {% if not (app.request.get('type')) %} selected {% endif %}>Any</option>#}
-{#                            {% for type in types %}#}
-{#                                <option {% if (app.request.get('type') == type.type) %} selected {% endif %} value="{{ type.type }}">{{ type.type }}</option>#}
-{#                            {% endfor %}#}
-{#                        </select>#}
-{#                    </div>#}
-{#                    <div class="form-group mx-sm-3 mb-2">#}
-{#                        <input type="text" name="name" id="name" placeholder="Name of product or brand">#}
-{#                    </div>#}
-{#                    <button type="submit" class="btn btn-primary mb-2">Search</button>#}
-{#                </form>#}
+                <form action="{{ path('expert.routine.day.list.product', {id: day.routine.id, dayId: day.id}) }}" method="get" class="form-inline">
+                    <div class="form-group mx-sm-3 mb-2">
+                        <label for="type" class="pr-3">Type</label>
+                        <select class="form-control" id="type" name="type" >
+                            <option {% if not (app.request.get('type')) %} selected {% endif %}>Any</option>
+                            {% for type in types %}
+                                <option {% if (app.request.get('type') == type.id) %} selected {% endif %} value="{{ type.id }}">{{ type.type }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group mx-sm-3 mb-2">
+                        <input type="text" name="name" id="name" placeholder="Name of product or brand" {% if app.request.get('name') %} value="{{ app.request.get('name') }}" {% endif %}>
+                    </div>
+                    <button type="submit" class="btn btn-primary mb-2">Search</button>
+                </form>
             </div>
+
+            <a href="{{ path('expert.routine.day.edit', {id: day.routine.id, dayId: day.id}) }}" class="btn mb-3">Back to day</a>
+
+            {% include('flashes.html.twig') %}
 
             <table  class="table">
                 <tr>
@@ -51,7 +55,7 @@
                             {% if product in day.getProducts %}
                                 already added
                             {% else %}
-                                <a href="{{ path('expert.routine.day.add.concrete.product', {id: day.routine.id, dayId: day.id, prodId: product.id}) }}">Add</a>
+                                <a href="{{ path('expert.routine.day.add.product', {id: day.routine.id, dayId: day.id, prodId: product.id}) }}">Add</a>
                             {% endif %}
                         </td>
                     </tr>

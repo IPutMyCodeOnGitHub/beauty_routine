@@ -19,7 +19,8 @@
         {{ form_end(form) }}
 
         <div class="mb-4">
-            <a href="{{ path('expert.routine.day.add.product', {id: day.routine.id, dayId: day.id}) }}" class="btn">Add products</a>
+            <a href="{{ path('expert.routine.day.list.product', {id: day.routine.id, dayId: day.id}) }}" class="btn">Add products</a>
+            <a href="{{ path('expert.routine.edit', {id: day.routine.id}) }}" class="btn">Back to routine</a>
         </div>
 
         {% include('flashes.html.twig') %}
@@ -37,7 +38,6 @@
                     <th scope="col">Type</th>
                     <th scope="col">Tag</th>
                     <th scope="col">Photo</th>
-                    <th scope="col">Edit</th>
                     <th scope="col">Delete</th>
                 </tr>
 
@@ -49,23 +49,22 @@
                         <td>{{ product.brand }}</td>
                         <td>{{ product.country }}</td>
                         <td>
-{#                            {{ product.type }}#}
+                            {{ product.type }}
                         </td>
                         <td>
-{#                            {% for tag in product.getTag %}#}
-{#                                {{ tag.tag }} ,#}
-{#                            {% endfor %}#}
+                            {% if product.getTags %}
+                                {% for tag in product.getTags %}
+                                    {{ tag.tag }} ,
+                                {% endfor %}
+                            {% endif %}
                         </td>
                         <td>
                             {% if product.photo %}
                                 <img src="product.photo" alt="">
                             {% endif %}
                         </td>
-
-                        <td class="day-{{loop.index}}">
-                            <a href="#" class="btn btn-primary">Edit</a></td>
-                        <td class="day-{{loop.index}}">
-                            <button class="btn btn-primary" onclick='' class="delete-day">Delete</button></td>
+                        <td class="day-{{ product.id }}">
+                            <button class="btn btn-primary" onclick="deleteFromDay('{{ path('expert.routine.day.delete.product', {id: day.routine.id, dayId: day.id, prodId: product.id}) }}', {{ product.id }})" class="delete-day">Delete</button></td>
                     </tr>
                 {% endfor %}
 

@@ -94,9 +94,13 @@ class RoutineController extends AbstractController
         }
 
         $entityManager->remove($routine);
-        $entityManager->flush();
-
-        return new Response(1);
+        $entityManager->persist($routine);
+        try {
+            $entityManager->flush();
+            return new Response(1);
+        } catch(\Exception $e) {
+            return new Response(0);
+        }
     }
 
     /**
@@ -147,12 +151,7 @@ class RoutineController extends AbstractController
         $routine->setStatus(Routine::STATUS_ACTIVE);
         $entityManager->persist($routine);
 
-        try {
-            $entityManager->flush();
-            return new Response(1);
-        } catch(\Exception $e) {
-            return new Response(0);
-        }
+
     }
     /**
      * @Route("/expert/routine/{id}/deactivate", name="expert.routine.deactivate")

@@ -18,6 +18,21 @@ $(document).ready(function() {
 
 });
 
+function deleteFromDay(path, id) {
+    console.log(path, id);
+    $.ajax({
+        url: path,
+        dataType: 'text',
+    }).done(function (result) {
+        if (result == 1) {
+            $('.day-' + id).html('<span class="badge badge-secondary">Deleted</span>');
+        }
+        console.log('Success');
+    }).fail(function (textStatus,errorThrown) {
+        console.log('fail',textStatus.responseText,errorThrown);
+    });
+}
+
 function activateRoutine(path, id) {
     console.log(path, id);
     $.ajax({

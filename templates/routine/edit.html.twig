@@ -54,6 +54,8 @@
                                 <th scope="col">#</th>
                                 <th scope="col">Id</th>
                                 <th scope="col">Day of routine</th>
+                                <th scope="col">Recommendations</th>
+                                <th scope="col">Count of products</th>
                                 <th scope="col">Edit</th>
                                 <th scope="col">Delete</th>
                             </tr>
@@ -62,6 +64,8 @@
                                     <th scope="col">{{loop.index}}</th>
                                     <td>{{ day.id }}</td>
                                     <td>{{ day.getDayOrder }}</td>
+                                    <td>{{ day.getRecommends }}</td>
+                                    <td>{{ day.getProducts|length }}</td>
                                     <td class="day-{{loop.index}}">
                                         <a href="{{ path('expert.routine.day.edit', {id: routine.id, dayId: day.id})}}" class="btn btn-primary">Edit</a></td>
                                     <td class="day-{{loop.index}}">
