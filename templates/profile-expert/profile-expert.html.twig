@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-
+    <div class="container">
     {% include 'profile-expert/navigation.html.twig' %}
 
     <div class="container">
@@ -28,5 +28,6 @@
         </div>
         {% for certificate in user.getUserCertificates %}
         {% endfor %}
+    </div>
     </div>
 {% endblock %}

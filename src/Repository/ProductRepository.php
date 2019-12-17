@@ -3,8 +3,12 @@
 namespace App\Repository;
 
 use App\Entity\Product;
+use App\Entity\ProductType;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\ORM\QueryBuilder;
+use Knp\Component\Pager\Pagination\PaginationInterface;
+use Knp\Component\Pager\Paginator;
 
 /**
  * @method Product|null find($id, $lockMode = null, $lockVersion = null)
@@ -14,37 +18,47 @@ use Doctrine\Common\Persistence\ManagerRegistry;
  */
 class ProductRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    private $paginator;
+
+    public function __construct(ManagerRegistry $registry, Paginator $paginator)
     {
         parent::__construct($registry, Product::class);
+        $this->paginator = $paginator;
     }
 
-    // /**
-    //  * @return Product[] Returns an array of Product objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    public function getQueryBuilderSearchProducts(?ProductType $type, ?string $productName): QueryBuilder
     {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('p.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
+        $query = $this->createQueryBuilder('p');
+        $query->orderBy('p.id', 'ASC');
 
-    /*
-    public function findOneBySomeField($value): ?Product
-    {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        if ($type) {
+            $query->andWhere('p.type = :type')
+                ->setParameter('type', $type);
+        }
+
+        if ($productName) {
+            $query->andWhere(
+                $query->expr()
+                    ->like('p.name',':name')
+            )
+                ->setParameter('name', '%'. $productName . '%');
+        }
+
+        return $query;
     }
-    */
+
+    public function searchProductPaginator(
+        ?ProductType $type,
+        ?string $productName,
+        int $page = 1,
+        int $countObj = 10): ?PaginationInterface
+    {
+        $queryBuilder = $this->getQueryBuilderSearchProducts($type, $productName);
+
+        return $this->paginator->paginate(
+            $queryBuilder,
+            $page,
+            $countObj
+        );
+    }
 }

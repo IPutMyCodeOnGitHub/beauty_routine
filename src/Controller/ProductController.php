@@ -5,6 +5,8 @@ namespace App\Controller;
 use App\Entity\Product;
 use App\Form\ProductFormType;
 use App\Services\ProductService;
+use App\Services\ProductTagService;
+use App\Services\ProductTypeService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,21 +17,43 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class ProductController extends AbstractController
 {
-    private $productService;
+    private $productService,
+            $productTagService,
+            $productTypeService;
 
-    public function __construct(ProductService $productService)
+    public function __construct(
+        ProductService $productService,
+        ProductTagService $productTagService,
+        ProductTypeService $productTypeService)
     {
         $this->productService = $productService;
+        $this->productTagService = $productTagService;
+        $this->productTypeService = $productTypeService;
     }
 
     /**
      * @Route("/product", name="expert.product")
      */
-    public function listProducts(): Response
+    public function listProducts(Request $request): Response
     {
-        $products = $this->productService->getAllProducts();
+        //$products = $this->productService->getAllProducts();
+
+        $type = $request->query->get('type');
+        $page = $request->query->getInt('page', 1);
+        $productName = $request->query->get('productName');
+
+        if ($type || $productName) {
+            $page = 1;
+            $request->query->remove('page');
+            $type = $this->productTypeService->getOneType($type);
+        }
+
+        $products = $this->productService->search($type, $productName, $page);
+        $types = $this->productTypeService->getAllTypes();
+
         return $this->render('product/list.html.twig', [
             'products' => $products,
+            'types' => $types,
         ]);
     }
 
