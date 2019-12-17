@@ -5,9 +5,8 @@ namespace App\Services;
 
 
 use App\Entity\Product;
-use App\Entity\Routine;
+use App\Entity\ProductType;
 use App\Entity\User;
-use App\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Component\Form\Form;
@@ -64,24 +63,7 @@ class ProductService
         return $products;
     }
 
-   /* public function editProduct($form, int $id)
-    {
-        /** @var Product $product *
-        $product = $this->entityManager->getRepository(Routine::class)->find($id);
 
-        if (!$product) {
-            throw new Exception('The product does not exist');
-        }
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $result = $routineService->editRoutine($form, $routine);
-            if ($result) {
-                $this->addFlash('success', 'Routine updated!');
-            } else {
-                $this->addFlash('danger', 'Sorry, that was an error.');
-            }
-        }
-    }*/
     public function findProductById(int $id): ?Product
     {
         /** @var Product $product */
@@ -134,5 +116,14 @@ class ProductService
         $this->entityManager->remove($product);
         $this->entityManager->flush();
         return new Response(1);
+    }
+
+    public function search(?ProductType $type, ?string $productName,  int $page = 1)
+    {
+        $products = $this->entityManager
+            ->getRepository(Product::class)
+            ->searchProductPaginator($type, $productName, $page);
+
+        return $products;
     }
 }

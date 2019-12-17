@@ -1,5 +1,7 @@
 {% extends 'base.html.twig' %}
+{% block content %}
 
+{% endblock %}
 {% block body %}
     <div class="container">
 
@@ -9,22 +11,48 @@
             <div class="col-md-3">
                 {% include('product/left-panel.html.twig') %}
             </div>
-            <div class="col-md-9">
+
+            <div class="col-md-9 pl-0">
+                <div class="search-panel pb-5 pl-5">
+                    <form action="{{ path('expert.product') }}" method="get" class="form-inline">
+                        <div class="form-group mx-sm-3 mb-2">
+                            <label for="productName" class="pr-3">Name</label>
+                            <input type="text" class="form-control" name="productName" id="productName" placeholder=""
+                                    {% if (app.request.get('product')) %} value="{{ app.request.get('product') }}" {% endif %}>
+                        </div>
+                        <div class="form-group mx-sm-3 mb-2">
+                            <label for="type" class="pr-3">Type</label>
+                            <select class="form-control" id="type" name="type" >
+                                <option {% if not (app.request.get('expert.product')) %} selected {% endif %}>Any</option>
+                                {% for type in types %}
+                                    <option value="{{ type.id }}" {% if type.id == app.request.get('type') %} selected {% endif %}>{{ type.type }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary mb-2">Search</button>
+                    </form>
+                </div>
                 <div class="card-deck">
+                    {% if products is empty %}
+                        <h3><p>There are no products yet</p>
+                        <a href="{{ path('expert.product.create') }}">Create one</a></h3>
+                    {% endif %}
                     {% for product in products %}
-                        <div class="col-sm-4 mb-3">
+                        <div class="col-sm-4 pl-0 pr-0 pb-4">
                             <div class="card">
                                 {% if product.photo %}
                                     <img src="{{ asset(product.photo)}}" class="card-img-top" alt="...">
                                 {% endif %}
                                 <div class="card-body">
-                                    <a href="{{ path('expert.product.show', {'id' : product.id}) }}" ><h5 class="card-title">{{ product.name }}</h5></a>
+                                    <a href="{{ path('expert.product.show', {'id' : product.id}) }}" style="text-decoration: none;" >
+                                        <h5 class="card-title" >{{ product.name }}</h5>
+                                    </a>
                                     <p class="card-text">{{ product.brand }}</p>
-                                   {#<p class="card-text">Type: {{ product.tag.tag }}</p>#}
+                                    <p class="card-text text-muted">{{ product.type }}</p>
                                 </div>
                                 <div class="card-footer card-footer-{{ product.id }}">
-                                    <a href="{{ path('expert.product.edit', {'id' : product.id}) }}" class="btn btn-primary mb-3">Edit</a>
-                                    <a href="{{ path('expert.product.delete', {'id' : product.id}) }}" class="btn btn-primary mb-3">Delete</a>
+                                    <a href="{{ path('expert.product.edit', {'id' : product.id}) }}" class="btn btn-primary mb-1">Edit</a>
+                                    <a href="{{ path('expert.product.delete', {'id' : product.id}) }}" class="btn btn-primary mb-1">Delete</a>
                                 </div>
                             </div>
                         </div>

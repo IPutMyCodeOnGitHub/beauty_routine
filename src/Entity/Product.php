@@ -60,7 +60,7 @@ class Product
     private $expert;
 
     /**
-     * @ORM\Column(type="string", length=512, nullable=true)
+     * @ORM\Column(type="string", length=1024, nullable=true)
      */
     private $description;
 
