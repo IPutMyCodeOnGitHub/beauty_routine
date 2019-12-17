@@ -12,7 +12,7 @@
             </div>
             <div class="col-md-9">
                 <h1 class="pb-3">Care day creating</h1>
-
+                <p>It would be the {{ routine.getRoutineDays|length + 1 }} day in routine</p>
                 <div class="col-sm-12 pb-4">
                     {{ form_start(form) }}
                     {{ form_widget(form) }}

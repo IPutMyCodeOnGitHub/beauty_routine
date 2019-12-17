@@ -54,6 +54,11 @@ class Product
     private $photo;
 
     /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\RoutineDay", mappedBy="products")
+     */
+    private $routineDays;
+
+    /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="products")
      * @ORM\JoinColumn(nullable=false)
      */
@@ -64,8 +69,15 @@ class Product
      */
     private $description;
 
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\RoutineUserDay", mappedBy="products")
+     */
+    private $routineUserDays;
+
     public function __construct()
     {
+        $this->routineDays = new ArrayCollection();
+        $this->routineUserDays = new ArrayCollection();
         $this->tags = new ArrayCollection();
     }
 
@@ -172,6 +184,23 @@ class Product
         return $this;
     }
 
+    /**
+     * @return Collection|RoutineDay[]
+     */
+    public function getRoutineDays(): Collection
+    {
+        return $this->routineDays;
+    }
+
+    public function addRoutineDay(RoutineDay $routineDay): self
+    {
+        if (!$this->routineDays->contains($routineDay)) {
+            $this->routineDays[] = $routineDay;
+            $routineDay->addProduct($this);
+        }
+        return $this;
+    }
+
     public function getExpert(): ?User
     {
         return $this->expert;
@@ -180,6 +209,43 @@ class Product
     public function setExpert(?User $expert): self
     {
         $this->expert = $expert;
+        return $this;
+    }
+
+    public function removeRoutineDay(RoutineDay $routineDay): self
+    {
+        if ($this->routineDays->contains($routineDay)) {
+            $this->routineDays->removeElement($routineDay);
+            $routineDay->removeProduct($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|RoutineUserDay[]
+     */
+    public function getRoutineUserDays(): Collection
+    {
+        return $this->routineUserDays;
+    }
+
+    public function addRoutineUserDay(RoutineUserDay $routineUserDay): self
+    {
+        if (!$this->routineUserDays->contains($routineUserDay)) {
+            $this->routineUserDays[] = $routineUserDay;
+            $routineUserDay->addProduct($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRoutineUserDay(RoutineUserDay $routineUserDay): self
+    {
+        if ($this->routineUserDays->contains($routineUserDay)) {
+            $this->routineUserDays->removeElement($routineUserDay);
+            $routineUserDay->removeProduct($this);
+        }
 
         return $this;
     }
@@ -192,7 +258,6 @@ class Product
     public function setDescription(?string $description): self
     {
         $this->description = $description;
-
         return $this;
     }
 }

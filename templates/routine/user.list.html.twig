@@ -23,7 +23,7 @@
                     <div class="form-group mx-sm-3 mb-2">
                         <label for="type" class="pr-3">Type of care</label>
                         <select class="form-control" id="type" name="type" >
-                            <option {% if not (app.request.get('expert')) %} selected {% endif %}>Any</option>
+                            <option {% if not (app.request.get('type')) %} selected {% endif %}>Any</option>
                             {% for type in types %}
                                 <option value="{{ type.id }}" {% if type.id == app.request.get('type') %} selected {% endif %}>{{ type.type }}</option>
                             {% endfor %}

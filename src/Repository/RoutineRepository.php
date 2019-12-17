@@ -27,7 +27,7 @@ class RoutineRepository extends ServiceEntityRepository
         $this->paginator = $paginator;
     }
 
-    public function getQueryBuilderSearchRoutines(?String $expert, ?RoutineType $type, ?User $subscriber, string $status): QueryBuilder
+    public function getQueryBuilderSearchRoutines(?String $expert, ?RoutineType $type, ?User $subscriber, ?string $status): QueryBuilder
     {
         $query = $this->createQueryBuilder('r');
         $query->orderBy('r.id', 'ASC');
@@ -48,8 +48,10 @@ class RoutineRepository extends ServiceEntityRepository
                 ->setParameter('type', $type);
         }
 
-        $query->andwhere('r.status = :status')
-            ->setParameter('status', $status);
+        if ($status && in_array($status, [Routine::STATUS_DISABLED, Routine::STATUS_BLOCKED, Routine::STATUS_ACTIVE, Routine::STATUS_DRAFT])) {
+            $query->andwhere('r.status = :status')
+                ->setParameter('status', $status);
+        }
 
         return $query;
     }
@@ -59,7 +61,7 @@ class RoutineRepository extends ServiceEntityRepository
         ?RoutineType $type,
         int $page = 1,
         ?User $subscriber,
-        string $status = Routine::STATUS_ACTIVE,
+        ?string $status,
         int $countObj = 10): ?PaginationInterface
     {
         $queryBuilder = $this->getQueryBuilderSearchRoutines($expert, $type, $subscriber, $status);

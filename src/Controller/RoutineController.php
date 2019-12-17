@@ -23,16 +23,36 @@ class RoutineController extends AbstractController
     /**
      * @Route("/expert/routine", name="expert.routine")
      */
-    public function listRoutines(): Response
+    public function listRoutines(Request $request): Response
     {
         $expert = $this->getUser();
-
         if (!$expert) {
             throw $this->createNotFoundException('The expert does not exist');
         }
+        $entityManager = $this->getDoctrine()->getManager();
+
+        $status = $request->query->get('status');
+        $type = $request->query->get('type');
+        $page = $request->query->getInt('page', 1);
+
+        if ($type || $status) {
+            $page = 1;
+            $request->query->remove('page');
+        }
+
+        if ($type || isset($type)) {
+            $type = $entityManager->getRepository(RoutineType::class)->find($type);
+        }
+
+        $routines = $entityManager
+            ->getRepository(Routine::class)
+            ->searchRoutinePaginator($expert->getName(), $type, $page, null, $status);
+
+        $types = $entityManager->getRepository(RoutineType::class)->findAll();
 
         return $this->render('routine/list.html.twig', [
-            'expert' => $expert,
+            'routines' => $routines,
+            'types' => $types,
         ]);
     }
 
@@ -80,37 +100,6 @@ class RoutineController extends AbstractController
     }
 
     /**
-     * @Route("/expert/routine/{id}/day/create", name="expert.day.routine.create")
-     */
-    public function createDay(int $id, Request $request, RoutineService $routineService): Response
-    {
-        $entityManager = $this->getDoctrine()->getManager();
-
-        $routine = $entityManager->getRepository(Routine::class)->find($id);
-
-        if (!$routine) {
-            throw $this->createNotFoundException('Routine does not exist');
-        }
-
-        $routineDay = new RoutineDay();
-        $form = $this->createForm(RoutineDayType::class, $routineDay);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $result = $routineService->createDay($routineDay, $routine);
-            if ($result) {
-                $this->addFlash('success', 'Day added!');
-                return $this->redirectToRoute('expert.routine.edit', ['id' => $id]);
-            } else {
-                $this->addFlash('danger', 'Sorry, that was an error.');
-            }
-        }
-        return $this->render('routine/day.create.html.twig', [
-            'form' => $form->createView(),
-        ]);
-    }
-
-    /**
      * @Route("/expert/routine/{id}/edit", name="expert.routine.edit")
      */
     public function edit(Request $request, int $id, RoutineService $routineService): Response
@@ -144,52 +133,50 @@ class RoutineController extends AbstractController
     }
 
     /**
-     * @Route("/expert/routine/{id}/day/{dayId}/edit", name="expert.routine.day.edit")
+     * @Route("/expert/routine/{id}/activate", name="expert.routine.activate")
      */
-    public function editDay(Request $request, int $id, int $dayId, RoutineService $routineService): Response
+    public function activateRoutineAjax(int $id): Response
     {
         $entityManager = $this->getDoctrine()->getManager();
-        $routineDay = $entityManager->getRepository(RoutineDay::class)->find($dayId);
+        $routine = $entityManager->getRepository(Routine::class)->find($id);
 
-        if (!$routineDay) {
-            $this->addFlash('danger', 'Sorry, day does not exist.');
-            return $this->redirectToRoute('routine.edit', ['id' => $id, 'dayId' => $dayId]);
-        }
-
-        $form = $this->createForm(RoutineDayType::class, $routineDay);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $result =$routineService->editDay($routineDay);
-            if ($result) {
-                $this->addFlash('success', 'Day updated!');
-                return $this->redirectToRoute('routine.edit', ['id' => $id, 'dayId' => $dayId]);
-            } else {
-                $this->addFlash('danger', 'Sorry, that was an error.');
-            }
-        }
-
-        return $this->render('routine/day.edit.html.twig', [
-            'form' => $form->createView(),
-        ]);
-    }
-
-    /**
-     * @Route("/expert/routine/{id}/day/{dayId}/delete", name="expert.routine.day.delete")
-     */
-    public function deleteDay(Request $request, int $id, int $dayId): Response
-    {
-        $entityManager = $this->getDoctrine()->getManager();
-        $routineDay = $entityManager
-            ->getRepository(RoutineDay::class)
-            ->find($dayId);
-        if (!$routineDay) {
-            $this->addFlash('danger', 'Sorry, day doesn\'t exists.');
+        if (!$routine) {
             return new Response(0);
         }
-        $entityManager->remove($routineDay);
-        $entityManager->flush();
-        return new Response(1);
+
+        $routine->setStatus(Routine::STATUS_ACTIVE);
+        $entityManager->persist($routine);
+
+        try {
+            $entityManager->flush();
+            return new Response(1);
+        } catch(\Exception $e) {
+            return new Response(0);
+        }
     }
+    /**
+     * @Route("/expert/routine/{id}/deactivate", name="expert.routine.deactivate")
+     */
+    public function deactivateRoutineAjax(int $id): Response
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+        $routine = $entityManager->getRepository(Routine::class)->find($id);
+
+        if (!$routine) {
+            return new Response(0);
+        }
+
+        $routine->setStatus(Routine::STATUS_DISABLED);
+        $entityManager->persist($routine);
+
+        try {
+            $entityManager->flush();
+            return new Response(1);
+        } catch(\Exception $e) {
+            return new Response(0);
+        }
+    }
+
 
     /**
      * @Route("/routine/", name="user.routine")
@@ -213,7 +200,7 @@ class RoutineController extends AbstractController
 
         $routines = $entityManager
             ->getRepository(Routine::class)
-            ->searchRoutinePaginator($expert, $type, $page, null);
+            ->searchRoutinePaginator($expert, $type, $page, null, Routine::STATUS_ACTIVE);
         $user = $this->getUser();
 
         $types = $entityManager->getRepository(RoutineType::class)->findAll();
