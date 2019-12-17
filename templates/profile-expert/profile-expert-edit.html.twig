@@ -1,22 +1,11 @@
 {% extends 'base.html.twig' %}
 
-{% block title %} {{ name }}{% endblock %}
+{% block title %} {{ expert.name }}{% endblock %}
 
 {% block body %}
 <div class="container">
-    <div class="row justify-content-center  pt-5">
-        <div class="row justify-content-between col-md-6">
-            <div class="col-md-auto align-self-center pl-0">
-                <h1 class="h3 font-weight-normal align-self-center">Private profile</h1>
-            </div>
-            <div class="col-md-auto align-self-center ">
-                <a href="{{ path('profile-expert-edit') }}">Edit</a>
-            </div>
-        </div>
-    </div>
+    {% include 'profile-expert/navigation.html.twig' %}
     <div>
-
-
         <div class="row justify-content-center pt-4" id="tab">
             <img class="img avatar" src="{{ asset('/profile-expert-photo/anonim.png') }}" width="130" height="130" alt="">
         </div>
@@ -24,13 +13,11 @@
         <div class="row justify-content-center">
             <a href=""  rel="tooltip" title="changePhoto">Change photo</a>
         </div>
-
-
         <div class="tab-content row justify-content-center pt-3" id="tab">
-            {{ name }}
+            {{ expert.name }}
         </div>
         <div class="tab-content row justify-content-center" id="tab">
-            {{ email }}
+            {{ expert.email }}
         </div>
 
     </div>

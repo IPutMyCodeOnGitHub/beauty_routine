@@ -33,11 +33,11 @@ class ProfileController extends AbstractController
      */
     public function showExpertProfile()
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        /** @var User $expert */
+        $expert = $this->getUser();
 
         return $this->render('profile-expert/profile-expert.html.twig', [
-            'user' => $user,
+            'expert' => $expert,
         ]);
     }
 
@@ -46,11 +46,11 @@ class ProfileController extends AbstractController
      */
     public function profileExpertEdit()
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        /** @var User $expert */
+        $expert = $this->getUser();
 
         return $this->render('profile-expert/profile-expert-edit.html.twig', [
-            'user' => $user,
+            'expert' => $expert,
         ]);
     }
 }

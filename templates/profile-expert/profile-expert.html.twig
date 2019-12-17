@@ -2,32 +2,30 @@
 
 {% block body %}
     <div class="container">
-    {% include 'profile-expert/navigation.html.twig' %}
-
-    <div class="container">
+        {% include 'profile-expert/navigation.html.twig' %}
     <div>
         <div class="row justify-content-center pt-4" id="tab">
             <img class="img avatar" src="{{ asset('/profile-expert-photo/anonim.png') }}" width="100" height="100" alt="">
         </div>
-
-        <div class="row justify-content-center">
-            <a href="" rel="tooltip" title="changePhoto">Change photo</a>
-        </div>
-
         <div class="tab-content row justify-content-center pt-3" id="tab">
-            {{ user.name }}
+            {{ expert.name }}
         </div>
         <div class="tab-content row justify-content-center" id="tab">
-            {{ user.email }}
+            {{ expert.email }}
         </div>
         <div class="tab-content row justify-content-center pt-4" id="tab">
             <a class="h4">Programs</a>
         </div>
-        <div class="tab-content row justify-content-center pt-4" id="tab">
+        <div class="tab-content row justify-content-center" id="tab">
             <a class="nav-link active" href="{{ path('expert.routine.create') }}">Create program</a>
         </div>
-        {% for certificate in user.getUserCertificates %}
-        {% endfor %}
-    </div>
+        <div class="tab-content row justify-content-center pt-4" id="tab">
+        <a class="h4">Certificates</a>
+        </div>
+        <div class="tab-content row justify-content-center" id="tab">
+        {% if  expert.getUserCertificates.get(0) %}
+            <a class="nav-link active" href="{{ asset(expert.getUserCertificates.get(0).certificate) }}">Certificate</a>
+        {% endif %}
+        </div>
     </div>
 {% endblock %}
