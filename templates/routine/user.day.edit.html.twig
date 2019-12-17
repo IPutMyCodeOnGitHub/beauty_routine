@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    {% include('profile/navigation.html.twig') %}
+
+    <div class="container">
+        <div class="row flex-column flex-sm-row mt-4">
+            <div class="col-md-3">
+                {% include('routine/user.left-panel.html.twig') %}
+            </div>
+            <div class="col-md-9">
+
+                <a href="{{ path('user.sub.routine.show.one', {id: day.routineSelection.id}) }}" class="btn mb-4">Back to routine</a>
+
+                <p>Day order: {{ day.routineDay.dayOrder }}</p>
+                <p>Recommendations: {{ day.routineDay.recommends }}</p>
+
+                <a href="#" class="btn mb-4">Add product</a>
+
+                <div class="card-deck">
+                    {% if day.getIsChanged %}
+                        {% set products = day.products %}
+                    {% else %}
+                        {% set products = day.getRoutineDay.products %}
+                    {% endif %}
+                    {% for product in products %}
+                        <div class="col-sm-4 mb-3">
+                            <div class="card">
+                                <div class="card-body">
+                                    {% if product.photo %}
+                                        <p class="card-text"><img src="{{ product.photo }}" alt=""></p>
+                                    {% endif %}
+                                    <p class="card-text">Name: {{ product.name }}</p>
+                                    <p class="card-text">Brand: {{ product.brand }}</p>
+                                    <p class="card-text">Type: {{ product.type.type }}</p>
+                                </div>
+
+                                <div class="card-footer card-footer-{{ day.id }}">
+
+                                    <button class="btn" onclick="deleteProductInUserDay('', {{ product.id }})">Delete</button>
+
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}

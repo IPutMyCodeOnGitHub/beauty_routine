@@ -14,18 +14,30 @@
 
                 <div class="card-deck">
                     {% for routine in routines %}
-                        {% if  routine.routineUserDays|length > 0%}
+                        {% if  routine.routineUserDays|length > 0 %}
                             <div class="col-sm-4 mb-3">
                                 <div class="card">
                                     {% if routine.parentRoutine.photo %}
                                         <img src="{{ asset(routine.parentRoutine.photo)}}" class="card-img-top" alt="...">
                                     {% endif %}
                                 </div>
-                                {% set day =  routine.routineUserDays[routine.daysCompleted + 1]%}
+{#                                {% if not routine.daysCompleted %}#}
+{#                                    {% set routine.daysCompleted = 0 %}#}
+{#                                {% endif %}#}
+                                {% set day =  routine.routineUserDays[routine.daysCompleted + 0]%}
                                 <div class="card-body">
                                     <p class="card-text">
                                         Day order: {{ day.routineDay.dayOrder }}
                                     </p>
+                                    <p class="card-text">Recommendations: {{ day.routineDay.recommends }}</p>
+                                    {% for product in day.routineDay.getProducts %}
+                                        {% if product.photo %}
+                                            <p class="card-text"><img src="{{ product.photo }}" alt="">}</p>
+                                        {% endif %}
+                                        <p class="card-text">Name: {{ product.name }}</p>
+                                        <p class="card-text">Brand: {{ product.brand }}</p>
+                                        <hr/>
+                                    {% endfor %}
                                     <p class="card-text">
                                         <button onclick="completeDay('{{ path('user.routine.day.complete', {id: routine.id, dayId: day.id}) }}', {{ day.id }})" class="btn btn-primary btn-{{ day.id }}">Complete</button>
                                     </p>
