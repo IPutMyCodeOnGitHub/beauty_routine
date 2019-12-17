@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Routine;
 
 use App\Entity\Routine;
 use App\Entity\RoutineDay;
@@ -94,7 +94,6 @@ class RoutineController extends AbstractController
         }
 
         $entityManager->remove($routine);
-        $entityManager->persist($routine);
         try {
             $entityManager->flush();
             return new Response(1);
