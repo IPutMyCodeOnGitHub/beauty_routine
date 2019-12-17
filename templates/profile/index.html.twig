@@ -8,7 +8,7 @@
 
     <div class="container pt-4">
         <div class="row">
-            <div class="content row col-md-10 justify-content-around">
+            <div class="content row col-md-10">
 
                 <h1>You have {{ routines|length }} active routines</h1>
 
@@ -20,27 +20,35 @@
                                     {% if routine.parentRoutine.photo %}
                                         <img src="{{ asset(routine.parentRoutine.photo)}}" class="card-img-top" alt="...">
                                     {% endif %}
-                                </div>
 {#                                {% if not routine.daysCompleted %}#}
 {#                                    {% set routine.daysCompleted = 0 %}#}
 {#                                {% endif %}#}
                                 {% set day =  routine.routineUserDays[routine.daysCompleted + 0]%}
-                                <div class="card-body">
-                                    <p class="card-text">
-                                        Day order: {{ day.routineDay.dayOrder }}
-                                    </p>
-                                    <p class="card-text">Recommendations: {{ day.routineDay.recommends }}</p>
-                                    {% for product in day.routineDay.getProducts %}
-                                        {% if product.photo %}
-                                            <p class="card-text"><img src="{{ product.photo }}" alt="">}</p>
-                                        {% endif %}
-                                        <p class="card-text">Name: {{ product.name }}</p>
-                                        <p class="card-text">Brand: {{ product.brand }}</p>
-                                        <hr/>
-                                    {% endfor %}
-                                    <p class="card-text">
-                                        <button onclick="completeDay('{{ path('user.routine.day.complete', {id: routine.id, dayId: day.id}) }}', {{ day.id }})" class="btn btn-primary btn-{{ day.id }}">Complete</button>
-                                    </p>
+                                    <div class="card-body">
+                                        <p class="card-text">
+                                            Day order: {{ day.routineDay.dayOrder }}
+                                        </p>
+                                        <p class="card-text">Recommendations: {{ day.routineDay.recommends }}</p>
+                                        {% for product in day.routineDay.getProducts %}
+                                            <div class="row no-gutters mt-2">
+                                                <div class="col-md-4">
+                                                    {% if product.photo %}
+                                                        <img src="{{ asset(product.photo) }}" class="card-img" alt="">
+                                                    {% endif %}
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <div class="pl-1">
+                                                        <p class="card-text">Name: {{ product.name }}</p>
+                                                        <p class="card-text">Brand: {{ product.brand }}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <hr/>
+                                        {% endfor %}
+                                        <p class="card-text">
+                                            <button onclick="completeDay('{{ path('user.routine.day.complete', {id: routine.id, dayId: day.id}) }}', {{ day.id }})" class="btn btn-primary btn-{{ day.id }}">Complete</button>
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
                         {% endif %}
