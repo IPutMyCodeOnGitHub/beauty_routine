@@ -8,7 +8,9 @@ use App\Entity\Product;
 use App\Entity\ProductType;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\QueryBuilder;
 use Exception;
+use Knp\Bundle\PaginatorBundle\Pagination\SlidingPagination;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -118,11 +120,11 @@ class ProductService
         return new Response(1);
     }
 
-    public function search(?ProductType $type, ?string $productName,  int $page = 1)
+    public function search(?ProductType $type, ?string $productName): SlidingPagination
     {
         $products = $this->entityManager
             ->getRepository(Product::class)
-            ->searchProductPaginator($type, $productName, $page);
+            ->searchProductForDay($type, $productName);
 
         return $products;
     }

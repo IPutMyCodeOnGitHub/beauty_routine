@@ -65,8 +65,38 @@ class RoutineUserDayController extends AbstractController
     /**
      * @Route("/routine/{id}/day/{dayId}/edit", name="user.routine.day.edit")
      */
-    public function userRoutineDayEdit(int $id, int $dayId)
+    public function userRoutineDayEdit(int $id, int $dayId): Response
     {
+        $user = $this->getUser();
+        $entityManager = $this->getDoctrine()->getManager();
+        $userDay = $entityManager->getRepository(RoutineUserDay::class)
+            ->getDayById($user, $dayId, $id);
 
+        if ($userDay->getIsChanged() == false || $userDay->getIsChanged() == null) {
+            $products = $userDay->getRoutineDay()->getProducts();
+
+            foreach ($products as $product) {
+                $userDay->addProduct($product);
+            }
+            $userDay->setIsChanged(true);
+            $entityManager->persist($userDay);
+            $entityManager->flush();
+        }
+
+        return $this->render('routine/user.day.edit.html.twig', [
+            'day' => $userDay,
+        ]);
+    }
+
+    /**
+     * @Route("/routine/{id}/day/{dayId}/edit/product", name="user.routine.day.edit.list.product")
+     */
+    public function listProductForDay(int $id, int $dayId): Response
+    {
+        $user = $this->getUser();
+        $entityManager = $this->getDoctrine()->getManager();
+        $userDay = $entityManager->getRepository(RoutineUserDay::class)
+            ->getDayById($user, $dayId, $id);
+        return new Response(0);
     }
 }

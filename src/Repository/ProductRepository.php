@@ -26,7 +26,8 @@ class ProductRepository extends ServiceEntityRepository
         $this->paginator = $paginator;
     }
 
-    public function getQueryBuilderSearchProducts(?ProductType $type, ?string $productName): QueryBuilder
+
+    public function getQueryBuilderSearchProductForDay(?ProductType $type, ?string $name): QueryBuilder
     {
         $query = $this->createQueryBuilder('p');
         $query->orderBy('p.id', 'ASC');
@@ -35,25 +36,25 @@ class ProductRepository extends ServiceEntityRepository
             $query->andWhere('p.type = :type')
                 ->setParameter('type', $type);
         }
-
-        if ($productName) {
-            $query->andWhere(
-                $query->expr()
-                    ->like('p.name',':name')
-            )
-                ->setParameter('name', '%'. $productName . '%');
+        if ($name) {
+            $query->andWhere($query->expr()->orX(
+                    $query->expr()->like('p.name', ':name'),
+                    $query->expr()->like('p.brand', ':name')))
+                ->setParameter('name', '%' . $name .'%');
         }
 
         return $query;
     }
 
-    public function searchProductPaginator(
+
+    public function searchProductForDay(
         ?ProductType $type,
-        ?string $productName,
+        ?string $name,
         int $page = 1,
-        int $countObj = 10): ?PaginationInterface
+        int $countObj = 10)
+    : ?PaginationInterface
     {
-        $queryBuilder = $this->getQueryBuilderSearchProducts($type, $productName);
+        $queryBuilder = $this->getQueryBuilderSearchProductForDay($type, $name);
 
         return $this->paginator->paginate(
             $queryBuilder,

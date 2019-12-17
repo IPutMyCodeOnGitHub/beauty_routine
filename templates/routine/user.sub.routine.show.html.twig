@@ -15,6 +15,17 @@
                             <div class="card">
                                 <div class="card-body">
                                     <h5 class="card-title">Day order: {{ day.routineDay.dayOrder }}</h5>
+                                    <p class="card-text">Recommendations: {{ day.routineDay.recommends }}</p>
+
+                                    {% for product in day.routineDay.getProducts %}
+                                        {% if product.photo %}
+                                            <p class="card-text"><img src="{{ product.photo }}" alt="">}</p>
+                                        {% endif %}
+                                        <p class="card-text">Name: {{ product.name }}</p>
+                                        <p class="card-text">Brand: {{ product.brand }}</p>
+                                        <hr/>
+                                    {% endfor %}
+
                                     {% if day.getIsCompleted %}
                                         <p class="card-text">Date completed: {{ day.dateCompleted|date("d/m/Y") }}</p>
                                     {% endif %}
@@ -28,7 +39,7 @@
                                         <button onclick="completeDay('{{ path('user.routine.day.complete', {id: routine.id, dayId: day.id}) }}', {{ day.id }})" class="btn btn-primary btn-{{ day.id }}">Complete</button>
                                     {% endif %}
 
-                                    <a href="#" class="btn btn-primary">Edit</a>
+{#                                    <a href="{{ path('user.routine.day.edit', {id: routine.id, dayId: day.id}) }}" class="btn btn-primary">Edit</a>#}
                                 </div>
                             </div>
                         </div>

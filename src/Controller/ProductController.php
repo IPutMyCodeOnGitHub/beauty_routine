@@ -39,16 +39,14 @@ class ProductController extends AbstractController
         //$products = $this->productService->getAllProducts();
 
         $type = $request->query->get('type');
-        $page = $request->query->getInt('page', 1);
         $productName = $request->query->get('productName');
 
         if ($type || $productName) {
-            $page = 1;
             $request->query->remove('page');
             $type = $this->productTypeService->getOneType($type);
         }
 
-        $products = $this->productService->search($type, $productName, $page);
+        $products = $this->productService->search($type, $productName);
         $types = $this->productTypeService->getAllTypes();
 
         return $this->render('product/list.html.twig', [
@@ -113,15 +111,17 @@ class ProductController extends AbstractController
     }
 
     /**
-     * @Route("/expert/product/{id}/delete", name="expert.product.delete")
+     * @Route("/product/{id}/delete", name="expert.product.delete")
      */
     public function delete(int $id, Request $request): Response
     {
         $response = $this->productService->deleteProductById($id);
+        $types = $this->productTypeService->getAllTypes();
 
         $products = $this->productService->getAllProducts();
         return $this->render('product/list.html.twig', [
             'products' => $products,
+            'types' => $types,
         ]);
     }
 }
