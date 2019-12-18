@@ -41,6 +41,7 @@ class AdminRoutineTypeController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $result = $adminService->routineTypesCreate($type);
             $this->addFlash($result['type'], $result['message']);
+            return $this->redirectToRoute('admin.type');
         }
 
         return $this->render('admin/routine.type/create.html.twig', [
