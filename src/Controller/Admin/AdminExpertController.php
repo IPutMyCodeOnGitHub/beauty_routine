@@ -2,7 +2,7 @@
 
 namespace App\Controller\Admin;
 
-use App\Entity\User;
+use App\Services\AdminService;
 use App\Services\RegisterService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,55 +17,41 @@ class AdminExpertController extends AbstractController
     /**
      * @Route("/experts/{id}/validation", name="experts.validation", methods={"POST"})
      */
-    public function ajaxExpertValidation(int $id, Request $request, RegisterService $userService): Response
+    public function ajaxExpertValidation(int $id, Request $request, RegisterService $userService, AdminService $adminService): Response
     {
         if (!$request->isXmlHttpRequest()) {
-            return new Response('0');
+            return new Response(false);
         }
 
-        $entityManager = $this->getDoctrine()->getManager();
+        $user = $adminService->searchUserById($id);
 
-        $user = $entityManager
-            ->getRepository(User::class)
-            ->find($id);
+        if ($user) {
+            $result = $userService->makeExpertValid($user);
+            return new Response($result);
+        }
 
-        $result = $userService->makeExpertValid($user);
-
-        return new Response($result);
+        return new Response(false);
     }
 
     /**
      * @Route("/experts/{id}/delete", name="experts.delete", methods={"POST"})
      */
-    public function ajaxExpertDelete(int $id, Request $request, RegisterService $userService): Response
+    public function ajaxExpertDelete(int $id, Request $request, AdminService $adminService): Response
     {
         if (!$request->isXmlHttpRequest()) {
-            return new Response('0');
+            return new Response(false);
         }
 
-        $entityManager = $this->getDoctrine()->getManager();
+        $result = $adminService->ajaxExpertDelete($id);
 
-        $user = $entityManager
-            ->getRepository(User::class)
-            ->find($id);
-
-        if (!$user) {
-            return new Response(0);
-        }
-
-        $entityManager->remove($user);
-        $entityManager->flush();
-
-        return new Response(1);
+        return new Response($result);
     }
 
     /**
      * @Route("/experts", name="experts", methods={"GET"})
      */
-    public function manageExperts(Request $request): Response
+    public function manageExperts(Request $request, AdminService $adminService): Response
     {
-        $entityManager = $this->getDoctrine()->getManager();
-
         $search = $request->query->get('search');
         $active = $request->query->get('active');
         $page = $request->query->getInt('page', 1);
@@ -75,9 +61,7 @@ class AdminExpertController extends AbstractController
             $request->query->remove('page');
         }
 
-        $experts = $entityManager
-            ->getRepository(User::class)
-            ->findSearchExpertPaginator($search, $active, $page);
+        $experts = $adminService->searchExpert($search, $active, $page);
 
         return $this->render('admin/manage-users/experts/manage-experts.html.twig', [
             'experts' => $experts,

@@ -55,7 +55,7 @@
 {#                            <button onclick="validExpert({{ expert.id }})" class="btn">Verify expert</button>#}
 {#                        {% endif %}#}
                         {%if not expert.isApproved %}
-                            <button onclick="validExpert({{ expert.id }})" class="btn">Approve expert</button>
+                            <button onclick="validExpert('{{ path('admin.experts.validation',  {id: expert.id}) }}', {{ expert.id }})" class="btn">Approve expert</button>
                         {% endif %}
                     </div>
                 </div>

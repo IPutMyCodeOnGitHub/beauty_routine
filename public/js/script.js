@@ -169,7 +169,7 @@ function validExpert(path, id) {
         url: path,
         dataType: 'html',
     }).done(function (result) {
-        if ((result == '0') || (result != id) ) {
+        if (!result) {
             $('div#collapseCard'+id).append(
                 '<div class="alert alert-danger" role="alert">\n' +
                     'Произошла ошибка' +
@@ -187,7 +187,7 @@ function validExpert(path, id) {
     }).fail(function (textStatus,errorThrown) {
         $('div#collapseCard'+id).append(
             '<div class="alert alert-danger" role="alert">\n' +
-                'Произошла ошибка' +
+                'Произошла ошибка' + textStatus + errorThrown +
             '</div>');
         // console.log(textStatus + errorThrown);
     });
