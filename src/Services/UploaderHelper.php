@@ -13,6 +13,7 @@ class UploaderHelper
     const CERTIFICATE_PATH = 'certificate/';
     const ROUTINE_PHOTO_PATH = 'routine/';
     const PRODUCT_PHOTO_PATH = 'product/';
+    const USER_PHOTO_PATH = 'user-photo/';
 
     private $uploadsPath;
 

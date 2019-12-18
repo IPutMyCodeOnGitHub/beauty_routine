@@ -90,11 +90,18 @@ class ProductController extends AbstractController
         $form = $this->createForm(ProductFormType::class, $product);
         $form->handleRequest($request);
 
-        $result = $this->productService->editProduct($form, $product, $request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $result = $this->productService->editProduct($form, $product, $request);
+            if ($result) {
+                $this->addFlash('success', 'Product updated!');
+            } else {
+                $this->addFlash('danger', 'Sorry, that was an error.');
+            }
+        }
 
         return $this->render('product/edit.html.twig', [
             'form' => $form->createView(),
-            'product' => $result,
+            'product' => $product,
         ]);
     }
 
