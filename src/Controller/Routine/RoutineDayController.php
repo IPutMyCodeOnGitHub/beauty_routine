@@ -11,6 +11,7 @@ use App\Entity\RoutineType;
 use App\Entity\User;
 use App\Form\RoutineDayType;
 use App\Form\RoutineFormType;
+use App\Services\ProductService;
 use App\Services\RoutineService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -27,15 +28,14 @@ class RoutineDayController extends AbstractController
      */
     public function createDay(int $id, Request $request, RoutineService $routineService): Response
     {
-        $entityManager = $this->getDoctrine()->getManager();
-
-        $routine = $entityManager->getRepository(Routine::class)->find($id);
+        $routine = $routineService->getRoutineById($id);
 
         if (!$routine) {
             throw $this->createNotFoundException('Routine does not exist');
         }
 
         $routineDay = new RoutineDay();
+
         $form = $this->createForm(RoutineDayType::class, $routineDay);
         $form->handleRequest($request);
 
@@ -48,6 +48,7 @@ class RoutineDayController extends AbstractController
                 $this->addFlash('danger', 'Sorry, that was an error.');
             }
         }
+
         return $this->render('routine/day.create.html.twig', [
             'routine' => $routine,
             'form' => $form->createView(),
@@ -59,8 +60,7 @@ class RoutineDayController extends AbstractController
      */
     public function editDay(Request $request, int $id, int $dayId, RoutineService $routineService): Response
     {
-        $entityManager = $this->getDoctrine()->getManager();
-        $routineDay = $entityManager->getRepository(RoutineDay::class)->find($dayId);
+        $routineDay = $routineService->getRoutineDayById($dayId);
 
         if (!$routineDay) {
             $this->addFlash('danger', 'Sorry, day does not exist.');
@@ -69,6 +69,7 @@ class RoutineDayController extends AbstractController
 
         $form = $this->createForm(RoutineDayType::class, $routineDay);
         $form->handleRequest($request);
+
         if ($form->isSubmitted() && $form->isValid()) {
             $result =$routineService->editDay($routineDay);
             if ($result) {
@@ -88,28 +89,26 @@ class RoutineDayController extends AbstractController
     /**
      * @Route("/expert/routine/{id}/day/{dayId}/delete", name="expert.routine.day.delete")
      */
-    public function deleteDay(Request $request, int $id, int $dayId): Response
+    public function deleteDay(Request $request, int $id, int $dayId, RoutineService $routineService): Response
     {
-        $entityManager = $this->getDoctrine()->getManager();
-        $routineDay = $entityManager
-            ->getRepository(RoutineDay::class)
-            ->find($dayId);
+        $routineDay = $routineService->getRoutineDayById($dayId);
+
         if (!$routineDay) {
             $this->addFlash('danger', 'Sorry, day doesn\'t exists.');
-            return new Response(0);
+            return new Response(false);
         }
-        $entityManager->remove($routineDay);
-        $entityManager->flush();
-        return new Response(1);
+
+        $result = $routineService->deleteDay($routineDay);
+
+        return new Response($result);
     }
 
     /**
      * @Route("/expert/routine/{id}/day/{dayId}/product", name="expert.routine.day.list.product")
      */
-    public function listProductForDay(int $id, int $dayId, Request $request): Response
+    public function listProductForDay(int $id, int $dayId, Request $request, RoutineService $routineService, ProductService $productService): Response
     {
-        $entityManager = $this->getDoctrine()->getManager();
-        $routineDay = $entityManager->getRepository(RoutineDay::class)->find($dayId);
+        $routineDay = $routineService->getRoutineDayById($dayId);
 
         $type = $request->query->get('type');
         $name = $request->query->get('name');
@@ -121,11 +120,12 @@ class RoutineDayController extends AbstractController
         }
 
         if ($type || isset($type)) {
-            $type = $entityManager->getRepository(ProductType::class)->find($type);
+            $type = $routineService->getTypeById($type);
         }
-        $products = $entityManager->getRepository(Product::class)->searchProductForDay($type, $name, $page);
 
-        $types = $entityManager->getRepository(ProductType::class)->findAll();
+        $products = $productService->search($type, $name, $page);
+
+        $types = $routineService->getRoutineTypes();
 
         return $this->render('routine/product.add.html.twig', [
             'types' => $types,
@@ -137,56 +137,43 @@ class RoutineDayController extends AbstractController
     /**
      * @Route("/expert/routine/{id}/day/{dayId}/product/{prodId}", name="expert.routine.day.add.product")
      */
-    public function addProductInDay(int $id, int $dayId, int $prodId, Request $request): Response
+    public function addProductInDay(int $id, int $dayId, int $prodId, ProductService $productService, RoutineService $routineService): Response
     {
-        $entityManager = $this->getDoctrine()->getManager();
+        $product = $productService->findProductById($prodId);
 
-        $product = $entityManager->getRepository(Product::class)->find($prodId);
         if (!$product) {
             throw $this->createNotFoundException('The product does not exist');
         }
 
-        $day = $entityManager->getRepository(RoutineDay::class)->find($dayId);
+        $day = $routineService->getRoutineDayById($dayId);
         if (!$day) {
             throw $this->createNotFoundException('Day does not exist');
         }
 
-        $day->addProduct($product);
-        $entityManager->persist($day);
+        $result = $routineService->addProductInDay($day, $product, $id);
+        $this->addFlash($result['type'], $result['message']);
 
-        try {
-            $entityManager->flush();
-            return $this->redirectToRoute('expert.routine.day.list.product', ['id' => $id, 'dayId' => $dayId]);
-        } catch (\Exception $e) {
-            $this->addFlash('danger', "Error");
-        }
+        return $this->redirectToRoute($result['route'], $result['params']);
+
     }
 
     /**
      * @Route("/expert/routine/{id}/day/{dayId}/product/{prodId}/delete", name="expert.routine.day.delete.product")
      */
-    public function deleteProductInDay(int $id, int $dayId, int $prodId, Request $request): Response
+    public function deleteProductInDay(int $id, int $dayId, int $prodId, ProductService $productService, RoutineService $routineService): Response
     {
-        $entityManager = $this->getDoctrine()->getManager();
-
-        $product = $entityManager->getRepository(Product::class)->find($prodId);
+        $product = $productService->findProductById($prodId);
         if (!$product) {
-            return new Response(0);
+            return new Response(false);
         }
 
-        $day = $entityManager->getRepository(RoutineDay::class)->find($dayId);
+        $day = $routineService->getRoutineDayById($dayId);
         if (!$day) {
-            return new Response(0);
+            return new Response(false);
         }
 
-        $day->removeProduct($product);
-        $entityManager->persist($day);
+        $result = $routineService->deleteProductInDay($day, $product);
 
-        try {
-            $entityManager->flush();
-            return new Response(1);
-        } catch (\Exception $e) {
-            return new Response(0);
-        }
+        return new Response($result);
     }
 }

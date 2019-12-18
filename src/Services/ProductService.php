@@ -120,11 +120,11 @@ class ProductService
         return new Response(1);
     }
 
-    public function search(?ProductType $type, ?string $productName): SlidingPagination
+    public function search(?ProductType $type, ?string $productName, int $page = 1): SlidingPagination
     {
         $products = $this->entityManager
             ->getRepository(Product::class)
-            ->searchProductForDay($type, $productName);
+            ->searchProductForDay($type, $productName, $page);
 
         return $products;
     }

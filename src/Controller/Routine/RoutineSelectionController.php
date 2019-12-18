@@ -6,6 +6,8 @@ use App\Entity\Routine;
 use App\Entity\RoutineSelection;
 use App\Entity\RoutineType;
 use App\Entity\RoutineUserDay;
+use App\Services\RoutineSelectionService;
+use App\Services\RoutineService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,10 +21,8 @@ class RoutineSelectionController extends AbstractController
     /**
      * @Route("/routine/sub", name="user.sub.routine.show")
      */
-    public function userSubListRoutine(Request $request): Response
+    public function userSubListRoutine(Request $request, RoutineService $routineService, RoutineSelectionService $routineSelectionService): Response
     {
-        $entityManager = $this->getDoctrine()->getManager();
-
         $expert = $request->query->get('expert');
         $type = $request->query->get('type');
         $page = $request->query->getInt('page', 1);
@@ -33,18 +33,13 @@ class RoutineSelectionController extends AbstractController
         }
 
         if ($type) {
-            $type = $entityManager->getRepository(RoutineType::class)->find($type);
+            $type = $routineService->getTypeById($type);
         }
 
         $user = $this->getUser();
+        $routines = $routineSelectionService->searchRoutine($expert, $type, $user, $page);
 
-        $routines = $entityManager
-            ->getRepository(RoutineSelection::class)
-            ->searchRoutineSelectionPaginator($expert, $type, $user, $page);
-
-        $types = $entityManager
-            ->getRepository(RoutineType::class)
-            ->findAll();
+        $types = $routineService->getRoutineTypes()();
 
         return $this->render('routine/user.sub.list.html.twig', [
             'routines' => $routines,
@@ -55,16 +50,14 @@ class RoutineSelectionController extends AbstractController
     /**
      * @Route("/routine/sub/{id}/show", name="user.sub.routine.show.one")
      */
-    public function userSubRoutineShow(int $id, Request $request): Response
+    public function userSubRoutineShow(int $id, RoutineSelectionService $routineSelectionService): Response
     {
         $user = $this->getUser();
         if (!$user) {
             throw new \Exception('Error. User not found.');
         }
-        $entityManager = $this->getDoctrine()->getManager();
-        $routine = $entityManager
-            ->getRepository(RoutineSelection::class)
-            ->getUserRoutine($user, $id);
+
+        $routine = $routineSelectionService->getRoutine($user, $id);
 
         return $this->render('routine/user.sub.routine.show.html.twig', [
             'routine' => $routine,
@@ -74,73 +67,39 @@ class RoutineSelectionController extends AbstractController
     /**
      * @Route("/routine/{id}/sub", name="user.sub.routine")
      */
-    public function userSubRoutine(Request $request, int $id): Response
+    public function userSubRoutine(int $id, RoutineService $routineService, RoutineSelectionService $routineSelectionService): Response
     {
-        $entityManager = $this->getDoctrine()->getManager();
-        $routine = $entityManager->getRepository(Routine::class)->find($id);
+        $routine = $routineService->getRoutineById($id);
+        if (!$routine) {
+            return new Response(false);
+        }
 
         $user = $this->getUser();
-
-        if (!$routine) {
-            return new Response(0);
-        }
         if (!$user) {
-            return new Response(0);
+            return new Response(false);
         }
 
-        $routine->addSubscriber($user);
-        $entityManager->persist($routine);
+        $result = $routineSelectionService->userSubsToRoutine($routine, $user);
 
-        $routineSelection = new RoutineSelection();
-        $routineSelection->setParentRoutine($routine);
-        $routineSelection->setUser($user);
-        $routineSelection->setStatus(RoutineSelection::STATUS_ACTIVE);
-        $entityManager->persist($routineSelection);
-
-        try{
-            $entityManager->flush();
-            foreach ($routine->getRoutineDays() as $routineDay) {
-                $routineUserDay = new RoutineUserDay();
-                $routineUserDay->setRoutineSelection($routineSelection);
-                $routineUserDay->setRoutineDay($routineDay);
-                $entityManager->persist($routineUserDay);
-            }
-            $entityManager->flush();
-            return new Response(1);
-        } catch(\Exception $e) {
-            return new Response(0);
-        }
+        return new Response($result);
     }
 
     /**
      * @Route("/routine/sub/{id}/unsub", name="user.unsub.routine")
      */
-    public function userUnsubRoutine(Request $request, int $id): Response
+    public function userUnsubRoutine(int $id, RoutineSelectionService $routineSelectionService): Response
     {
-        $entityManager = $this->getDoctrine()->getManager();
-        $routineSelection = $entityManager->getRepository(RoutineSelection::class)->find($id);
-
         $user = $this->getUser();
-
-        if (!$routineSelection) {
-            return new Response(0);
-        }
         if (!$user) {
-            return new Response(0);
+            return new Response(false);
         }
 
-        $routineSelection->setStatus(RoutineSelection::STATUS_UNSUB);
-        $entityManager->persist($routineSelection);
-
-        $routine = $routineSelection->getParentRoutine();
-        $routine->removeSubscriber($user);
-        $entityManager->persist($routine);
-
-        try{
-            $entityManager->flush();
-            return new Response(1);
-        } catch(\Exception $e) {
-            return new Response(0);
+        $routineSelection = $routineSelectionService->getRoutine($user, $id);
+        if (!$routineSelection) {
+            return new Response(false);
         }
+
+        $result = $routineSelectionService->userUnsubsRoutine($user, $routineSelection);
+        return new Response($result);
     }
 }
