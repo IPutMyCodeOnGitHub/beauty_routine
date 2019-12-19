@@ -6,6 +6,7 @@ use App\Entity\RoutineSelection;
 use App\Entity\User;
 use App\Form\ExpertProfileFormType;
 use App\Form\RegistrationExpertFormType;
+use App\Form\UserProfileFormType;
 use App\Services\RoutineService;
 use App\Services\UserService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -82,6 +83,32 @@ class ProfileController extends AbstractController
             }
         }
         return $this->render('profile-expert/profile-expert-edit.html.twig', [
+            'form' => $form->createView(),
+            'expert' => $expert,
+        ]);
+    }
+
+    /**
+     * @Route("/profile/edit", name="profile.edit")
+     */
+    public function profileEdit(Request $request): Response
+    {
+        /** @var User $expert */
+        $expert = $this->getUser();
+
+        $form = $this->createForm(UserProfileFormType::class, $expert);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $result = $this->userService->editExpertProfile($form, $expert, $request);
+            if ($result) {
+                $this->addFlash('success', 'Profile updated!');
+                return $this->redirectToRoute('profile');
+            } else {
+                $this->addFlash('danger', 'Sorry, that was an error.');
+            }
+        }
+        return $this->render('profile/profile-edit.html.twig', [
             'form' => $form->createView(),
             'expert' => $expert,
         ]);
