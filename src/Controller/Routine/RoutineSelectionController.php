@@ -39,9 +39,40 @@ class RoutineSelectionController extends AbstractController
         $user = $this->getUser();
         $routines = $routineSelectionService->searchRoutine($expert, $type, $user, $page);
 
-        $types = $routineService->getRoutineTypes()();
+        $types = $routineService->getRoutineTypes();
 
         return $this->render('routine/user.sub.list.html.twig', [
+            'routines' => $routines,
+            'types' => $types,
+        ]);
+    }
+
+    /**
+     * @Route("/routine/sub/completed", name="user.sub.completed.routine")
+     */
+    public function userSubCompletedListRoutine(Request $request, RoutineService $routineService, RoutineSelectionService $routineSelectionService): Response
+    {
+        $expert = $request->query->get('expert');
+        $type = $request->query->get('type');
+        $page = $request->query->getInt('page', 1);
+
+        if ($expert || $type) {
+            $page = 1;
+            $request->query->remove('page');
+        }
+
+        if ($type && $type != 'Any') {
+            $type = $routineService->getTypeById($type);
+        } else {
+            $type = null;
+        }
+
+        $user = $this->getUser();
+        $routines = $routineSelectionService->searchRoutine($expert, $type, $user, $page, RoutineSelection::STATUS_COMPLETED);
+
+        $types = $routineService->getRoutineTypes();
+
+        return $this->render('routine/user.sub.complited.list.html.twig', [
             'routines' => $routines,
             'types' => $types,
         ]);

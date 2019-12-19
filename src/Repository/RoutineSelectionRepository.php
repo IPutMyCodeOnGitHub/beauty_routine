@@ -62,10 +62,11 @@ class RoutineSelectionRepository extends ServiceEntityRepository
         ?RoutineType $type,
         ?User $subscriber,
         int $page = 1,
+        string $status = RoutineSelection::STATUS_ACTIVE,
         int $countObj = 10
     ): ?PaginationInterface
     {
-        $queryBuilder = $this->getQueryBuilderSearchRoutinesSelection($expert, $type, $subscriber);
+        $queryBuilder = $this->getQueryBuilderSearchRoutinesSelection($expert, $type, $subscriber, $status);
 
         return $this->paginator->paginate(
             $queryBuilder,

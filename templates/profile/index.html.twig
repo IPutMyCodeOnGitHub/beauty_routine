@@ -3,14 +3,11 @@
 {% block title %}Hi there!{% endblock %}
 
 {% block body %}
-
     <div class="container ">
         {% include 'profile/navigation.html.twig' %}
         <div class="row pt-4">
             <div class="content row col-md-10">
-
                 <h2 class="pl-5">You have {{ routines|length }} active routines</h2>
-
                 <div class="card-deck">
                     {% for routine in routines %}
                         {% if  routine.routineUserDays|length > 0 %}
@@ -55,9 +52,9 @@
                 </div>
 
             </div>
-            <div class="notifies col-md-2">
-                notifications
-            </div>
+{#            <div class="notifies col-md-2">#}
+{#                notifications#}
+{#            </div>#}
         </div>
     </div>
 

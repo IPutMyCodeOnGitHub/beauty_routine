@@ -113,7 +113,16 @@ class RoutineService
 
     public function deleteDay(RoutineDay $routineDay): bool
     {
+        foreach ($routineDay->getRoutine()->getRoutineDays() as $day) {
+            if ($day->getDayOrder() >= $routineDay->getDayOrder()) {
+                $day->setDayOrder($day->getDayOrder() - 1);
+                $this->em->persist($day);
+            }
+        }
+
         $this->em->remove($routineDay);
+//        $this->em->persist($routineDay);
+
         try {
             $this->em->flush();
             return true;
