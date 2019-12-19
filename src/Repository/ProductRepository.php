@@ -44,12 +44,11 @@ class ProductRepository extends ServiceEntityRepository
                 ->setParameter('name', '%' . $name .'%');
         }
         if ($tags) {
-            $query->leftJoin('p.tags', 't')
+            $query->innerJoin('p.tags', 't')
                 ->andWhere(
                     $query->expr()->in('t.id', ':tags'))
                 ->setParameter('tags', $tags);
         }
-
         return $query;
     }
 

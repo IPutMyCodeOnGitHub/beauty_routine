@@ -4,13 +4,12 @@
 
 {% block body %}
 
-    {% include 'profile/navigation.html.twig' %}
-
-    <div class="container pt-4">
-        <div class="row">
+    <div class="container ">
+        {% include 'profile/navigation.html.twig' %}
+        <div class="row pt-4">
             <div class="content row col-md-10">
 
-                <h1>You have {{ routines|length }} active routines</h1>
+                <h2 class="pl-5">You have {{ routines|length }} active routines</h2>
 
                 <div class="card-deck">
                     {% for routine in routines %}
