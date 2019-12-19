@@ -79,7 +79,6 @@ class ProductService
 
     public function editProduct(Form $form, Product $product, Request $request): ?Product
     {
-        if ($form->isSubmitted() && $form->isValid()) {
             $photo = $form['photo']->getData();
             if ($photo) {
                 $photoName = $this->uploaderHelper->uploadFile($photo, UploaderHelper::PRODUCT_PHOTO_PATH);
@@ -98,13 +97,6 @@ class ProductService
                 }
                 return null;
             }
-
-            if ($product) {
-                $request->getSession()->getFlashBag()->add('success', 'Product updated!');
-            } else {
-                $request->getSession()->getFlashBag()->add('danger', 'Sorry, that was an error.');
-            }
-        }
         return $product;
     }
 

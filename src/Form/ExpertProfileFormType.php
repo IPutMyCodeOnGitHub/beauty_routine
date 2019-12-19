@@ -9,6 +9,7 @@ use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -17,25 +18,30 @@ use Symfony\Component\Validator\Constraints\IsTrue;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
-class RegistrationExpertFormType extends AbstractType
+class ExpertProfileFormType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+        public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->add('photo', FileType::class, [
+                'label' => 'Profile photo',
+                'mapped' => false,
+                'required' => false,
+                'constraints' => [
+                    new File([
+                        'maxSize' => '1024k',
+                        'mimeTypes' => [
+                            'image/*',
+                        ],
+                        'mimeTypesMessage' => 'Please, upload the fail in PDF format.',
+                    ])
+                ],
+            ])
             ->add('name', TextType::class, [
                 'label' => 'Your name:',
             ])
             ->add('email', EmailType::class, [
                 'label' => 'E-mail:',
-            ])
-            ->add('agreeTerms', CheckboxType::class, [
-                'mapped' => false,
-                'constraints' => [
-                    new IsTrue([
-                        'message' => 'You should agree to our terms.',
-                    ]),
-                ],
-                'label' => 'I agree to the terms',
             ])
             ->add('certificate', FileType::class, [
                 'label' => 'Certificate (PDF file)',
@@ -52,23 +58,19 @@ class RegistrationExpertFormType extends AbstractType
                     ])
                 ],
             ])
-            ->add('plainPassword', RepeatedType::class, [
-                'type' => PasswordType::class,
-                'first_options' => ['label' => 'Password'],
-                'second_options' => ['label' => 'Repeat password', ],
+            ->add('plainPassword', PasswordType::class, [
+                'label' => 'Change password',
                 'mapped' => false,
                 'constraints' => [
-                    new NotBlank([
-                        'message' => 'Please enter a password',
-                    ]),
                     new Length([
                         'min' => 6,
                         'minMessage' => 'Your password should be at least {{ limit }} characters',
-                        // max length allowed by Symfony for security reasons
                         'max' => 4096,
                     ]),
                 ],
-            ]);
+            ])->add('Submit', SubmitType::class, [
+                'label' => 'Save',
+            ]);;
     }
 
     public function configureOptions(OptionsResolver $resolver)
@@ -76,10 +78,5 @@ class RegistrationExpertFormType extends AbstractType
         $resolver->setDefaults([
             'data_class' => User::class,
         ]);
-    }
-
-    public function getName()
-    {
-        return 'ExpertFormType';
     }
 }
