@@ -35,7 +35,6 @@ class ProductTypeService
     public function getAllTypes(): array
     {
         $productTypes = $this->entityManager->getRepository(ProductType::class)->findAll();
-
         if (!$productTypes) {
             return [];
         }

@@ -68,6 +68,7 @@ class RoutineController extends AbstractController
             $result = $routineService->createRoutineForm($this->getUser(), $form, $routine);
             if ($result) {
                 $this->addFlash('success', 'Routine added!');
+                return $this->redirectToRoute("expert.routine");
             } else {
                 $this->addFlash('danger', 'Error. Routine was not added.');
             }
@@ -114,6 +115,7 @@ class RoutineController extends AbstractController
             $result = $routineService->editRoutine($form, $routine);
             if ($result) {
                 $this->addFlash('success', 'Routine updated!');
+                return $this->redirectToRoute("expert.routine");
             } else {
                 $this->addFlash('danger', 'Sorry, that was an error.');
             }

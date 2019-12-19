@@ -87,6 +87,6 @@ nav.admin-nav>ul>li>a.nav-link.active{
     border: none;
 }
 
-.div.row.flex-column.flex-sm-row.mt-4{
-    background-color: #E8F0FE;
+#tags {
+    width:100%
 }

@@ -51,6 +51,7 @@ class ProductTypeController extends AbstractController
             $result = $this->productTypeService->createProductTypeForm($form, $productType);
             if ($result) {
                 $this->addFlash('success', 'Product type added!');
+                return $this->redirectToRoute('profile.expert');
             } else {
                 $this->addFlash('danger', 'Product type was not added.');
             }

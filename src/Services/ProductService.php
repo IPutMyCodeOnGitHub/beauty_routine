@@ -5,6 +5,7 @@ namespace App\Services;
 
 
 use App\Entity\Product;
+use App\Entity\ProductTag;
 use App\Entity\ProductType;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
@@ -112,12 +113,30 @@ class ProductService
         return new Response(1);
     }
 
-    public function search(?ProductType $type, ?string $productName, int $page = 1): SlidingPagination
+    public function search(?ProductType $type, ?string $productName, ?array $tags, int $page = 1): SlidingPagination
     {
         $products = $this->entityManager
             ->getRepository(Product::class)
-            ->searchProductForDay($type, $productName, $page);
+            ->searchProductForDay($type, $productName, $tags, $page);
 
         return $products;
+    }
+
+    public function getAllBrands()
+    {
+        $brands =$this->entityManager
+            ->getRepository(Product::class)
+            ->selectAllBrands();
+
+        return $brands;
+    }
+
+    public function getAllCountries()
+    {
+        $countries = $this->entityManager
+            ->getRepository(Product::class)
+            ->selectAllCountries();
+
+        return $countries;
     }
 }
