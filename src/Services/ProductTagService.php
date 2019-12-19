@@ -31,5 +31,24 @@ class ProductTagService
         return $productTag;
     }
 
+    public function getAllTags()
+    {
+        $productTags = $this->entityManager->getRepository(ProductTag::class)->findAll();
+        if (!$productTags) {
+            return [];
+        }
+        return $productTags;
+    }
+
+    public function getSelectedTags(array $tags)
+    {
+        $productTags = [];
+        foreach ($tags as $tag) {
+            $tag = $this->entityManager->getRepository(ProductTag::class)->find($tag);
+            $productTags[] = $tag;
+        }
+        return $productTags;
+    }
+
 
 }

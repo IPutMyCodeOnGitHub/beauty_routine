@@ -36,22 +36,32 @@ class ProductController extends AbstractController
      */
     public function listProducts(Request $request): Response
     {
-        //$products = $this->productService->getAllProducts();
-
         $type = $request->query->get('type');
         $productName = $request->query->get('productName');
+        $selectedTags = $request->query->get('tag');
+
+        if ($selectedTags){
+            $selectedTags = $this->productTagService->getSelectedTags($selectedTags);
+        }
 
         if ($type || $productName) {
             $request->query->remove('page');
             $type = $this->productTypeService->getOneType($type);
         }
 
-        $products = $this->productService->search($type, $productName);
+        $products = $this->productService->search($type, $productName, $selectedTags);
         $types = $this->productTypeService->getAllTypes();
+        $tags = $this->productTagService->getAllTags();
+        //$brands = $this->productService->getAllBrands();
+        //$countries = $this->productService->getAllCountries();
 
         return $this->render('product/list.html.twig', [
             'products' => $products,
             'types' => $types,
+            'tags' => $tags,
+            'brands' => $selectedTags,
+            //'countries' => $countries,
+            //'brands' => $searchTags,
         ]);
     }
 
@@ -70,6 +80,7 @@ class ProductController extends AbstractController
             $result = $this->productService->createProductForm($form, $product, $expert);
             if ($result) {
                 $this->addFlash('success', 'Product added!');
+                return $this->redirectToRoute('expert.product');
             } else {
                 $this->addFlash('danger', 'Product was not added.');
             }
@@ -94,6 +105,7 @@ class ProductController extends AbstractController
             $result = $this->productService->editProduct($form, $product, $request);
             if ($result) {
                 $this->addFlash('success', 'Product updated!');
+                return $this->redirectToRoute('expert.product');
             } else {
                 $this->addFlash('danger', 'Sorry, that was an error.');
             }

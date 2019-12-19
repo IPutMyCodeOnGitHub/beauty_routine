@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Product;
+use App\Entity\ProductTag;
 use App\Entity\ProductType;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
@@ -27,7 +28,7 @@ class ProductRepository extends ServiceEntityRepository
     }
 
 
-    public function getQueryBuilderSearchProductForDay(?ProductType $type, ?string $name): QueryBuilder
+    public function getQueryBuilderSearchProductForDay(?ProductType $type, ?string $name, ?array $tags): QueryBuilder
     {
         $query = $this->createQueryBuilder('p');
         $query->orderBy('p.id', 'ASC');
@@ -42,6 +43,12 @@ class ProductRepository extends ServiceEntityRepository
                     $query->expr()->like('p.brand', ':name')))
                 ->setParameter('name', '%' . $name .'%');
         }
+        if ($tags) {
+            $query->leftJoin('p.tags', 't')
+                ->andWhere(
+                    $query->expr()->in('t.id', ':tags'))
+                ->setParameter('tags', $tags);
+        }
 
         return $query;
     }
@@ -50,16 +57,34 @@ class ProductRepository extends ServiceEntityRepository
     public function searchProductForDay(
         ?ProductType $type,
         ?string $name,
+        ?array $tags,
         int $page = 1,
         int $countObj = 10)
     : ?PaginationInterface
     {
-        $queryBuilder = $this->getQueryBuilderSearchProductForDay($type, $name);
+        $queryBuilder = $this->getQueryBuilderSearchProductForDay($type, $name, $tags);
 
         return $this->paginator->paginate(
             $queryBuilder,
             $page,
             $countObj
         );
+    }
+
+    public function selectAllBrands()
+    {
+        $query = $this->createQueryBuilder('p')
+            ->select('p.brand');
+
+        return $query;
+    }
+
+    public function selectAllCountries()
+    {
+        $query = $this->createQueryBuilder('p')
+            ->select('p.country')
+            ->orderBy('p.country', 'ASC');
+
+        return $query;
     }
 }

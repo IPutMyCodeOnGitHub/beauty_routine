@@ -76,11 +76,11 @@ class ProfileController extends AbstractController
             $result = $this->userService->editExpertProfile($form, $expert, $request);
             if ($result) {
                 $this->addFlash('success', 'Profile updated!');
+                return $this->redirectToRoute('profile.expert');
             } else {
                 $this->addFlash('danger', 'Sorry, that was an error.');
             }
         }
-
         return $this->render('profile-expert/profile-expert-edit.html.twig', [
             'form' => $form->createView(),
             'expert' => $expert,

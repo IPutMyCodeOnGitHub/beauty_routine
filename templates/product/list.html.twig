@@ -1,7 +1,5 @@
 {% extends 'base.html.twig' %}
-{% block content %}
 
-{% endblock %}
 {% block body %}
     <div class="container">
 
@@ -11,27 +9,61 @@
             <div class="col-md-3">
                 {% include('product/left-panel.html.twig') %}
             </div>
-
             <div class="col-md-9 pl-0">
-                <div class="search-panel pb-5 pl-5">
-                    <form action="{{ path('expert.product') }}" method="get" class="form-inline">
-                        <div class="form-group mx-sm-3 mb-2">
-                            <label for="productName" class="pr-3">Name</label>
-                            <input type="text" class="form-control" name="productName" id="productName" placeholder=""
-                                    {% if (app.request.get('product')) %} value="{{ app.request.get('product') }}" {% endif %}>
-                        </div>
-                        <div class="form-group mx-sm-3 mb-2">
-                            <label for="type" class="pr-3">Type</label>
-                            <select class="form-control" id="type" name="type" >
-                                <option {% if not (app.request.get('expert.product')) %} selected {% endif %}>Any</option>
-                                {% for type in types %}
-                                    <option value="{{ type.id }}" {% if type.id == app.request.get('type') %} selected {% endif %}>{{ type.type }}</option>
+                <form action="{{ path('expert.product') }}" method="get" class="form-inline">
+                    <div class="form-group mx-sm-2 pr-5 mb-2">
+                        <label for="productName" class="pr-3">Name</label>
+                        <input type="text" class="form-control" name="productName" id="productName" placeholder=""
+                                {% if (app.request.get('product')) %} value="{{ app.request.get('product') }}" {% endif %}>
+                    </div>
+                    <div class="form-group mx-sm-2 mb-2">
+                        <label for="type" class="pr-3">Type</label>
+                        <select class="form-control" id="type" name="type">
+                            <option {% if not (app.request.get('expert.product')) %} selected {% endif %}>Any</option>
+                            {% for type in types %}
+                                <option value="{{ type.id }}" {% if type.id == app.request.get('type') %} selected {% endif %}>{{ type.type }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    {#<div class="form-group col-md-5 mt-2">
+                        {% for brand in brands %}
+                            {{ brand.tag }}
+                        {% endfor %}
+                    </div>
+                        {#</div>
+                        <div class="form-group col-md-5 mt-2">
+                            {% for brand in brands %}
+                                {{ brand }}
+                            {% endfor %}
+                            <label for="brand" class="pr-2">Brand</label>
+                            <select class="form-control" id="brand" name="brand" style="width:75%">
+                                {% for brand in brands %}
+                                    <option {% if (app.request.get('brand')) %} value="{{ app.request.get('brand')}}" {% endif %} selected="selected" >{{ brand }}</option>
                                 {% endfor %}
                             </select>
                         </div>
+                        <div class="form-group col-md-6 mt-2">
+                            <label for="country" class="pr-3">Country</label>
+                            <select class="form-control" id="country" name="country" style="width:75%">
+                                {% for country in countries %}
+                                    <option {% if (app.request.get('country')) %} value="{{ app.request.get('country') }}" {% endif %} selected="selected" >{{ country }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>#}
+                    <div class="form-group col-md-12 mt-2">
+                        <label for="tag" class="pr-3">Tags</label>
+                        <select class="js-multiple-select" name="tag[]" id="tag" multiple style="width:80%">
+                            {% for tag in tags %}
+                                <option value="{{ tag.id }}" {% if tag.id == app.request.get('tag') %} selected {% endif %}>{{ tag.tag }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group col-md-3 mb-5 mt-3">
                         <button type="submit" class="btn btn-primary mb-2">Search</button>
-                    </form>
-                </div>
+                    </div>
+
+                </form>
+
                 <div class="card-deck">
                     {% if products is empty %}
                         <h3><p>There are no products yet</p>
@@ -61,4 +93,12 @@
             </div>
         </div>
     </div>
+    </div>
+{% endblock %}
+{% block javascripts %}
+    <script>
+        $(document).ready(function() {
+            $('.js-multiple-select').select2();
+        });
+    </script>
 {% endblock %}
