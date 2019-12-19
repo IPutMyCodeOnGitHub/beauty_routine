@@ -40,11 +40,13 @@ class ProductController extends AbstractController
         $productName = $request->query->get('productName');
         $selectedTags = $request->query->get('tag');
 
+        if ($selectedTags){
+            $selectedTags = $this->productTagService->getSelectedTags($selectedTags);
+        }
 
         if ($type || $productName) {
             $request->query->remove('page');
             $type = $this->productTypeService->getOneType($type);
-            $selectedTags = $this->productTagService->getSelectedTags($selectedTags);
         }
 
         $products = $this->productService->search($type, $productName, $selectedTags);
