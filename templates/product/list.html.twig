@@ -1,10 +1,8 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+    {% include('profile-expert/navigation.html.twig') %}
     <div class="container">
-
-        {% include('profile-expert/navigation.html.twig') %}
-
         <div class="row flex-column flex-sm-row mt-4">
             <div class="col-md-3">
                 {% include('product/left-panel.html.twig') %}
@@ -50,11 +48,12 @@
                                 {% endfor %}
                             </select>
                         </div>#}
+
                     <div class="form-group col-md-12 mt-2">
                         <label for="tag" class="pr-3">Tags</label>
                         <select class="js-multiple-select" name="tag[]" id="tag" multiple style="width:80%">
                             {% for tag in tags %}
-                                <option value="{{ tag.id }}" {% if tag.id == app.request.get('tag') %} selected {% endif %}>{{ tag.tag }}</option>
+                                <option value="{{ tag.id }}" {% if tag.id in app.request.get('tag') %} selected {% endif %}>{{ tag.tag }}</option>
                             {% endfor %}
                         </select>
                     </div>
@@ -80,6 +79,10 @@
                                         <h5 class="card-title" >{{ product.name }}</h5>
                                     </a>
                                     <p class="card-text">{{ product.brand }}</p>
+                                    <p class="text-muted h6 mt-3">Tags</p>
+                                    {% for tag in product.tags %}
+                                        <span class="badge badge-info" style="background-color: #124e507a">{{ tag }}</span>
+                                    {% endfor %}
                                     <p class="card-text text-muted">{{ product.type }}</p>
                                 </div>
                                 <div class="card-footer card-footer-{{ product.id }}">

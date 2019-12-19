@@ -1,22 +1,23 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+    {% include 'profile-expert/navigation.html.twig' %}
     <div class="container">
-        {% include 'profile-expert/navigation.html.twig' %}
+
         <div class="row justify-content-center">
             <div class="row flex-sm-row pt-4 pl-3">
-                <div class="col-md-3 pt-3 pr-0 pl-5">
+                <div class="pt-3 pr-0 pl-5 pr-3">
                     {% if expert.photo %}
                         <img src="{{ asset(expert.photo)}}" class="img avatar rounded-circle" width="130" height="130" alt="...">
                     {% else %}
                     <img class="img avatar rounded-circle" src="{{ asset('/user-photo/anonim.jpg') }}" width="130" height="130" alt="">
                     {% endif %}
                 </div>
-                <div class="col-md-4 pt-5 pr-0">
+                <div class="pt-5 pr-3">
                     <div class="h3">{{ expert.name }}</div>
                     <div class="h6">{{ expert.email }}</div>
                 </div>
-                <div class="col-md-4 pt-5">
+                <div class="pt-5">
                     <div class="h3">Certificates</div>
                     {% if  expert.getUserCertificates.get(0) %}
                         <a class="nav-link active h6 pt-0 pl-0" href="{{ asset(expert.getUserCertificates.get(0).certificate) }}">Show certificate</a>

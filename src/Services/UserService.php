@@ -42,6 +42,7 @@ class UserService
                 $this->entityManager->flush();
             } catch (\Exception $e) {
                 if (isset($photoName)) {
+                    dd($photoName);
                     $this->uploaderHelper->deleteFile($photoName, UploaderHelper::USER_PHOTO_PATH);
                 }
                 return null;

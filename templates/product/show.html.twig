@@ -1,9 +1,9 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+    {% include('profile-expert/navigation.html.twig') %}
     <div class="container">
 
-        {% include('profile-expert/navigation.html.twig') %}
         <div class="row flex-column flex-sm-row mt-4">
             <div class="col-md-3">
                 {% include('product/left-panel.html.twig') %}
@@ -24,7 +24,7 @@
             <div class="col-md-9">
                 <p class="text-muted h6 mt-3">Tags</p>
                     {% for tag in product.tags %}
-                        <span class="badge badge-info" style="background-color: #6d9ea07a">{{ tag }}</span>
+                        <span class="badge badge-info" style="background-color: #124e507a">{{ tag }}</span>
                     {% endfor %}
                 <p class="text-muted h6 mt-3">Description</p>
                 <p class="h6 mb-4">{{ product.description }}</p>
