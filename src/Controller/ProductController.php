@@ -78,7 +78,7 @@ class ProductController extends AbstractController
             $result = $this->productService->createProductForm($form, $product, $expert);
             if ($result) {
                 $this->addFlash('success', 'Product added!');
-                return $this->redirectToRoute('expert/product');
+                return $this->redirectToRoute('expert.product');
             } else {
                 $this->addFlash('danger', 'Product was not added.');
             }
