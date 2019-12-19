@@ -21,7 +21,7 @@ class RoutineRepository extends ServiceEntityRepository
 {
     private $paginator;
 
-    public function __construct(ManagerRegistry $registry, Paginator  $paginator)
+    public function __construct(ManagerRegistry $registry, Paginator $paginator)
     {
         parent::__construct($registry, Routine::class);
         $this->paginator = $paginator;

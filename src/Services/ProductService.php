@@ -5,11 +5,13 @@ namespace App\Services;
 
 
 use App\Entity\Product;
-use App\Entity\Routine;
+use App\Entity\ProductTag;
+use App\Entity\ProductType;
 use App\Entity\User;
-use App\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\QueryBuilder;
 use Exception;
+use Knp\Bundle\PaginatorBundle\Pagination\SlidingPagination;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -64,24 +66,7 @@ class ProductService
         return $products;
     }
 
-   /* public function editProduct($form, int $id)
-    {
-        /** @var Product $product *
-        $product = $this->entityManager->getRepository(Routine::class)->find($id);
 
-        if (!$product) {
-            throw new Exception('The product does not exist');
-        }
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $result = $routineService->editRoutine($form, $routine);
-            if ($result) {
-                $this->addFlash('success', 'Routine updated!');
-            } else {
-                $this->addFlash('danger', 'Sorry, that was an error.');
-            }
-        }
-    }*/
     public function findProductById(int $id): ?Product
     {
         /** @var Product $product */
@@ -95,7 +80,6 @@ class ProductService
 
     public function editProduct(Form $form, Product $product, Request $request): ?Product
     {
-        if ($form->isSubmitted() && $form->isValid()) {
             $photo = $form['photo']->getData();
             if ($photo) {
                 $photoName = $this->uploaderHelper->uploadFile($photo, UploaderHelper::PRODUCT_PHOTO_PATH);
@@ -114,13 +98,6 @@ class ProductService
                 }
                 return null;
             }
-
-            if ($product) {
-                $request->getSession()->getFlashBag()->add('success', 'Product updated!');
-            } else {
-                $request->getSession()->getFlashBag()->add('danger', 'Sorry, that was an error.');
-            }
-        }
         return $product;
     }
 
@@ -134,5 +111,32 @@ class ProductService
         $this->entityManager->remove($product);
         $this->entityManager->flush();
         return new Response(1);
+    }
+
+    public function search(?ProductType $type, ?string $productName, ?array $tags, int $page = 1): SlidingPagination
+    {
+        $products = $this->entityManager
+            ->getRepository(Product::class)
+            ->searchProductForDay($type, $productName, $tags, $page);
+
+        return $products;
+    }
+
+    public function getAllBrands()
+    {
+        $brands =$this->entityManager
+            ->getRepository(Product::class)
+            ->selectAllBrands();
+
+        return $brands;
+    }
+
+    public function getAllCountries()
+    {
+        $countries = $this->entityManager
+            ->getRepository(Product::class)
+            ->selectAllCountries();
+
+        return $countries;
     }
 }

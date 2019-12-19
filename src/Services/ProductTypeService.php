@@ -31,4 +31,19 @@ class ProductTypeService
         }
         return $productType;
     }
+
+    public function getAllTypes(): array
+    {
+        $productTypes = $this->entityManager->getRepository(ProductType::class)->findAll();
+        if (!$productTypes) {
+            return [];
+        }
+        return $productTypes;
+    }
+
+    public function getOneType(string $type): ?ProductType
+    {
+        $type = $this->entityManager->getRepository(ProductType::class)->find($type);
+        return $type;
+    }
 }

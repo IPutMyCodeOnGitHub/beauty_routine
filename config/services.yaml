@@ -55,5 +55,11 @@ services:
     App\Services\RoutineService:
         arguments: ['@doctrine.orm.entity_manager']
 
+    App\Services\RoutineSelectionService:
+        arguments: ['@doctrine.orm.entity_manager']
+
+    App\Services\AdminService:
+        arguments: ['@doctrine.orm.entity_manager']
+
     App\Services\RoutineTypeService:
         arguments: ['@doctrine.orm.entity_manager']

@@ -1,5 +1,5 @@
 <h4>Full experts number: ({{ experts.getTotalItemCount }})</h4>
-<table  class="table table-responsive pt-3">
+<table  class="table table-responsive-sm pt-3">
     <tr>
         <th scope="col">#</th>
         <th scope="col">Id</th>
@@ -55,7 +55,7 @@
 {#                            <button onclick="validExpert({{ expert.id }})" class="btn">Verify expert</button>#}
 {#                        {% endif %}#}
                         {%if not expert.isApproved %}
-                            <button onclick="validExpert({{ expert.id }})" class="btn">Approve expert</button>
+                            <button onclick="validExpert('{{ path('admin.experts.validation',  {id: expert.id}) }}', {{ expert.id }})" class="btn">Approve expert</button>
                         {% endif %}
                     </div>
                 </div>

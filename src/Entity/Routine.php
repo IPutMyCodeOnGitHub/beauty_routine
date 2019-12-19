@@ -53,7 +53,7 @@ class Routine
     private $status;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\User", inversedBy="ыгsubs")
+     * @ORM\ManyToMany(targetEntity="App\Entity\User", inversedBy="subs")
      */
     private $subscriber;
 

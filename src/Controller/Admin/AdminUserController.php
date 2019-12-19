@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\User;
+use App\Services\AdminService;
 use App\Services\RegisterService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,10 +18,8 @@ class AdminUserController extends AbstractController
     /**
      * @Route("/users", name="users", methods={"GET"})
      */
-    public function manageUsers(Request $request): Response
+    public function manageUsers(Request $request, AdminService $adminService): Response
     {
-        $entityManager = $this->getDoctrine()->getManager();
-
         $search = $request->query->get('search');
         $valid = $request->query->get('valid');
         $page = $request->query->getInt('page', 1);
@@ -30,9 +29,7 @@ class AdminUserController extends AbstractController
             $request->query->remove('page');
         }
 
-        $users = $entityManager
-            ->getRepository(User::class)
-            ->findSearchUserPaginator($search, $valid, $page);
+        $users = $adminService->searchUser($search, $valid, $page);
 
         return $this->render('admin/manage-users/user/manage-users.html.twig', [
             'users' => $users,
@@ -42,25 +39,14 @@ class AdminUserController extends AbstractController
     /**
      * @Route("/users/{id}/delete", name="users.delete", methods={"POST"})
      */
-    public function ajaxUserDelete(int $id, Request $request, RegisterService $userService): Response
+    public function ajaxUserDelete(int $id, Request $request, AdminService $adminService): Response
     {
         if (!$request->isXmlHttpRequest()) {
-            return new Response('0');
+            return new Response(false);
         }
 
-        $entityManager = $this->getDoctrine()->getManager();
+        $result = $adminService->ajaxUserDelete($id);
 
-        $user = $entityManager
-            ->getRepository(User::class)
-            ->find($id);
-
-        if (!$user) {
-            return new Response(0);
-        }
-
-        $entityManager->remove($user);
-        $entityManager->flush();
-
-        return new Response(1);
+        return new Response($result);
     }
 }

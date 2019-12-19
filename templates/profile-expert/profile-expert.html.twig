@@ -1,32 +1,57 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-
-    {% include 'profile-expert/navigation.html.twig' %}
-
     <div class="container">
-    <div>
-        <div class="row justify-content-center pt-4" id="tab">
-            <img class="img avatar" src="{{ asset('/profile-expert-photo/anonim.png') }}" width="100" height="100" alt="">
-        </div>
-
+        {% include 'profile-expert/navigation.html.twig' %}
         <div class="row justify-content-center">
-            <a href="" rel="tooltip" title="changePhoto">Change photo</a>
+            <div class="row flex-sm-row pt-4 pl-3">
+                <div class="col-md-3 pt-3 pr-0 pl-5">
+                    {% if expert.photo %}
+                        <img src="{{ asset(expert.photo)}}" class="img avatar rounded-circle" width="130" height="130" alt="...">
+                    {% else %}
+                    <img class="img avatar rounded-circle" src="{{ asset('/user-photo/anonim.jpg') }}" width="130" height="130" alt="">
+                    {% endif %}
+                </div>
+                <div class="col-md-4 pt-5 pr-0">
+                    <div class="h3">{{ expert.name }}</div>
+                    <div class="h6">{{ expert.email }}</div>
+                </div>
+                <div class="col-md-4 pt-5">
+                    <div class="h3">Certificates</div>
+                    {% if  expert.getUserCertificates.get(0) %}
+                        <a class="nav-link active h6 pt-0 pl-0" href="{{ asset(expert.getUserCertificates.get(0).certificate) }}">Show certificate</a>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="text-center pt-3">
+                <div class="pt-5 h2">Programs</div>
+                <div class="row justify-content-center">
+                <div class="card-deck col-md-11 pr-5 pl-5">
+                    {% if routines is empty %}
+                        <a class="nav-link active" href="{{ path('expert.routine.create') }}">Create program</a>
+                    {% else %}
+                        {% for routine in routines %}
+                            <div class="col-sm-3 mb-3 pr-0 pl-0">
+                                <div class="card">
+                                    {% if routine.photo %}
+                                        <img src="{{ asset(routine.photo)}}" class="card-img-top" alt="...">
+                                    {% endif %}
+                                    <div class="card-body">
+                                        <p class="card-text h6">Number of days in program: {{ routine.getRoutineDays.count }}</p>
+                                        <p class="card-text h6">Type: {{ routine.type.type }}</p>
+                                        <p class="card-text h6">Status: <span class="badge badge-secondary">{{ routine.status }}</span></p>
+                                    </div>
+                                    <div class="card-footer card-footer-{{ routine.id }}">
+                                        <a href="{{ path('expert.routine.edit', {'id' : routine.id}) }}" class="btn btn-primary mb-1">Edit</a>
+                                        <button onclick="deleteRoutine('{{ path('expert.routine.delete', {id: routine.id}) }}', {{ routine.id }})" class="btn btn-warning mb-1">Delete</button>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                </div>
+            </div>
         </div>
-
-        <div class="tab-content row justify-content-center pt-3" id="tab">
-            {{ user.name }}
-        </div>
-        <div class="tab-content row justify-content-center" id="tab">
-            {{ user.email }}
-        </div>
-        <div class="tab-content row justify-content-center pt-4" id="tab">
-            <a class="h4">Programs</a>
-        </div>
-        <div class="tab-content row justify-content-center pt-4" id="tab">
-            <a class="nav-link active" href="{{ path('expert.routine.create') }}">Create program</a>
-        </div>
-        {% for certificate in user.getUserCertificates %}
-        {% endfor %}
     </div>
 {% endblock %}

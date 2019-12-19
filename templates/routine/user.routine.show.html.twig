@@ -28,11 +28,25 @@
                                     <h5 class="card-title">Recommendations: {{ day.recommends }}</h5>
                                     {% for product in day.getProducts %}
                                         {% if product.photo %}
-                                            <p class="card-text"><img src="{{ product.photo }}" alt="">}</p>
+                                            <div class="row no-gutters mt-2">
+                                                <div class="col-md-4">
+                                                    {% if product.photo %}
+                                                        <img src="{{ asset(product.photo) }}" class="card-img" alt="">
+                                                    {% endif %}
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <div class="pl-1">
+                                                        <p class="card-text">Name: {{ product.name }}</p>
+                                                        <p class="card-text">Brand: {{ product.brand }}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <hr/>
+                                        {% else %}
+                                            <p class="card-text">Name: {{ product.name }}</p>
+                                            <p class="card-text">Brand: {{ product.brand }}</p>
+                                            <hr/>
                                         {% endif %}
-                                        <p class="card-text">Name: {{ product.name }}</p>
-                                        <p class="card-text">Brand: {{ product.brand }}</p>
-                                        <hr/>
                                     {% endfor %}
                                 </div>
                                 <div class="card-footer">

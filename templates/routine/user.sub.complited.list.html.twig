@@ -1,17 +1,17 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    
+
     {% include('profile/navigation.html.twig') %}
 
     <div class="container">
         <div class="row flex-column flex-sm-row mt-4">
 
             <div class="col-md-12">
-                <h1 class="pb-4">My programs</h1>
+                <h1 class="pb-4">My completed programs</h1>
 
                 <div class="search-panel pb-5">
-                    <form action="{{ path('user.sub.routine.show') }}" method="get" class="form-inline">
+                    <form action="{{ path('user.sub.completed.routine') }}" method="get" class="form-inline">
                         <div class="form-group mx-sm-3 mb-2">
                             <input type="text" class="form-control" name="expert" id="findExpert" placeholder="Name of expert"
                                     {% if (app.request.get('expert')) %} value="{{ app.request.get('expert') }}" {% endif %}>
@@ -54,7 +54,6 @@
                                 <div class="card-footer routine-sub-{{ routine.id }}">
                                     <a href="{{ path('user.sub.routine.show.one', {id: routine.id}) }}" class="btn btn-primary mb-2">Show</a>
                                     <br/>
-                                    <button onclick="unsubRoutine('{{ path('user.unsub.routine', {id: routine.id}) }}', {{ routine.id }})" class="btn">Unsubscribe</button>
                                 </div>
                             </div>
                         </div>

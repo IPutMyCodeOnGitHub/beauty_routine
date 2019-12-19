@@ -34,20 +34,8 @@
                         {{ form_end(form) }}
                     </div>
                 </div>
-
-                {% for message in app.flashes('success') %}
-                    <div class="alert alert-success" role="alert">
-                        {{ message }}
-                    </div>
-                {% endfor %}
-                {% for message in app.flashes('error') %}
-                    <div class="alert alert-danger" role="alert">
-                        {{ message }}
-                    </div>
-                {% endfor %}
-
+                {% include('flashes.html.twig') %}
                 </div>
-
             </div>
         </div>
     </div>

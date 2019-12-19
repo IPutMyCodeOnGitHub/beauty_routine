@@ -20,6 +20,11 @@ h1{
     color: #434a4a;
 }
 
+.img-table{
+    height: 100px;
+    width: auto;
+}
+
 .btn{
     background-color: #6d9ea07a;
     border: none;
@@ -80,4 +85,8 @@ nav.admin-nav>ul>li>a.nav-link.active{
 .order-value{
     background: inherit;
     border: none;
+}
+
+#tags {
+    width:100%
 }

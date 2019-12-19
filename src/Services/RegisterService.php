@@ -32,19 +32,27 @@ class RegisterService
         $this->router = $router;
     }
 
-    public function makeExpertValid($expertId, $entityManager): void
+    public function makeExpertValid($expertId): bool
     {
         if ($expertId) {
-            /** @var User $user */
-            $user = $this->$entityManager
+            $user = $this->entityManager
                 ->getRepository(User::class)
                 ->find($expertId);
+
             if ($user == null) {
-                return;
+                return false;
             }
+
             $user->setRoles([User::ROLE_EXPERT]);
-            $this->entityManager->flush();
+            try{
+                $this->entityManager->flush();
+                return true;
+            } catch (\Exception $e) {
+                return false;
+            }
         }
+
+        return false;
     }
 
     public function registerUser(

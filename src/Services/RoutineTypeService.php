@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Entity\RoutineType;
 use Doctrine\ORM\EntityManagerInterface;
 
 class RoutineTypeService
@@ -13,9 +14,9 @@ class RoutineTypeService
         $this->em = $em;
     }
 
-    public function createType()
+    public function getType($id): ?RoutineType
     {
-
+        return $this->em->getRepository(RoutineType::class)->find($id);
     }
 
 }
