@@ -7,6 +7,7 @@ use App\Entity\User;
 use App\Form\ExpertProfileFormType;
 use App\Form\RegistrationExpertFormType;
 use App\Form\UserProfileFormType;
+use App\Services\ProductService;
 use App\Services\RoutineService;
 use App\Services\UserService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -25,6 +26,18 @@ class ProfileController extends AbstractController
     {
         $this->userService = $userService;
         $this->routineService = $routineService;
+    }
+
+    /**
+     * @Route("/profile/product/{id}/show", name="profile.product.show")
+     */
+    public function showProduct(Request $request, int $id, ProductService $productService): Response
+    {
+        $product = $productService->findProductById($id);
+
+        return $this->render('product/user.show.html.twig', [
+            'product' => $product,
+        ]);
     }
 
     /**

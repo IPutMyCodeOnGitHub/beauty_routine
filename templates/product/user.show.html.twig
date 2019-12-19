@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {% include('profile/navigation.html.twig') %}
+    <div class="container">
+
+        <div class="row flex-column flex-sm-row mt-4">
+            <div class="col-md-4 pt-3 pr-0">
+                {% if product.photo %}
+                    <img src="{{ asset(product.photo)}}" class="card-img-top" alt="...">
+                {% endif %}
+            </div>
+            <div class="col-md-4 mt-2 ml-3">
+                <h1>{{ product.name }}</h1>
+                <h4 class="text-muted mb-5">{{ product.brand }}</h4>
+                <p class="h4 mb-4">{{ product.type }}</p>
+                <p class="text-muted h6">Average price</p>
+                <p class="h4 mb-4">{{ product.price|number_format(0, ' ', ' ')}} RUB</p>
+            </div>
+            <div class="col-md-3"></div>
+            <div class="col-md-9">
+                <p class="text-muted h6 mt-3">Tags</p>
+                {% for tag in product.tags %}
+                    <span class="badge badge-info" style="background-color: #124e507a">{{ tag }}</span>
+                {% endfor %}
+                <p class="text-muted h6 mt-3">Description</p>
+                <p class="h6 mb-4">{{ product.description }}</p>
+                <p class="text-muted h6 mt-3">Country</p>
+                <p class="h6 mb-4">{{ product.country }}</p>
+            </div>
+        </div>
+    </div>
+{% endblock %}

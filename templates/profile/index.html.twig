@@ -1,17 +1,31 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hi there!{% endblock %}
-
 {% block body %}
     {% include 'profile/navigation.html.twig' %}
     <div class="container ">
-        <div class="row pt-4">
+
+        <div class="row flex-sm-row pt-4 pl-3 justify-content-center">
+            <div class="pt-3 pr-0 pl-5 pr-5">
+                {% if user.photo %}
+                    <img src="{{ asset(user.photo)}}" class="img avatar rounded-circle" width="130" height="130" alt="...">
+                {% else %}
+                    <img class="img avatar rounded-circle" src="{{ asset('/user-photo/anonim.jpg') }}" width="130" height="130" alt="">
+                {% endif %}
+            </div>
+            <div class="pt-5 pr-3">
+                <div class="h3">{{ user.name }}</div>
+                <div class="h6">{{ user.email }}</div>
+            </div>
+        </div>
+
+        <h2 class="offset-md-1 pt-5 pb-2">You have {{ routines|length }} active routines</h2>
+        <div class="row pt-4 justify-content-center">
             <div class="content row col-md-10">
-                <h2 class="pl-5">You have {{ routines|length }} active routines</h2>
+
                 <div class="card-deck">
                     {% for routine in routines %}
                         {% if  routine.routineUserDays|length > 0 %}
-                            <div class="col-sm-4 mb-3">
+                            <div class="col-md-4 mb-3">
                                 <div class="card">
                                     {% if routine.parentRoutine.photo %}
                                         <img src="{{ asset(routine.parentRoutine.photo)}}" class="card-img-top" alt="...">
@@ -24,6 +38,9 @@
                                         <p class="card-text">
                                             Day order: {{ day.routineDay.dayOrder }}
                                         </p>
+                                        <p class="card-text">
+                                            Type: {{ routine.parentRoutine.type.type }}
+                                        </p>
                                         <p class="card-text">Recommendations: {{ day.routineDay.recommends }}</p>
                                         {% for product in day.routineDay.getProducts %}
                                             <div class="row no-gutters mt-2">
@@ -34,8 +51,7 @@
                                                 </div>
                                                 <div class="col-md-8">
                                                     <div class="pl-1">
-                                                        <p class="card-text">Name: {{ product.name }}</p>
-                                                        <p class="card-text">Brand: {{ product.brand }}</p>
+                                                        <p class="card-text">Product: <a href="{{ path('profile.product.show', {id: product.id}) }}">{{ product.name }}</a> </p>
                                                     </div>
                                                 </div>
                                             </div>

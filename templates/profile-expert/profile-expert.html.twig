@@ -4,16 +4,16 @@
     {% include 'profile-expert/navigation.html.twig' %}
     <div class="container">
 
-        <div class="row justify-content-center">
-            <div class="row flex-sm-row pt-4 pl-3">
-                <div class="pt-3 pr-0 pl-5 pr-3">
+{#        <div class="row justify-content-center">#}
+            <div class="row flex-sm-row pt-4 pl-3 justify-content-center">
+                <div class="pt-3 pr-0 pl-5 pr-5">
                     {% if expert.photo %}
                         <img src="{{ asset(expert.photo)}}" class="img avatar rounded-circle" width="130" height="130" alt="...">
                     {% else %}
                     <img class="img avatar rounded-circle" src="{{ asset('/user-photo/anonim.jpg') }}" width="130" height="130" alt="">
                     {% endif %}
                 </div>
-                <div class="pt-5 pr-3">
+                <div class="pt-5 pr-5">
                     <div class="h3">{{ expert.name }}</div>
                     <div class="h6">{{ expert.email }}</div>
                 </div>
@@ -24,9 +24,12 @@
                     {% endif %}
                 </div>
             </div>
-            <div class="text-center pt-3 container">
-                <div class="py-5 h2">Programs</div>
-                <div class="row justify-content-center">
+
+            <h2 class="pt-5 pb-2 h2 offset-md-1">Programs</h2>
+
+            <div class="text-center pt-3 row justify-content-center">
+
+{#                <div class="row justify-content-center">#}
                 <div class="card-deck col-md-11 pr-5 pl-5">
                     {% if routines is empty %}
                         <a class="nav-link active" href="{{ path('expert.routine.create') }}">Create program</a>
@@ -51,8 +54,8 @@
                         {% endfor %}
                     {% endif %}
                 </div>
-                </div>
+{#                </div>#}
             </div>
         </div>
-    </div>
+{#    </div>#}
 {% endblock %}
