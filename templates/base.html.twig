@@ -7,10 +7,12 @@
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.4.1/yeti/bootstrap.min.css">
         <link href="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/css/select2.min.css" rel="stylesheet" />
 {#        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">#}
-        <title>{% block title %}Welcome!{% endblock %}</title>
+        <title>{% block title %}Beauty routine{% endblock %}</title>
         {% block stylesheets %}
             <link href="{{ asset('css/style.css') }}" rel="stylesheet">
         {% endblock %}
+
+        <link rel="shortcut icon" href="{{ asset('images/favicon.ico') }}" type="image/x-icon">
     </head>
     <body>
         {% block body %}{% endblock %}

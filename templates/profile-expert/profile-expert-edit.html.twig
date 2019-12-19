@@ -3,24 +3,24 @@
 {% block title %} {{ expert.name }}{% endblock %}
 
 {% block body %}
-<div class="container">
+
     {% include 'profile-expert/navigation.html.twig' %}
-    <div class="row justify-content-center">
-    <div class="col-md-7">
-        <h2 class="pt-4 pb-4">
-            <a data-toggle="collapse"  aria-expanded="true" aria-controls="profileForm">
-                Profile editing
-            </a>
-        </h2>
-        <div class="collapse show" id="productForm">
-            <div class="shadow-sm p-3 mb-5 bg-white rounded">
-                {{ form_start(form) }}
-                {{ form_end(form) }}
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-7">
+                <h2 class="pt-4 pb-4">
+                    <a data-toggle="collapse"  aria-expanded="true" aria-controls="profileForm">
+                        Profile editing
+                    </a>
+                </h2>
+                <div class="collapse show" id="productForm">
+                    <div class="shadow-sm p-3 mb-5 bg-white rounded">
+                        {{ form_start(form) }}
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+                {% include('flashes.html.twig') %}
             </div>
         </div>
-        {% include('flashes.html.twig') %}
     </div>
-    </div>
-</div>
-</div>
 {% endblock %}
