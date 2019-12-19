@@ -8,6 +8,7 @@ use App\Entity\RoutineType;
 use App\Entity\RoutineUserDay;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\Pagination\PaginationInterface;
 use Symfony\Component\HttpFoundation\Response;
 
 class RoutineSelectionService
@@ -22,11 +23,12 @@ class RoutineSelectionService
     public function searchRoutine(?String $expert,
                                   ?RoutineType $type,
                                   ?User $user,
-                                  int $page): array
+                                  int $page,
+                                  string $status = RoutineSelection::STATUS_ACTIVE): ?PaginationInterface
     {
         return $this->em
             ->getRepository(RoutineSelection::class)
-            ->searchRoutineSelectionPaginator($expert, $type, $user, $page);
+            ->searchRoutineSelectionPaginator($expert, $type, $user, $page, $status);
     }
 
     public function getRoutine(User $user, int $id): ?RoutineSelection
@@ -43,7 +45,7 @@ class RoutineSelectionService
             ->getDayById($user, $id, $routineId);
     }
 
-    public function userSubsToRoutine(Routine $routine, User $user): bool
+    public function userSubsToRoutine(Routine $routine, User $user): string
     {
         $routine->addSubscriber($user);
         $this->em->persist($routine);
@@ -61,11 +63,15 @@ class RoutineSelectionService
                 $routineUserDay->setRoutineSelection($routineSelection);
                 $routineUserDay->setRoutineDay($routineDay);
                 $this->em->persist($routineUserDay);
+
+                $routineSelection->addRoutineUserDay($routineUserDay);
+                $this->em->persist($routineSelection);
+                $this->em->persist($routineSelection);
             }
             $this->em->flush();
             return true;
         } catch(\Exception $e) {
-            return false;
+            return false . $e->getMessage() . 'mes';
         }
     }
 
@@ -93,10 +99,16 @@ class RoutineSelectionService
 
         $routineSelection = $routineDay->getRoutineSelection();
         $daysCompleted = $routineSelection->getDaysCompleted();
+
         if ($daysCompleted){
             $routineSelection->setDaysCompleted($daysCompleted + 1);
         } else {
             $routineSelection->setDaysCompleted(1);
+        }
+
+        if ($routineSelection->getDaysCompleted() == $routineSelection->getRoutineUserDays()->count()) {
+            $routineSelection->setStatus(RoutineSelection::STATUS_COMPLETED);
+            $routineSelection->getParentRoutine()->removeSubscriber($routineSelection->getUser());
         }
 
         $this->em->persist($routineDay);
