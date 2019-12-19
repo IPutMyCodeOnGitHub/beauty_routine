@@ -8,7 +8,14 @@
             <div class="col-md-3">
                 {% include('admin/manage-users/left-panel.html.twig') %}
             </div>
-            <div>There will be statistics</div>
+            <div>
+
+                <p>Number of all users: {{ users }}</p>
+                <p>Number of admins: {{ admins }}</p>
+                <p>Number of users: {{ guests }}</p>
+                <p>Number of experts: {{ experts }}</p>
+
+            </div>
         </div>
     </div>
 

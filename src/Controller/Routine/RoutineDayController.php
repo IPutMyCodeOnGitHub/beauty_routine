@@ -123,7 +123,7 @@ class RoutineDayController extends AbstractController
             $type = $routineService->getTypeById($type);
         }
 
-        $products = $productService->search($type, $name, $page);
+        $products = $productService->search($type, $name, null, $page);
 
         $types = $routineService->getRoutineTypes();
 

@@ -6,8 +6,8 @@
         <th scope="col">Name</th>
         <th scope="col">Email</th>
         <th scope="col">Status</th>
-        <th scope="col">Edit</th>
-        <th scope="col">Delete</th>
+{#        <th scope="col">Edit</th>#}
+{#        <th scope="col">Delete</th>#}
     </tr>
     {% for user in users %}
         <tr>
@@ -28,14 +28,14 @@
                     <span class="badge badge-danger">  не подтверждён </span>
                 {% endif %}
             </td>
-            <td class="exist-{{ user.id }}">
+{#            <td class="exist-{{ user.id }}">#}
 {#                <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseCard{{ user.id }}" aria-expanded="false" aria-controls="collapseCard{{ user.id }}">#}
 {#                    Edit#}
 {#                </button>#}
-            </td>
-            <td class="exist-{{ user.id }}">
+{#            </td>#}
+{#            <td class="exist-{{ user.id }}">#}
 {#                <button onclick="deleteFromTable('{{ path('admin.users.delete', {id: user.id}) }}', {{ user.id }})" class="btn">Delete</button>#}
-            </td>
+{#            </td>#}
         </tr>
         <tr>
             <td colspan="8">

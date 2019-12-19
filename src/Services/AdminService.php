@@ -18,6 +18,20 @@ class AdminService
         $this->entityManager = $em;
     }
 
+    public function allUsers(): array
+    {
+        return $this->entityManager
+            ->getRepository(User::class)
+            ->findAll();
+    }
+
+    public function getAdmins(?string $search, int $page = 1): ?PaginationInterface
+    {
+        return $this->entityManager
+            ->getRepository(User::class)
+            ->findSearchAdminsPaginator($search, $page);
+    }
+
     public function ajaxExpertDelete(int $id): bool
     {
         $user = $this->entityManager

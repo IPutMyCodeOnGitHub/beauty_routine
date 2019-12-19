@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\User;
+use App\Services\AdminService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,22 +15,29 @@ use Symfony\Component\Routing\Annotation\Route;
 class AdminController extends AbstractController
 {
     /**
-     * @Route("/user-stats", name="stats", methods={"GET"})
+     * @Route("/", name="stats", methods={"GET"})
      */
-    public function userStatistic():Response
+    public function userStatistic(AdminService $adminService):Response
     {
-        //ToDo: Block can be used for present a statistic in content area
+        $usersCount = count($adminService->allUsers());
+        $adminCount = $adminService->getAdmins(null)->count();
+        $guests = $adminService->searchUser(null, null)->count();
+        $experts = $adminService->searchExpert(null, null)->count();
 
-        return $this->render('admin/manage-users/manage-users.html.twig');
+        return $this->render('admin/manage-users/manage-users.html.twig',
+            [
+                'users' => $usersCount,
+                'admins' => $adminCount,
+                'guests' => $guests,
+                'experts' => $experts,
+            ]);
     }
 
     /**
      * @Route("/admins", name="admins", methods={"GET"})
      */
-    public function manageAdmins(Request $request): Response
+    public function manageAdmins(Request $request, AdminService $adminService): Response
     {
-        $entityManager = $this->getDoctrine()->getManager();
-
         $search = $request->query->get('search');
         $page = $request->query->getInt('page', 1);
 
@@ -38,9 +46,7 @@ class AdminController extends AbstractController
             $request->query->remove('page');
         }
 
-        $admins = $entityManager
-            ->getRepository(User::class)
-            ->findSearchAdminsPaginator($search, $page);
+        $admins = $adminService->getAdmins($search, $page);
 
         return $this->render('admin/manage-users/admin/manage-admin.html.twig', [
             'admins' => $admins,

@@ -1,6 +1,10 @@
-<div class="container">
-    <nav class="admin-nav row justify-content-between">
-        <ul class="nav flex-column flex-sm-row">
+<nav class="navbar navbar-expand-lg admin-nav">
+    <div class="navbar-brand" >Private profile</div>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
             <li class="nav-item">
                 <a class="nav-link" href="{{ path('admin.stats') }}">Users managing</a>
             </li>
@@ -10,20 +14,9 @@
             <li class="nav-item">
                 <a class="nav-link" href="{{ path('admin.routine') }}">Routines</a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Dropdown
-                </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" href="#">Action</a>
-                    <a class="dropdown-item" href="#">Another action</a>
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="#">Something else here</a>
-                </div>
-            </li>
         </ul>
-        <div class="nav-item">
-            <a class="nav-link" href="{{ path('app.logout') }}">Exit</a>
-        </div>
-    </nav>
-</div>
+    </div>
+    <div class="col-md-auto align-self-center ">
+        <a class="nav-link" href="{{ path('app.logout') }}">Exit</a>
+    </div>
+</nav>

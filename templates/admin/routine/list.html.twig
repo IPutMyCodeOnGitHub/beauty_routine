@@ -40,8 +40,8 @@
                         <th scope="col">Type</th>
                         <th scope="col">Photo</th>
                         <th scope="col">Subscribers</th>
-                        <th scope="col">Edit</th>
-                        <th scope="col">Delete</th>
+{#                        <th scope="col">Edit</th>#}
+{#                        <th scope="col">Delete</th>#}
                     </tr>
                     {% for routine in routines %}
                         <tr>
@@ -65,12 +65,12 @@
                             <td>
                                 {{ routine.getSubscriber.count }}
                             </td>
-                            <td class="exist-{{ routine.id }}">
+{#                            <td class="exist-{{ routine.id }}">#}
 {#                                <a href="#" class="btn btn-primary">Edit</a>#}
-                            </td>
-                            <td class="exist-{{ routine.id }}">
+{#                            </td>#}
+{#                            <td class="exist-{{ routine.id }}">#}
 {#                                <button onclick="deleteFromTable('{{ path('admin.type.delete', {id: type.id}) }}', {{ type.id }})" class="btn">Delete</button>#}
-                            </td>
+{#                            </td>#}
                         </tr>
                     {% endfor %}
                 </table>

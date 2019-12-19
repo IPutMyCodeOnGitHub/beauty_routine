@@ -2,10 +2,10 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+
+    {% include('profile-expert/navigation.html.twig') %}
+
     <div class="container">
-
-        {% include('profile-expert/navigation.html.twig') %}
-
         <div class="row flex-column flex-sm-row mt-4">
             <div class="col-md-3">
                 {% include('product/left-panel.html.twig') %}
